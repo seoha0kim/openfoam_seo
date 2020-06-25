@@ -38,6 +38,16 @@ addpath /usr/local/comsol55/multiphysics/mli/
 mphstart
 
 % %%
+[model,seo] = sbD_para('/home/sbkim/Work/git/openfoam_seo/sbD_H_damper_mass_S.mphbin')
+
+% %%
+for ii=1:3
+    subplot(1,3,ii)
+    plot(seo.res_tr(1:8,ii),'-o','MarkerSize',6-3)
+    grid
+end
+
+% %%
 clear model
 
 import com.comsol.model.*
@@ -321,6 +331,46 @@ fprintf(fid, 'Mass Large\n mass: %f\n', seo.mass_L);
 fprintf(fid, 'mass moment of inertia: %f\n', seo.Imx_L);
 
 % %%
+% res_tr = [];
+res_tr = zeros(9,3);
+res_tr(9,:) = [seo.mass_L,seo.Imx_L,seo.x_cg];
+for id_itr = 8:-1:1
+    seo.id_mesh = id_itr;
+    model.component('comp1').mesh('mesh1').autoMeshSize(seo.id_mesh);
+    model.sol('sol1').runFromTo('st1', 'v1');
+
+    seo.mass_L = mphint2(model,'solid.rho','volume','selection','all');
+    seo.mx_L(1) = mphint2(model,'solid.rho*X','volume','selection','all');
+    seo.x_cg = seo.mx_L(1)/seo.mass_L;
+    s_evl = sprintf('solid.rho*(X-%f)',seo.x_cg);
+    seo.mx_L(2) = mphint2(model,s_evl,'volume','selection','all');
+    s_evl = sprintf('solid.rho*(X-%f)^2',seo.x_cg);
+    seo.Imx_L = mphint2(model,s_evl,'volume','selection','all');
+
+    fprintf(fid, 'Mass Large\n mass: %f\n', seo.mass_L);
+    fprintf(fid, 'mass moment of inertia: %f\n', seo.Imx_L);
+
+    res_tr(id_itr,:) = [seo.mass_L,seo.Imx_L,seo.x_cg];
+end
+figure(100)
+clf
+s_l = {'m','$\mathrm{I_p}$','$\mathrm{x_{gc}}$'};
+for ii=1:3
+subplot(1,3,ii)
+plot(res_tr(:,ii),'-o','Color',[0 0 .65],'MarkerSize',6-3)
+xlabel(s_l{ii})
+% grid
+set(gca,'YScale','log')
+end
+gcfG;gcfH;gcfLFont;gcfS;gcfP;
+gcfX([0 8])
+
+% %%
+for ii=1:8
+    subplot(1,3,ii)
+    plot(res_tr(1:8,ii),'-o','MarkerSize',6-3,'Color',[0 0 .5])
+    grid
+end
 
 % %% [markdown]
 % # FINE
