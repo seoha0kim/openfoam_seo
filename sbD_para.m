@@ -1,4 +1,4 @@
-function out = model
+function [model,seo] = sbD_para(ifile)
 %
 % sbD_para.m
 %
@@ -9,13 +9,24 @@ function out = model
 %
     tcomp = tic;
     % mphlaunch
-    seo.ifile = '/home/sbkim/Work/git/openfoam_seo/sbD_H_damper_mass_L.mphbin';
-    seo.id_mesh = 1;
-    seo.id_mesh = 5;
+    fid = fopen('seo.log','a+');
+    clear seo
+    % seo.ifile = '/home/sbkim/Work/git/openfoam_seo/sbD_H_damper_mass_L.mphbin';
+    % seo.ifile = '/home/sbkim/Work/git/openfoam_seo/sbD_H_damper_mass_S.mphbin';
+    seo.ifile = ifile;
+    % seo.id_mesh = 1;
+    % seo.id_mesh = 5;
     seo.id_mesh = 9;
+    seo.n_rep = 2^3;
+
+    seo.messenger_D = 16e-3;
+
+    id_pl = false;
 %
 %
 %
+
+clear model
 
 import com.comsol.model.*
 import com.comsol.model.util.*
@@ -79,27 +90,12 @@ model.component('comp1').material('mat1').propertyGroup('Enu').set('youngsmodulu
 model.component('comp1').material('mat1').propertyGroup('Enu').descr('youngsmodulus_symmetry', '');
 model.component('comp1').material('mat1').propertyGroup('Enu').set('poissonsratio', '0.30');
 model.component('comp1').material('mat1').propertyGroup('Enu').descr('poissonsratio_symmetry', '');
-model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('l', '');
-model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('m', '');
-model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('n', '');
-% model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('l', '');
-% model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('m', '');
-% model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('n', '');
-% model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('l', '');
-% model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('m', '');
-% model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('n', '');
 model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('l', '-3.0e11[Pa]');
 model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('m', '-6.2e11[Pa]');
 model.component('comp1').material('mat1').propertyGroup('Murnaghan').set('n', '-7.2e11[Pa]');
 model.component('comp1').material('mat1').propertyGroup('Murnaghan').descr('l_symmetry', '');
 model.component('comp1').material('mat1').propertyGroup('Murnaghan').descr('m_symmetry', '');
 model.component('comp1').material('mat1').propertyGroup('Murnaghan').descr('n_symmetry', '');
-model.component('comp1').material('mat1').propertyGroup('Lame').set('lambLame', '');
-model.component('comp1').material('mat1').propertyGroup('Lame').set('muLame', '');
-% model.component('comp1').material('mat1').propertyGroup('Lame').set('lambLame', '');
-% model.component('comp1').material('mat1').propertyGroup('Lame').set('muLame', '');
-% model.component('comp1').material('mat1').propertyGroup('Lame').set('lambLame', '');
-% model.component('comp1').material('mat1').propertyGroup('Lame').set('muLame', '');
 model.component('comp1').material('mat1').propertyGroup('Lame').set('lambLame', '1.15e11[Pa]');
 model.component('comp1').material('mat1').propertyGroup('Lame').set('muLame', '7.69e10[Pa]');
 model.component('comp1').material('mat1').propertyGroup('Lame').descr('lambLame_symmetry', '');
@@ -130,7 +126,6 @@ model.sol('sol1').feature('t1').feature('i1').feature('mg1').feature('pr').creat
 model.sol('sol1').feature('t1').feature('i1').feature('mg1').feature('po').create('so1', 'SOR');
 model.sol('sol1').feature('t1').feature.remove('fcDef');
 
-
 model.result.create('pg1', 'PlotGroup3D');
 model.result.create('pg2', 'PlotGroup3D');
 model.result('pg1').create('surf1', 'Surface');
@@ -144,11 +139,9 @@ model.result('pg2').feature('arwv1').feature('col').set('expr', 'comp1.solid.gr1
 model.result('pg2').feature('surf1').set('expr', '1');
 model.result('pg2').feature('surf1').create('def', 'Deform');
 
-
 model.nodeGroup.create('dset1solidlgrp', 'Results');
 model.nodeGroup('dset1solidlgrp').set('type', 'plotgroup');
 model.nodeGroup('dset1solidlgrp').placeAfter('plotgroup', 'pg1');
-
 
 model.sol('sol1').attach('std1');
 model.sol('sol1').feature('v1').set('clist', {'range(0,0.1,.1)' '1.0E-4[s]'});
@@ -158,6 +151,7 @@ model.sol('sol1').feature('v1').feature('comp1_u').set('scaleval', '1e-2*0.30490
 model.sol('sol1').feature('t1').set('tlist', 'range(0,0.1,.1)');
 model.sol('sol1').feature('t1').set('timemethod', 'genalpha');
 model.sol('sol1').feature('t1').feature('aDef').set('cachepattern', true);
+
 model.sol('sol1').feature('t1').feature('fc1').set('linsolver', 'd1');
 model.sol('sol1').feature('t1').feature('d1').label('Suggested Direct Solver (solid)');
 model.sol('sol1').feature('t1').feature('i1').label('Suggested Iterative Solver (solid)');
@@ -166,22 +160,190 @@ model.sol('sol1').feature('t1').feature('i1').feature('mg1').feature('po').featu
 
 
 
-% model.result.numerical.create('int1', 'IntVolume');
-% model.result.numerical('int1').selection.all;
+%
+%%  Run
+%
+% mphsave(model, 'imsi')
+
+if 0
+    % res_run = [];
+    res_run = zeros(2,seo.n_rep);
+    id_test_p = repmat([0 1], 1,seo.n_rep);
+    for id_test = 1:length(id_test_p)
+        telap = toc(tcomp);
+
+        if id_test
+            model.sol('sol1').runAll;
+        else
+            model.sol('sol1').runFromTo('st1', 'v1');
+        end
+
+        telap = toc(tcomp) - telap;
+        fprintf(1,'\nTotal elasped time is %.1f s.\n',telap)
+        fprintf(fid,'\nTotal elasped time is %.1f s.\n',telap);
+        res_run(id_test) = telap;
+    end
+    seo.res_run = res_run;
+    clear res_run id_test_p id_test
+    % mphsave(model, 'imsi1')
+
+    figure(100) % for tracing
+    clf
+    plot(seo.res_run.')
+else
+    telap = toc(tcomp);
+    % if 1
+    if 0
+        model.sol('sol1').runAll;
+    else
+        model.sol('sol1').runFromTo('st1', 'v1');
+    end
+    telap = toc(tcomp) - telap;
+    fprintf(1,'\nTotal elasped time is %.1f s.\n',telap)
+    fprintf(fid,'\nTotal elasped time is %.1f s.\n',telap);
+end
+
+%
+%%  Modification
+%
+seo.xc(1,1) = mphmax(model,'X','volume','selection','all');
+seo.xc(2,1) = mphmax(model,'Y','volume','selection','all');
+seo.xc(3,1) = mphmax(model,'Z','volume','selection','all');
+
+seo.xc(1,2) = mphmin(model,'X','volume','selection','all');
+seo.xc(2,2) = mphmin(model,'Y','volume','selection','all');
+seo.xc(3,2) = mphmin(model,'Z','volume','selection','all');
+
+s_evl = sprintf('%f[m]',min(seo.xc(1,:)))
+model.param.set('xc', s_evl);
+s_evl = sprintf('%f[m]',mean(seo.xc(2,:)))
+model.param.set('yc', s_evl);
+s_evl = sprintf('%f[m]',mean(seo.xc(3,:)))
+model.param.set('zc', s_evl);
+
+if id_pl
+    figure(1)
+    clf
+    mphgeom(model,'geom1','facealpha',.55);
+    grid
+end
+
+model.component('comp1').selection.create('cyl1', 'Cylinder');
+model.component('comp1').selection('cyl1').set('pos', mean(seo.xc'));
+model.component('comp1').selection('cyl1').set('axistype', 'x');
+model.component('comp1').selection('cyl1').set('r', '18e-3[m]/1');
+% model.component('comp1').selection('cyl1').set('condition', 'allvertices');
+model.component('comp1').selection('cyl1').set('condition', 'intersects');
+% model.component('comp1').selection('cyl1').set('entitydim', 0);
+
+% model.component('comp1').selection('cyl1').set('entitydim', 1);
+% seo.xc_s(1,1) = mphmax(model,'X','line','selection','cyl1');
+% seo.xc_s(1,2) = mphmin(model,'X','line','selection','cyl1');
+% seo.xc_s
+% if id_pl
+%     mphgeom(model,'geom1','entity','edge','selection','cyl1','facealpha',.15);
+% end
+model.component('comp1').selection('cyl1').set('r', '20e-3[m]/1');
+model.component('comp1').selection('cyl1').set('entitydim', 2);
+seo.xc_s(1,1) = mphmax(model,'X','surface','selection','cyl1');
+seo.xc_s(1,2) = mphmin(model,'X','surface','selection','cyl1');
+seo.xc_s
+% if id_pl
+%     mphgeom(model,'geom1','entity','boundary','selection','cyl1','facealpha',.15);
+%     mphgeom(model,'geom1','entity','boundary','selection','cyl1','facealpha',.35,'facecolor',[.75 .55 .65]);
+% end
+
+% model.component('comp1').selection('cyl1').set('entitydim', 3);
+% seo.xc_s(1,1) = mphmax(model,'X','volume','selection','cyl1');
+% seo.xc_s(1,2) = mphmin(model,'X','volume','selection','cyl1');
+% seo.xc_s
+% if id_pl
+%     mphgeom(model,'geom1','entity','domain','selection','cyl1','facealpha',.35,'facecolor',[.75 .55 .65]);
+% end
+
+model.component('comp1').geom('geom1').create('mov1', 'Move');
+model.component('comp1').geom('geom1').feature('mov1').selection('input').set({'imp1'});
+model.component('comp1').geom('geom1').feature('mov1').set('disply', '-yc');
+model.component('comp1').geom('geom1').feature('mov1').set('displz', '-zc');
+model.component('comp1').geom('geom1').run('mov1');
+
+model.component('comp1').geom('geom1').create('cyl1', 'Cylinder');
+model.component('comp1').geom('geom1').feature('cyl1').set('r', seo.messenger_D);
+model.component('comp1').geom('geom1').feature('cyl1').set('h', seo.xc_s(1,1) - seo.xc_s(1,2));
+model.component('comp1').geom('geom1').feature('cyl1').set('pos', [seo.xc_s(1,2) 0 0]);
+model.component('comp1').geom('geom1').feature('cyl1').set('axistype', 'x');
+model.component('comp1').geom('geom1').run('cyl1');
+
+if id_pl
+    mphgeom(model,'geom1','facealpha',.55,'facecolor',[0.75 .25 .55]);
+end
+
+
+%
+%   POST
+%
+% close all
+
+model.result.numerical.create('int1', 'IntVolume');
+model.result.numerical('int1').selection.all;
 % model.result.numerical('int1').set('probetag', 'none');
 
+model.result.numerical('int1').setIndex('expr', 'solid.rho', 0);
+model.result.table.create('tbl1', 'Table');
+model.result.table('tbl1').comments('Volume Integration 1');
+model.result.numerical('int1').set('table', 'tbl1');
+model.result.numerical('int1').setResult;
+
+seo.x(1) = mphmax(model,'X','volume','selection','all');
+seo.x(2) = mphmin(model,'X','volume','selection','all');
+
+seo.mass_L = mphint2(model,'solid.rho','volume','selection','all');
+seo.mx_L(1) = mphint2(model,'solid.rho*X','volume','selection','all');
+seo.x_cg = seo.mx_L(1)/seo.mass_L;
+s_evl = sprintf('solid.rho*(X-%f)',seo.x_cg);
+seo.mx_L(2) = mphint2(model,s_evl,'volume','selection','all');
+s_evl = sprintf('solid.rho*(X-%f)^2',seo.x_cg);
+seo.Imx_L = mphint2(model,s_evl,'volume','selection','all');
+
+fprintf(fid, 'Mass Large\n mass: %f\n', seo.mass_L);
+fprintf(fid, 'mass moment of inertia: %f\n', seo.Imx_L);
+
+% res_tr = [];
+res_tr = zeros(9,3);
+res_tr(9,:) = [seo.mass_L,seo.Imx_L,seo.x_cg];
+for id_itr = 8:-1:1
+    seo.id_mesh = id_itr;
+    model.component('comp1').mesh('mesh1').autoMeshSize(seo.id_mesh);
+    model.sol('sol1').runFromTo('st1', 'v1');
+
+    seo.mass_L = mphint2(model,'solid.rho','volume','selection','all');
+    seo.mx_L(1) = mphint2(model,'solid.rho*X','volume','selection','all');
+    seo.x_cg = seo.mx_L(1)/seo.mass_L;
+    s_evl = sprintf('solid.rho*(X-%f)',seo.x_cg);
+    seo.mx_L(2) = mphint2(model,s_evl,'volume','selection','all');
+    s_evl = sprintf('solid.rho*(X-%f)^2',seo.x_cg);
+    seo.Imx_L = mphint2(model,s_evl,'volume','selection','all');
+
+    fprintf(fid, 'Mass Large\n mass: %f\n', seo.mass_L);
+    fprintf(fid, 'mass moment of inertia: %f\n', seo.Imx_L);
+
+    res_tr(id_itr,:) = [seo.mass_L,seo.Imx_L,seo.x_cg];
+end
+figure(100)
+clf
+s_l = {'m','$\mathrm{I_p}$','$\mathrm{x_{gc}}$'};
+for ii=1:3
+subplot(1,3,ii)
+plot(res_tr(:,ii),'-o','Color',[0 0 .65],'MarkerSize',6-3)
+xlabel(s_l{ii})
+% grid
+set(gca,'YScale','log')
+end
+gcfG;gcfH;gcfLFont;gcfS;gcfP;
+gcfX([0 8])
 
 
-mphsave(model, 'imsi')
-
-telap = toc(tcomp);
-model.sol('sol1').runAll;
-telap = toc(tcomp) - telap;
-fprintf(1,'\nTotal elasped time is %.1f s.\n',telap)
-
-mphsave(model, 'imsi1')
-
-
+if 0
 
 model.result('pg1').label('Stress (solid)');
 model.result('pg1').feature('surf1').set('const', {'solid.refpntx' '0' 'Reference point for moment computation, x coordinate'; 'solid.refpnty' '0' 'Reference point for moment computation, y coordinate'; 'solid.refpntz' '0' 'Reference point for moment computation, z coordinate'});
@@ -217,11 +379,8 @@ model.result('pg2').feature('surf1').feature('def').set('scaleactive', true);
 model.nodeGroup('dset1solidlgrp').label('Applied Loads (solid)');
 model.nodeGroup('dset1solidlgrp').add('plotgroup', 'pg2');
 
-
-
+if id_pl
 mphsave(model, 'imsi2')
-
-
 figure(1)
 clf
 mphgeom(model)
@@ -234,45 +393,24 @@ mphplot(model,'pg1')
 figure(4)
 clf
 mphplot(model,'pg2')
+end
 
+end
 
-% model.result.table.create('tbl1', 'Table');
-% model.result.table('tbl1').comments('Volume Integration 1');
+% model.result('pg1').run;
+% model.result('pg1').run;
+
 
 % data = model.result.export.create('data', 'Data');
 % data.setIndex('expr', 'T', 0);
 % data.set('filename','<filepath>\Temperature.txt');
 
 
-
-
-if 0
-
-model.result.numerical('int1').set('table', 'tbl1');
-model.result.numerical('int1').set('expr', {'1' 'X^2' '(X+0.5)^2'});
-model.result.numerical('int1').set('unit', {'m^3' 'm^5' 'm^5'});
-model.result.numerical('int1').set('descr', {'' '' ''});
-model.result.numerical('int1').set('const', {'solid.refpntx' '0' 'Reference point for moment computation, x coordinate'; 'solid.refpnty' '0' 'Reference point for moment computation, y coordinate'; 'solid.refpntz' '0' 'Reference point for moment computation, z coordinate'});
-model.result.numerical('int1').setResult;
-
-model.result('pg1').label('Stress (solid)');
-
-model.result('pg1').feature('surf1').set('const', {'solid.refpntx' '0' 'Reference point for moment computation, x coordinate'; 'solid.refpnty' '0' 'Reference point for moment computation, y coordinate'; 'solid.refpntz' '0' 'Reference point for moment computation, z coordinate'});
-model.result('pg1').feature('surf1').set('colortable', 'RainbowLight');
-model.result('pg1').feature('surf1').set('resolution', 'normal');
-model.result('pg1').feature('surf1').feature('def').set('scale', 1.7976931348623157E308);
-model.result('pg1').feature('surf1').feature('def').set('scaleactive', false);
-
-mphsave(model, 'imsi')
-
-end
-
 % mphdoc(model)
 % mphtags -show
 
 
-
-out = model;
+% out = model;
 
 %
 %%  FINE
