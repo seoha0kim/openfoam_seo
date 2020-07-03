@@ -3,8 +3,54 @@
 #
 # docker
 #
+1. repository
+sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo apt-get update
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
 
+2. engine
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
 
+3. test
+sudo docker run hello-world
+
+4.
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+
+5.
+- containers
+    docker ps -a
+    docker rn id
+
+-images
+    docker images -a
+    docker rmi
+
+docker system prune
+docker system prune -a
+
+docker images -f dangling=true
+docker images purge
+
+docker images -a |  grep "pattern"
+docker images -a | grep "pattern" | awk '{print $3}' | xargs docker rmi
+
+docker images -a
+docker rmi $(docker images -a -q)
 
 #
 # source
