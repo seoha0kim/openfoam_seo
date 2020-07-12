@@ -1,0 +1,28 @@
+crunch
+
+1. git
+    git clone "https://github.com//acrlakshman/scene_templates"
+
+2. docker
+
+3. singulairty
+    singularity --help
+        pull
+
+0.
+    docker image ls
+
+1.
+    docker image pull acrlakshman/mitsuba-renderer
+    docker image tag acrlakshman/mitsuba-renderer mitsuba-renderer
+
+    bash get_docker_image.sh
+
+2.
+    singularity pull mitsuba-renderer.sif docker://acrlakshman/mitsuba-renderer
+
+3.
+    bash run_singularity.sh
+
+    bash run_docker.sh
+
