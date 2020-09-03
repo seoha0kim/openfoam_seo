@@ -153,8 +153,16 @@ icoFoam : Transient solver for incompressible, laminar flow of Newtonian fluids
             mergePatchPairs();
                 cf. stitchMesh
         controlDict
+            writeCompression on;
+            writeCompression binary: ?
+            runTimeModifiable true;
+            dummy
         fvSchemes : discretization schemes
+            the first-orderEulerimplicit temporal discretization, and
+            the second-order linear (central-difference) scheme for convection.
+            default none; means that schemes must be explicitly specified.
         fvSolution : PISO pressure velocity coupling
+            $p : copy
 
 
 
