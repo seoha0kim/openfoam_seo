@@ -152,6 +152,9 @@ icoFoam : Transient solver for incompressible, laminar flow of Newtonian fluids
             edges();
             mergePatchPairs();
                 cf. stitchMesh
+        controlDict
+        fvSchemes : discretization schemes
+        fvSolution : PISO pressure velocity coupling
 
 
 
