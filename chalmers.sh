@@ -73,6 +73,7 @@
     4.
     sudo groupadd docker
     sudo usermod -aG docker $USER
+#    su -s ${USER}
     newgrp docker
 
     5.
@@ -96,14 +97,24 @@
     docker images -a
     docker rmi $(docker images -a -q)
 
+    id
+    docker info
+
 
 #
 #
 #
-https://www.geeksforgeeks.org/c-plus-plus/
-
-.startOpenFOAM
+chmod +x installOpenFOAM
+./installOpenFOAM
+chmod +x startOpenFOAM
+./startOpenFOAM
 . .bashrc
+
+    User Guide
+    Tutorials Guide
+    Programmer’s Guide
+
+https://www.geeksforgeeks.org/c-plus-plus/
 
 icoFoam : Transient solver for incompressible, laminar flow of Newtonian fluids
 
