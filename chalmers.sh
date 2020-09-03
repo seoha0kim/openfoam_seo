@@ -117,6 +117,41 @@ chmod +x startOpenFOAM
 https://www.geeksforgeeks.org/c-plus-plus/
 
 icoFoam : Transient solver for incompressible, laminar flow of Newtonian fluids
+    blockMesh
+    checkMesh
+    icoFoam >& log&
+    paraFoam
+
+    0/ : initial condition
+    constant/ : mesh, transportPropertiesdictionary for the kinematic viscosity
+        transportProperties : dictionary for dimensioned scalar nu
+        polyMesh/ : mesh
+            blockMeshDict (old) -> system/ (moved to)
+            boundary : inGroups: patchGroup
+            points
+            faces : internal first
+            owner : each faces s owner cell number
+                  : The face area vector is defined to point out of the owner cell.
+            neighbour
+
+    system/ : run, discretization schemes, and solution procedures
+        blockMeshDict controlDict fvSchemes fvSolution PDRblockMeshDict
+        blockMeshDict
+            : used by blockMesh to generate boundary, faces, neighbour, owner, points
+            : in constant/polyMesh
+            convertToMeters
+            vertices
+            blocks
+                hex : right-hand system
+                vertices, numer of mesh cells in each direction, simpleGrading
+            patches: boundary
+                name: movingWall, fixedWalls, frontAndBack
+                type: wall, empty
+                faces: list of boundary faces
+            edges();
+            mergePatchPairs();
+                cf. stitchMesh
+
 
 
 
