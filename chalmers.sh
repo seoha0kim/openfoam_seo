@@ -132,7 +132,8 @@ icoFoam : Transient solver for incompressible, laminar flow of Newtonian fluids
             faces : internal first
             owner : each faces s owner cell number
                   : The face area vector is defined to point out of the owner cell.
-            neighbour
+            neighbour : The face area vector is defined to point into the neighbour cell.
+
 
     system/ : run, discretization schemes, and solution procedures
         blockMeshDict controlDict fvSchemes fvSolution PDRblockMeshDict
