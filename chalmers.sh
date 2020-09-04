@@ -102,7 +102,7 @@
 
 
 #
-#
+#   openfoam chalmers
 #
 chmod +x installOpenFOAM
 ./installOpenFOAM
@@ -163,6 +163,22 @@ icoFoam : Transient solver for incompressible, laminar flow of Newtonian fluids
             default none; means that schemes must be explicitly specified.
         fvSolution : PISO pressure velocity coupling
             $p : copy
+
+#
+# wtt
+#
+    ODA file converter : dwg -> dxf
+        https://www.opendesign.com/guestfiles/oda_file_converter
+    qt
+    # sudo apt-get install qt5-default
+    wget http://download.qt.io/official_releases/qt/5.14/5.14.2/qt-opensource-linux-x64-5.14.2.run
+    chmod +x qt-opensource-linux-x64-5.14.2.run
+    ./qt-opensource-linux-x64-5.14.2.run
+
+    echo $LD_LIBRARY_PATH
+    LD_LIBRARY_PATH=/home/sbkim/Qt5.14.2/Tools/QtCreator/lib/Qt/lib:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH
+    echo $LD_LIBRARY_PATH
 
 
 
