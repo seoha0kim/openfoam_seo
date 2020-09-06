@@ -182,7 +182,8 @@
 
 % %% [markdown]
 %     system/ : run, discretization schemes, and solution procedures
-%         blockMeshDict controlDict fvSchemes fvSolution PDRblockMeshDict
+%         blockMeshDict controlDict fvSchemes 
+%             fvSolution PDRblockMeshDict
 %         blockMeshDict
 %             : used by blockMesh to generate 
 %                 boundary, faces, neighbour, owner, points
@@ -249,6 +250,54 @@
 %     - smoother: symGaussSeidel
 %     - relTol 0; disable relTol
 %         - PISO only solves each equation once per time step
+
+% %% [markdown]
+% - http://www.tfd.chalmers.se/~hani/kurser/OS_CFD_2008/TimBehrens/tibeh-report-fin.pdf
+% - http://www-users.cs.umn.edu/~saad/books.htm
+
+% %% [markdown]
+% $FOAM_SRC/OpenFOAM/matrices/lduMatrix/solvers/*/*.H
+% - GAMG - Geometric agglomerated algebraic multigrid solver
+%     - also namedGeneralised geometric-algebraic multi-grid
+% - PBiCG - Preconditioned bi-conjugate gradient solver for asymmetric ldu-Matrices using a run-time selectable preconditioner
+% - PCG - Preconditioned conjugate gradient solver for symmetric ldu Matrices using a run-time selectable preconditiioner
+% - smoothSolver- Iterative solver using smoother for symmetric and asym-metric matrices which uses a run-time selected smoother
+%     - e.g.  Gauss-Seidel
+
+% %% [markdown]
+% $FOAM_SRC/OpenFOAM/matrices/lduMatrix/preconditioners/*/*.H
+% - diagonalPreconditioner - Diagonal preconditioner for both symmetric and asymmetric matrices. 
+%     - This preconditioner actually does not help with faster propagation through the grid, but it is very easy and can be a good first step. 
+%     - Note: The reciprocal of the diagonal is calculated and stored for reuse because on most systems multiplications are faster than divisions.
+% - DICPreconditioner - Simplified diagonal-based incomplete Cholesky preconditioner for symmetric matrices (symmetric equivalent of DILU).
+%     - The reciprocal of the preconditioned diagonal is calculated andstored.
+% - DILUPreconditioner - Simplified diagonal-based incomplete LU pre-conditioner for asymmetric matrices. 
+%     - The reciprocal of the preconditioned diagonal is calculated and stored.
+
+% %% [markdown]
+%     FDICPreconditioner - Faster version of the DICPreconditioner diagonal-based incomplete Cholesky preconditioner for symmetric matrices (sym-metric equivalent of DILU) in which the reciprocal of the preconditioneddiagonal and the upper coeffcients divided by the diagonal are calculatedand stored.
+%     GAMGPreconditioner - Geometric agglomerated algebraic multigrid pre-conditioner (also named Generalised geometric-algebraic multi-grid in themanual).
+%     noPreconditioner - Null preconditioner for both symmetric and asym-metric matrices.
+
+% %% [markdown]
+% $FOAM_SRC/OpenFOAM/matrices/lduMatrix/smoothers/*/*.H
+%
+% - DIC - Simplified diagonal-based incomplete Cholesky smoother for sym-metric matrices.
+% - DICGaussSeidel - Combined DIC/GaussSeidel smoother for symmetric matrices in which DIC smoothing is followed by GaussSeidel to ensure that any "spikes" created by the DIC sweeps are smoothed-out.
+% - DILU- Simplified diagonal-based incomplete LU smoother for asymmetric matrices. ILU smoothers are good smoothers for linear multigrid meth-ods.
+% - DILUGaussSeidel - Combined DILU/GaussSeidel smoother for asymmetric matrices in which DILU smoothing is followed by GaussSeidel to ens
+% ure that any "spikes" created by the DILU sweeps are smoothed-out.
+% - GaussSeidel- The GaussSeidel method is a technique used to solve a linear system of equations. The method is an improved version of the Jacobi method. It is defined on matrices with non-zero diagonals, but con-vergence is only guaranteed if the matrix is either diagonally dominant, or symmetric and positive definite.
+% - symGaussSeidel, nonBlockingGaussSeidel, FDIC
+
+% %%
+PISO
+{
+    nCorrectors     2;
+    nNonOrthogonalCorrectors 0;
+    pRefCell        0;
+    pRefValue       0;
+}
 
 % %% [markdown]
 % # wtt
