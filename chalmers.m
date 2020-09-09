@@ -317,4 +317,10 @@ PISO
 %     echo $LD_LIBRARY_PATH
 
 % %% [markdown]
+%     cd /usr/bin/ODAFileConverter_21.7.0.0/
+%     ./ODAFileConverter 
+%     dwg -> dxf
+%     comsol
+
+% %% [markdown]
 % # FINE
