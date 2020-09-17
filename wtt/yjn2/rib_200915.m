@@ -61,15 +61,6 @@ id_pl = false;
 % $$\mathrm{
 % % \begin{empheq}[left=\empheqlbrace]{align}
 % \left\{
-% aa
-% \right.
-% % \end{empheq}
-% }$$
-
-% %% [markdown]
-% $$\mathrm{
-% % \begin{empheq}[left=\empheqlbrace]{align}
-% \left\{
 % \begin{aligned}\mathrm{
 %  < 3 - 5 \% : recommended \\
 %  < 10 \% : Dr. Kwon, Dae \, Kun \\
@@ -121,6 +112,13 @@ sb.U(sb.Re)
 sb.T_viv = @(rey_n) sb.B / sb.U(rey_n) / 0.2;
 sb.T_viv(sb.Re)
 
+% %%
+sb.Re_target = Wind.air.rho(101325, 273.15+15) * 40 * sb.D / Wind.air.mu(273.15+15);
+fprintf('Target Reynolds number = %e.\n',sb.Re_target)
+
+% %%
+sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
+
 % %% [markdown]
 % # Turbulent model
 
@@ -139,7 +137,7 @@ sb.T_viv(sb.Re)
 % wtt.
 
 % %% [markdown]
-% # COMSOL
+% # Laminar
 
 % %%
 %
@@ -236,9 +234,6 @@ model.component('comp1').geom('geom1').feature('mov1').setIndex('disply', '-10.3
 model.component('comp1').geom('geom1').feature('mov1').selection('input').set({'sca1'});
 
 % out = model;
-
-% %% [markdown]
-% # imsi
 
 % %%
 model.component('comp1').geom('geom1').create('sca2', 'Scale');
@@ -398,12 +393,26 @@ model.component('comp1').material('mat1').propertyGroup('NonlinearModel').descr(
 % %%
 model.component('comp1').selection.create('box1', 'Box');
 model.component('comp1').selection('box1').set('entitydim', 1);
-model.component('comp1').selection('box1').set('xmin', '--0.15');
+model.component('comp1').selection('box1').set('xmin', -0.15);
 model.component('comp1').selection('box1').set('xmax', 0.15);
 model.component('comp1').selection('box1').set('ymin', -0.1);
-model.component('comp1').selection('box1').set('ymax', 0.1);
-model.component('comp1').selection('box1').set('xmin', -0.15);
 model.component('comp1').selection('box1').set('ymax', 0.12);
+
+% %%
+model.component('comp1').selection.create('box2', 'Box');
+model.component('comp1').selection('box2').set('entitydim', 1);
+model.component('comp1').selection('box2').set('xmin', -0.15);
+model.component('comp1').selection('box2').set('xmax', 0);
+model.component('comp1').selection('box2').set('ymin', -0.1);
+model.component('comp1').selection('box2').set('ymax', 0.12);
+
+model.component('comp1').selection.create('box3', 'Box');
+model.component('comp1').selection('box3').set('entitydim', 1);
+model.component('comp1').selection('box3').set('xmin', 0);
+model.component('comp1').selection('box3').set('xmax', 0.15);
+model.component('comp1').selection('box3').set('ymin', -0.1);
+model.component('comp1').selection('box3').set('ymax', 0.12);
+
 % model.component('comp1').physics.create('spf', 'LaminarFlow', 'geom1');
 
 % %%
@@ -471,10 +480,10 @@ model.component('comp1').mesh('mesh1').run;
 % model.study('std1').create('stat', 'Stationary');
 
 % %%
-model.component('comp1').view('view1').axis.set('xmin', -1.7249999046325684);
-model.component('comp1').view('view1').axis.set('xmax', 3.2249999046325684);
-model.component('comp1').view('view1').axis.set('ymin', -1.3424468040466309);
-model.component('comp1').view('view1').axis.set('ymax', 1.3424468040466309);
+% model.component('comp1').view('view1').axis.set('xmin', -1.7249999046325684);
+% model.component('comp1').view('view1').axis.set('xmax', 3.2249999046325684);
+% model.component('comp1').view('view1').axis.set('ymin', -1.3424468040466309);
+% model.component('comp1').view('view1').axis.set('ymax', 1.3424468040466309);
 
 % %%
 % mphsave(model,'rib_imsi')
@@ -555,6 +564,7 @@ model.sol('sol1').attach('std1');
 model.result.dataset('dset1').set('geom', 'geom1');
 
 % %%
+if 0
 model.result.create('pg1', 'PlotGroup2D');
 model.result('pg1').label('Velocity (spf)');
 model.result('pg1').set('frametype', 'spatial');
@@ -574,6 +584,7 @@ model.result('pg2').feature('con1').set('number', 40);
 model.result('pg2').feature('con1').set('levelrounding', false);
 model.result('pg2').feature('con1').set('smooth', 'internal');
 model.result('pg2').feature('con1').set('data', 'parent');
+end
 
 % %%
 telap = toc(tcomp);
@@ -588,6 +599,7 @@ fprintf('Total elapsed time = %.3f s.\n',telap)
 % ## Post
 
 % %%
+if 0
 model.result.numerical.create('int1', 'IntLine');
 model.result.numerical('int1').set('intsurface', true);
 % model.result.numerical('int1').selection.set([10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 272 273 276 277 278 279 280 281 282 283 284 285 286 287 288 289 290 291 292 293 294 295 296 297 298 299 300 301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 333 334 335 336 337 338 339 340 341]);
@@ -599,28 +611,301 @@ model.result.table.create('tbl1', 'Table');
 model.result.table('tbl1').comments('Line Integration 1');
 model.result.numerical('int1').set('table', 'tbl1');
 model.result.numerical('int1').setResult;
+end
 
 % %%
 s_box = ['box',num2str(1)];
-sb.res(1,1) = -mphint2(model,'spf.T_stressx / (1/2*spf.rho)','line','selection',s_box) / ((sb.U_in^2) * sb.B);
-sb.res(1,2) = -mphint2(model,'spf.T_stressy / (1/2*spf.rho)','line','selection',s_box) / ((sb.U_in^2) * sb.B);
+sb.res(1,1) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho)','line','selection',s_box) / ((sb.U_in^2) * sb.D);
+sb.res(1,2) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho)','line','selection',s_box) / ((sb.U_in^2) * sb.D);
+sb.res(1,3) = mphint2(model,'(-spf.T_stressx*y + -spf.T_stressy*-x) / (1/2*spf.rho)','line','selection',s_box) / ((sb.U_in^2) * sb.D^2);
+fprintf('%f, %f, %f\n',sb.res(1,:))
+
+% %%
+mphsave(model,sprintf('rib_upper_laminar_Re%d',sb.Re))
+save(sprintf('rib_upper_laminar_Re%d',sb.Re),'sb')
+
+% %% [markdown]
+% # Laminar: Transient
+
+% %%
+model.study.create('std2');
+model.study('std2').create('time', 'Transient');
+model.study('std2').feature('time').activate('spf', true);
+model.study('std2').feature('time').set('tlist', ...
+    sprintf('range(0,0.1,.9)*%.2e range(1,1/2^6,2^4)*%.2e', sb.T_viv(150)*[1 1]));
+
+model.sol.create('sol2');
+model.sol('sol2').study('std2');
+
+model.study('std2').feature('time').set('notlistsolnum', 1);
+model.study('std2').feature('time').set('notsolnum', '1');
+model.study('std2').feature('time').set('listsolnum', 1);
+model.study('std2').feature('time').set('solnum', '1');
+
+model.sol('sol2').create('st1', 'StudyStep');
+model.sol('sol2').feature('st1').set('study', 'std2');
+model.sol('sol2').feature('st1').set('studystep', 'time');
+model.sol('sol2').create('v1', 'Variables');
+model.sol('sol2').feature('v1').set('control', 'time');
+model.sol('sol2').create('t1', 'Time');
+
+model.sol('sol2').feature('t1').set('tlist', ...
+    sprintf('range(0,0.1,.9)*%.2e range(1,1/2^6,2^4)*%.2e', sb.T_viv(150)*[1 1]));
+
+model.sol('sol2').feature('t1').set('plot', 'off');
+model.sol('sol2').feature('t1').set('plotgroup', 'Default');
+model.sol('sol2').feature('t1').set('plotfreq', 'tout');
+model.sol('sol2').feature('t1').set('probesel', 'all');
+model.sol('sol2').feature('t1').set('probes', {});
+model.sol('sol2').feature('t1').set('probefreq', 'tsteps');
+model.sol('sol2').feature('t1').set('rtol', 0.005);
+model.sol('sol2').feature('t1').set('atolglobalmethod', 'scaled');
+model.sol('sol2').feature('t1').set('atolglobalfactor', 0.05);
+model.sol('sol2').feature('t1').set('atolglobalvaluemethod', 'factor');
+model.sol('sol2').feature('t1').set('atolmethod', {'comp1_p' 'scaled' 'comp1_u' 'global'});
+model.sol('sol2').feature('t1').set('atolvaluemethod', {'comp1_p' 'factor' 'comp1_u' 'factor'});
+model.sol('sol2').feature('t1').set('atolfactor', {'comp1_p' '1' 'comp1_u' '0.1'});
+model.sol('sol2').feature('t1').set('estrat', 'exclude');
+model.sol('sol2').feature('t1').set('rhoinf', 0.5);
+model.sol('sol2').feature('t1').set('predictor', 'constant');
+model.sol('sol2').feature('t1').set('maxorder', 2);
+model.sol('sol2').feature('t1').set('stabcntrl', true);
+model.sol('sol2').feature('t1').set('bwinitstepfrac', '0.01');
+model.sol('sol2').feature('t1').set('control', 'time');
+
+model.sol('sol2').feature('t1').feature('aDef').set('cachepattern', true);
+model.sol('sol2').feature('t1').create('fc1', 'FullyCoupled');
+model.sol('sol2').feature('t1').feature('fc1').set('jtech', 'once');
+model.sol('sol2').feature('t1').feature('fc1').set('damp', 0.9);
+model.sol('sol2').feature('t1').feature('fc1').set('stabacc', 'aacc');
+model.sol('sol2').feature('t1').feature('fc1').set('aaccdim', 5);
+model.sol('sol2').feature('t1').feature('fc1').set('aaccmix', 0.9);
+model.sol('sol2').feature('t1').feature('fc1').set('aaccdelay', 1);
+model.sol('sol2').feature('t1').feature('fc1').set('ntolfact', 0.5);
+model.sol('sol2').feature('t1').feature('fc1').set('maxiter', 8);
+model.sol('sol2').feature('t1').create('d1', 'Direct');
+model.sol('sol2').feature('t1').feature('d1').set('linsolver', 'pardiso');
+model.sol('sol2').feature('t1').feature('d1').set('pivotperturb', 1.0E-13);
+model.sol('sol2').feature('t1').feature('d1').label('Direct, fluid flow variables (spf)');
+model.sol('sol2').feature('t1').create('i1', 'Iterative');
+model.sol('sol2').feature('t1').feature('i1').set('linsolver', 'gmres');
+model.sol('sol2').feature('t1').feature('i1').set('prefuntype', 'left');
+model.sol('sol2').feature('t1').feature('i1').set('itrestart', 50);
+model.sol('sol2').feature('t1').feature('i1').set('rhob', 20);
+model.sol('sol2').feature('t1').feature('i1').set('maxlinit', 50);
+model.sol('sol2').feature('t1').feature('i1').set('nlinnormuse', 'on');
+model.sol('sol2').feature('t1').feature('i1').label('AMG, fluid flow variables (spf)');
+model.sol('sol2').feature('t1').feature('i1').create('mg1', 'Multigrid');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').set('prefun', 'saamg');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').set('mgcycle', 'v');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').set('maxcoarsedof', 80000);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').set('strconn', 0.02);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').set('usesmooth', false);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').set('saamgcompwise', true);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('pr').create('sc1', 'SCGS');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('pr').feature('sc1').set('linesweeptype', 'ssor');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('pr').feature('sc1').set('iter', 0);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('pr').feature('sc1').set('scgsrelax', 0.7);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('pr').feature('sc1').set('scgsmethod', 'lines_vertices');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('pr').feature('sc1').set('scgsvertexrelax', 0.7);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('pr').feature('sc1').set('seconditer', 1);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('pr').feature('sc1').set('relax', 0.5);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('po').create('sc1', 'SCGS');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('po').feature('sc1').set('linesweeptype', 'ssor');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('po').feature('sc1').set('iter', 1);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('po').feature('sc1').set('scgsrelax', 0.7);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('po').feature('sc1').set('scgsmethod', 'lines_vertices');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('po').feature('sc1').set('scgsvertexrelax', 0.7);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('po').feature('sc1').set('seconditer', 1);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('po').feature('sc1').set('relax', 0.5);
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('cs').create('d1', 'Direct');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('cs').feature('d1').set('linsolver', 'pardiso');
+model.sol('sol2').feature('t1').feature('i1').feature('mg1').feature('cs').feature('d1').set('pivotperturb', 1.0E-13);
+model.sol('sol2').feature('t1').feature('fc1').set('linsolver', 'd1');
+model.sol('sol2').feature('t1').feature('fc1').set('jtech', 'once');
+model.sol('sol2').feature('t1').feature('fc1').set('damp', 0.9);
+model.sol('sol2').feature('t1').feature('fc1').set('stabacc', 'aacc');
+model.sol('sol2').feature('t1').feature('fc1').set('aaccdim', 5);
+model.sol('sol2').feature('t1').feature('fc1').set('aaccmix', 0.9);
+model.sol('sol2').feature('t1').feature('fc1').set('aaccdelay', 1);
+model.sol('sol2').feature('t1').feature('fc1').set('ntolfact', 0.5);
+model.sol('sol2').feature('t1').feature('fc1').set('maxiter', 8);
+model.sol('sol2').feature('t1').feature.remove('fcDef');
+model.sol('sol2').attach('std2');
+model.result.dataset('dset2').set('geom', 'geom1');
+
+% %%
+if 0
+model.result.create('pg1', 'PlotGroup2D');
+model.result('pg1').label('Velocity (spf)');
+model.result('pg1').set('frametype', 'spatial');
+model.result('pg1').set('data', 'dset2');
+model.result('pg1').feature.create('surf1', 'Surface');
+model.result('pg1').feature('surf1').label('Surface');
+model.result('pg1').feature('surf1').set('smooth', 'internal');
+model.result('pg1').feature('surf1').set('data', 'parent');
+model.result.create('pg2', 'PlotGroup2D');
+model.result('pg2').label('Pressure (spf)');
+model.result('pg2').set('frametype', 'spatial');
+model.result('pg2').set('data', 'dset2');
+model.result('pg2').feature.create('con1', 'Contour');
+model.result('pg2').feature('con1').label('Contour');
+model.result('pg2').feature('con1').set('expr', 'p');
+model.result('pg2').feature('con1').set('number', 40);
+model.result('pg2').feature('con1').set('levelrounding', false);
+model.result('pg2').feature('con1').set('smooth', 'internal');
+model.result('pg2').feature('con1').set('data', 'parent');
+end
+
+% %%
+telap = toc(tcomp);
+% model.sol('sol1').runAll;
+model.sol('sol2').runAll;
+telap = toc(tcomp) - telap;
+fprintf('Total elapsed time = %.3f s.\n',telap)
+
+% %%
+t = [[0:0.1:.9]*sb.T_viv(150), [1:1/2^6:2^4]*sb.T_viv(150)]';
+
+% %%
+for ii=1:3
+s_box = ['box',num2str(ii)];
+y(1+(ii-1)*3,:) = mphint2(model, ...
+    '-spf.T_stressx / (1/2*spf.rho)','line','selection',s_box, 'dataset','dset2') / ((sb.U_in^2) * sb.D);
+y(2+(ii-1)*3,:) = mphint2(model, ...
+    '-spf.T_stressy / (1/2*spf.rho)','line','selection',s_box, 'dataset','dset2') / ((sb.U_in^2) * sb.D);
+y(3+(ii-1)*3,:) = mphint2(model, ...
+    '(-spf.T_stressx*y + -spf.T_stressy*-x) / (1/2*spf.rho)','line','selection',s_box, ...
+    'dataset','dset2') / ((sb.U_in^2) * sb.D);
+end
+
+% %%
+n_t = floor(length(t)/2);
+lc = n_t:n_t*2;
+tn = t(lc);
+d_t = mean(diff(tn))
+std(diff(tn))
+
+% %%
+d_f = 1/n_t/d_t;
+n_f = floor(n_t/2+1);
+f = [0:n_f-1]*d_f;
+yf = fft(y(:,lc)');
+
+% %%
+lc_fN_m = output(@() max(abs(yf(2:end,:))), 2)+1;
+
+% %%
+sb.res(2,1:9) = mean(y(:,lc)');
+sb.res(2,10) = f(lc_fN_m(2))*sb.D/sb.U(150);
+sb.res(2,11) = f(lc_fN_m(5))*sb.D/sb.U(150);
+sb.res(2,12) = f(lc_fN_m(8))*sb.D/sb.U(150);
 sb.res
 
 % %%
-mphsave(model,'rib_imsi')
+id_pause = true;
+figure(1)
+clf
+for jj=[2,3,1]
+for ii = 1:3
+subplot(1,3,ii)
+% plot(t*f(lc_fN_m(ii+(jj-1)*3)),y(ii+(jj-1)*3,:),'Color',rgb('Navy'))
+if jj == 1
+    plot(t*f(lc_fN_m(ii+(jj-1)*3)),y(ii+(jj-1)*3,:),'Color',rgb('Navy'))
+else
+    plot(t*f(lc_fN_m(ii+(jj-1)*3)),y(ii+(jj-1)*3,:))
+end
+if id_pause
+xlabel('Time [s]')
+end
+end
+if id_pause
+gcfG;gcfH;gcfLFont;gcfS;%gcfP
+ylabel('$\mathrm{C_D}$')
+% gcfX([1,2^4]*sb.T_viv(150)*f(lc_fN_m(2)))
+gcfX([2^3,2^4]*sb.T_viv(150)*f(lc_fN_m(2)))
+% end
+% if id_pause
+id_pause = false;
+for ii = 1:3
+subplot(1,3,ii)
+yl = ylim;
+plot([1 1]*tn(1)*f(lc_fN_m(ii+(jj-1)*3)), yl, 'r:')
+% ylim(yl)
+end
+end
+end
 
 % %%
-sb.xL(1,1) = mphmin(model,'X','volume','selection','box1');
-sb.xL(2,1) = mphmax(model,'X','volume','selection','box1');
-sb.xL(1,2) = mphmin(model,'Y','volume','selection','box1');
-sb.xL(2,2) = mphmax(model,'Y','volume','selection','box1');
-% sb.xL(1,3) = mphmin(model,'Z','volume','selection','box1');
-% sb.xL(2,3) = mphmax(model,'Z','volume','selection','box1');
+id_pause = true;
+figure(2)
+clf
+for jj=[2,3,1]
+for ii = 1:3
+subplot(1,3,ii)
+% plot(t*f(lc_fN_m(ii+(jj-1)*3)),y(ii+(jj-1)*3,:),'Color',rgb('Navy'))
+if jj == 1
+    loglog(f/f(lc_fN_m(ii+(jj-1)*3)),abs(yf(1:n_f,ii+(jj-1)*3) ),'Color',rgb('Navy'))
+else
+    loglog(f/f(lc_fN_m(ii+(jj-1)*3)),abs(yf(1:n_f,ii+(jj-1)*3) ))
+end
+if id_pause
+xlabel('Frequency [Hz]')
+end
+end
+if id_pause
+gcfG;gcfH;gcfLFont;gcfS;%gcfP
+ylabel('$\mathrm{C_D}$')
+% gcfX([1,2^4]*sb.T_viv(150)*f(lc_fN_m(2)))
+% gcfX([2^3,2^4]*sb.T_viv(150)*f(lc_fN_m(2)))
+% end
+% if id_pause
+id_pause = false;
+for ii = 1:3
+subplot(1,3,ii)
+loglog(f(lc_fN_m(ii+(jj-1)*3))/f(lc_fN_m(ii+(jj-1)*3)), ...
+    abs(yf(lc_fN_m(ii+(jj-1)*3),ii+(jj-1)*3)),'ro','MarkerSize',6-3)
+end
+end
+end
 
-sb.xL
-% model.component('comp1').selection.create('box1', 'Box');
-% model.component('comp1').selection('box1').set('condition', 'inside');
-% model.component('comp1').selection('box1').set('xmax', 0);
+% %%
+mphsave(model,sprintf('rib_upper_laminarT_Re%d',sb.Re))
+save(sprintf('rib_upper_laminarT_Re%d',sb.Re),'sb')
+
+% %% [markdown]
+% # Laminar: Transient: Velocity iteration
+
+% %%
+model.param.set('seo_Uin', '0.0548[m/s]');
+model.param.rename('seo_Uin', 'seo_U_in');
+
+model.component('comp1').physics('spf').feature('inl1').set('U0in', 'seo_U_in');
+
+model.study('std2').feature('time').setIndex('pname', 'seo_U_in', 1);
+model.study('std2').feature('time').setIndex('plistarr', '', 1);
+model.study('std2').feature('time').setIndex('punit', 'm/s', 1);
+model.study('std2').feature('time').setIndex('pname', 'seo_U_in', 1);
+model.study('std2').feature('time').setIndex('plistarr', '', 1);
+model.study('std2').feature('time').setIndex('punit', 'm/s', 1);
+model.study('std2').feature('time').remove('pname', 0);
+model.study('std2').feature('time').remove('plistarr', [0]);
+model.study('std2').feature('time').setIndex('plistarr', '0.548 0.548*2', 0);
+
+model.study('std2').feature('time').set('autoremesh', true);
+model.study('std2').feature('time').set('timeadaption', true);
+
+model.study('std2').feature('time').set('usesol', true);
+model.study('std2').feature('time').set('useinitsol', true);
+model.study('std2').feature('time').set('initmethod', 'init');
+model.study('std2').feature('time').set('initstudy', 'std2');
+model.study('std2').feature('time').set('solnum', 'last');
+
+model.study('std2').feature('time').set('usesol', true);
+model.study('std2').feature('time').set('notsolmethod', 'init');
+model.study('std2').feature('time').set('notstudy', 'std2');
+model.study('std2').feature('time').set('notsolnum', 'last');
+
 
 % %% [markdown]
 % # FINE
