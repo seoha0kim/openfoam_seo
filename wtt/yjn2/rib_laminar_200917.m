@@ -21,7 +21,7 @@
 % 2020-07-01 17:50
 
 % %%
-function [model,sb] = rib_200915(varargin)
+function [model,sb] = rib_laminar_200917(varargin)
 %
 % [model,sb] = rib_200915(varargin)
 %
@@ -642,6 +642,12 @@ model.study('std2').feature('time').set('notsolnum', '1');
 model.study('std2').feature('time').set('listsolnum', 1);
 model.study('std2').feature('time').set('solnum', '1');
 
+model.study('std2').feature('time').set('useinitsol', true);
+model.study('std2').feature('time').set('initstudy', 'std1');
+model.study('std2').feature('time').set('solnum', 'last');
+model.study('std2').feature('time').set('usesol', true);
+model.study('std2').feature('time').set('notstudy', 'std1');
+
 model.sol('sol2').create('st1', 'StudyStep');
 model.sol('sol2').feature('st1').set('study', 'std2');
 model.sol('sol2').feature('st1').set('studystep', 'time');
@@ -796,10 +802,10 @@ yf = fft(y(:,lc)');
 lc_fN_m = output(@() max(abs(yf(2:end,:))), 2)+1;
 
 % %%
-sb.res(3,1:9) = mean(y(:,lc)');
-sb.res(3,10) = f(lc_fN_m(2))*sb.D/sb.U(150);
-sb.res(3,11) = f(lc_fN_m(5))*sb.D/sb.U(150);
-sb.res(3,12) = f(lc_fN_m(8))*sb.D/sb.U(150);
+sb.res(2,1:9) = mean(y(:,lc)');
+sb.res(2,10) = f(lc_fN_m(2))*sb.D/sb.U(150);
+sb.res(2,11) = f(lc_fN_m(5))*sb.D/sb.U(150);
+sb.res(2,12) = f(lc_fN_m(8))*sb.D/sb.U(150);
 sb.res
 
 % %%
@@ -873,30 +879,6 @@ end
 mphsave(model,sprintf('rib_upper_laminarT_Re%d',sb.Re))
 save(sprintf('rib_upper_laminarT_Re%d',sb.Re),'sb')
 
-% %%
-% [model,sb] = rib_laminar_200917;
-% model = mphload('rib_upper_laminarT_Re150n.mph');
-
-% %%
-% init: Physics 
-%   991      195.32     0.20997     2018  995 2018     2     0      0  3.8e-14  6.4e-16
-% Time-stepping completed.
-% Solution time: 198 s. (3 minutes, 18 seconds)
-% Physical memory: 2.13 GB
-% Virtual memory: 8.94 GB
-% Ended at Sep 17, 2020 3:04:35 PM.
-% ----- Time-Dependent Solver 1 in Study 2/Solution 2 (sol2) -------------------->
-
-% init: from stationary
-%  991      195.32     0.20997     2018  995 2018     2     0      0  3.4e-15  5.7e-16
-% Time-stepping completed.
-% Solution time: 203 s. (3 minutes, 23 seconds)
-% Physical memory: 4.09 GB
-% Virtual memory: 10.91 GB
-% Ended at Sep 17, 2020 3:11:58 PM.
-% ----- Time-Dependent Solver 1 in Study 2/Solution 2 (sol2) -------------------->
-
-
 % %% [markdown]
 % # Laminar: Transient: Velocity iteration
 
@@ -922,10 +904,30 @@ model.study('std3').feature('time').setIndex('plistarr', '', 0);
 model.study('std3').feature('time').setIndex('punit', 'm/s', 0);
 model.study('std3').feature('time').setIndex('plistarr', '0.1 0.2', 0);
 
+% model.study('std2').feature('time').setIndex('pname', 'seo_U_in', 1);
+% model.study('std2').feature('time').setIndex('plistarr', '', 1);
+% model.study('std2').feature('time').setIndex('punit', 'm/s', 1);
+% model.study('std2').feature('time').setIndex('pname', 'seo_U_in', 1);
+% model.study('std2').feature('time').setIndex('plistarr', '', 1);
+% model.study('std2').feature('time').setIndex('punit', 'm/s', 1);
+% model.study('std2').feature('time').remove('pname', 0);
+% model.study('std2').feature('time').remove('plistarr', [0]);
+% model.study('std2').feature('time').setIndex('plistarr', '0.548 0.548*2', 0);
 
-% %%
-mphsave(model,sprintf('rib_upper_laminarTa_Re%d',sb.Re))
-save(sprintf('rib_upper_laminarTa_Re%d',sb.Re),'sb')
+% model.study('std2').feature('time').set('autoremesh', true);
+% model.study('std2').feature('time').set('timeadaption', true);
+
+% model.study('std2').feature('time').set('usesol', true);
+% model.study('std2').feature('time').set('useinitsol', true);
+% model.study('std2').feature('time').set('initmethod', 'init');
+% model.study('std2').feature('time').set('initstudy', 'std2');
+% model.study('std2').feature('time').set('solnum', 'last');
+
+% model.study('std2').feature('time').set('usesol', true);
+% model.study('std2').feature('time').set('notsolmethod', 'init');
+% model.study('std2').feature('time').set('notstudy', 'std2');
+% model.study('std2').feature('time').set('notsolnum', 'last');
+
 
 % %% [markdown]
 % # FINE
