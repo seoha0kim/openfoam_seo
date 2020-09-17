@@ -121,6 +121,32 @@ fprintf('Target Reynolds number = %e.\n',sb.Re_target)
 sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 
 % %% [markdown]
+% # Placing Inlet and Outlet Boundaries for Exterior Flow
+
+% %% [markdown]
+% - In exterior flow applications, such as flow around vehicles and buildings, 
+%     the conditions far away from the obstacle are usually set to a constant velocity vector 
+%     on inlet boundaries and a constant pressure on outlet boundaries. 
+% - The question again arises as to what extent the distance from the obstacle 
+%     at which these conditions are applied influences the solution. 
+% - For exterior flow, it turns out that this distance varies with the spatial dimensions of the model. 
+% - For 2D models, the required distance is an order of magnitude larger than 
+%     for 3D and 2D axisymmetric models. 
+% - Once more, we look at ideal potential flow solutions to try to understand why this is so.
+% $$$$
+% - For exterior flow around an obstacle, 
+%     vorticity is created in boundary layers on the solid surface. 
+% - The boundary layers on different sides of the obstacle may merge at the trailing edge, 
+%     forming a thin sheet of vorticity that is advected downstream into a wake. 
+% - If the boundary layer on any side separates from the obstacle 
+%     due to an instability or the existence of a sharp convex corner, 
+%     the wake will be wider. 
+% - In either case, the vorticity that is shed downstream is confined to the wake 
+%     and the flow outside the wake is approximately irrotational.
+% $$$$
+% - A plot of the turbulent flow around an airfoil.
+
+% %% [markdown]
 % # Turbulent model
 
 % %% [markdown]
@@ -1427,7 +1453,7 @@ mphsave(model,sprintf('rib_upper_laminarT_Re%d',sb.Re))
 save(sprintf('rib_upper_laminarT_Re%d',sb.Re),'sb')
 
 % %%
-% [model,sb] = rib_laminar_200917;
+[model,sb] = rib_laminar_200917;
 % model = mphload('rib_upper_laminarT_Re150n.mph');
 
 % %%
