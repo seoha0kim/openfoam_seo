@@ -1718,4 +1718,75 @@ end
 [model,sb] = rib_turbulent_200918;
 
 % %% [markdown]
+% ## Introduction
+
+% %% [markdown]
+% - The SST model combines the near-wall capabilities of the k-$\omega$ model
+%     with the superior free-stream behavior of the k-$\epsilon$ model 
+%     to enable accurate simulations of a wide variety of 
+%     internal and external flow problems. 
+% - See the theory for the SST turbulence model in the CFD Module User’s Guide
+%     for further information.
+
+% %% [markdown]
+% ## Model Definition
+
+% %% [markdown]
+% - Consider the flow relative to a reference frame fixed on 
+%     a arch-rib of YJN2 Bridge with depth (chord-length) sb.D = 0.04 m. 
+% - The temperature of the ambient air is 20 $^\circ$C 
+%     and the relative free-stream velocity is U = 50 m/s 
+%     resulting in a Mach number of 0.15 = $\mathrm{\frac{U}{V_{sound}}}$. 
+% - The Reynolds number based on the chord length is roughly $\mathrm{6·10^6}$,
+%     so you can assume that the boundary layers are turbulent 
+%     over practically the entire airfoil. 
+% - The airfoil is inclined at an angle $\alpha$ to the oncoming stream,
+% - To obtain a sharp trailing edge, 
+%     the airfoil is slightly altered from its original shape (Ref. 3),
+% - The upstream, top, and bottom edges of the computational domain are 
+%     located 100 chord-lengths away from the trailing edge of the airfoil 
+%     and the downstream edge is located 200 chord-lengths away. 
+% - This is to minimize the effect of the applied boundary conditions.
+
+% %% [markdown]
+% - Far-field values for the turbulence variables,
+% $$\mathrm{
+% \omega_\infty = (1 \rightarrow 10) \frac{U_\infty}{L},
+% \frac{v}{v}
+% }$$
+% - where the free-stream value of the turbulence kinetic energy is given by
+%     $k_\infty = \nu_{T_\infty} \omega_\infty$
+%     and L is the appropriate length of the computational domain. 
+% - The current model applies the upper limit 
+%     of the provided free-stream turbulence values,
+% $$\mathrm{
+% \omega_\infty = (1 \rightarrow 10) \frac{U_\infty}{L}
+% }$$
+%     
+
+% %% [markdown]
+% Close-up of the airfoil section
+
+% %% [markdown]
+% - The computations employ a structured mesh with a high size ratio 
+%     between the outermost and wall-adjacent elements.
+
+% %% [markdown]
+% ## POTENTIAL FLOW SOLUTION
+
+% %% [markdown]
+% - The simplest option when setting the initial velocity field is 
+%     to use a constant velocity, 
+%     which does not satisfy the wall boundary conditions. 
+% - A more accurate and robust initial guess can be obtained 
+%     solving the potential flow equation.
+% - Assuming irrotational, inviscid flow, 
+%     the velocity potential $\phi$ is defined as
+% $$\mathrm{ u = - \Del \phi
+% }$$
+% - The velocity potential $\phi$ must satisfy the continuity equation
+%     for incompressible flow, $$. 
+% - The continuity equation can be expressed as a Laplace equationwhich is the potential flow equation. u–=u0=–0
+
+% %% [markdown]
 % # FINE
