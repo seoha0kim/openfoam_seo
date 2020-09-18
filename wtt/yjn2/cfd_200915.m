@@ -124,24 +124,24 @@ sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 % # Placing Inlet and Outlet Boundaries for Exterior Flow
 
 % %% [markdown]
-% - In exterior flow applications, such as flow around vehicles and buildings, 
-%     the conditions far away from the obstacle are usually set to a constant velocity vector 
-%     on inlet boundaries and a constant pressure on outlet boundaries. 
-% - The question again arises as to what extent the distance from the obstacle 
-%     at which these conditions are applied influences the solution. 
-% - For exterior flow, it turns out that this distance varies with the spatial dimensions of the model. 
-% - For 2D models, the required distance is an order of magnitude larger than 
-%     for 3D and 2D axisymmetric models. 
+% - In exterior flow applications, such as flow around vehicles and buildings,
+%     the conditions far away from the obstacle are usually set to a constant velocity vector
+%     on inlet boundaries and a constant pressure on outlet boundaries.
+% - The question again arises as to what extent the distance from the obstacle
+%     at which these conditions are applied influences the solution.
+% - For exterior flow, it turns out that this distance varies with the spatial dimensions of the model.
+% - For 2D models, the required distance is an order of magnitude larger than
+%     for 3D and 2D axisymmetric models.
 % - Once more, we look at ideal potential flow solutions to try to understand why this is so.
 % $$$$
-% - For exterior flow around an obstacle, 
-%     vorticity is created in boundary layers on the solid surface. 
-% - The boundary layers on different sides of the obstacle may merge at the trailing edge, 
-%     forming a thin sheet of vorticity that is advected downstream into a wake. 
-% - If the boundary layer on any side separates from the obstacle 
-%     due to an instability or the existence of a sharp convex corner, 
-%     the wake will be wider. 
-% - In either case, the vorticity that is shed downstream is confined to the wake 
+% - For exterior flow around an obstacle,
+%     vorticity is created in boundary layers on the solid surface.
+% - The boundary layers on different sides of the obstacle may merge at the trailing edge,
+%     forming a thin sheet of vorticity that is advected downstream into a wake.
+% - If the boundary layer on any side separates from the obstacle
+%     due to an instability or the existence of a sharp convex corner,
+%     the wake will be wider.
+% - In either case, the vorticity that is shed downstream is confined to the wake
 %     and the flow outside the wake is approximately irrotational.
 % $$$$
 % - A plot of the turbulent flow around an airfoil.
@@ -160,12 +160,12 @@ sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 % - v2-f
 
 % %% [markdown]
-% - Let’s start by considering the fluid flow over a flat plate, 
-%     as shown in the figure below. 
-% - The uniform velocity profile hits the leading edge of the flat plate, 
-%     and a laminar boundary layer begins to develop. 
-% - The flow in this region is very predictable. 
-% - After some distance, small chaotic oscillations begin to develop in the boundary layer 
+% - Let’s start by considering the fluid flow over a flat plate,
+%     as shown in the figure below.
+% - The uniform velocity profile hits the leading edge of the flat plate,
+%     and a laminar boundary layer begins to develop.
+% - The flow in this region is very predictable.
+% - After some distance, small chaotic oscillations begin to develop in the boundary layer
 %     and the flow begins to transition to turbulence, eventually becoming fully turbulent.
 
 % %% [markdown]
@@ -174,355 +174,355 @@ sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 % %% [markdown]
 % - The transition between these three regions can be defined in terms of the Reynolds number,
 %     where is the fluid density; is the velocity; is the characteristic length
-%     (in this case, the distance from the leading edge); and is the fluid’s dynamic viscosity. 
-% - We will assume that the fluid is Newtonian, 
-%     meaning that the viscous stress is directly proportional, 
-%     with the dynamic viscosity as the constant of proportionality, to the shear rate. 
-% - This is true, or very nearly so, for a wide range of fluids of engineering importance, 
-%     such as air or water. 
-% - Density can vary with respect to pressure, 
-%     although it is here assumed that the fluid is only weakly compressible, 
-%     meaning that the Mach number is less than about 0.3. 
-% - The weakly compressible flow option for the fluid flow interfaces 
+%     (in this case, the distance from the leading edge); and is the fluid’s dynamic viscosity.
+% - We will assume that the fluid is Newtonian,
+%     meaning that the viscous stress is directly proportional,
+%     with the dynamic viscosity as the constant of proportionality, to the shear rate.
+% - This is true, or very nearly so, for a wide range of fluids of engineering importance,
+%     such as air or water.
+% - Density can vary with respect to pressure,
+%     although it is here assumed that the fluid is only weakly compressible,
+%     meaning that the Mach number is less than about 0.3.
+% - The weakly compressible flow option for the fluid flow interfaces
 %     neglects the influence of pressure waves on the flow and pressure fields.
 
 % %% [markdown]
-% - In the laminar regime, 
-%     the fluid flow can be completely predicted by solving Navier-Stokes equations, 
-%     which gives the velocity and the pressure fields. 
-% - Let us first assume that the velocity field does not vary with time. 
-% - An example of this is outlined in The Blasius Boundary Layer tutorial model. 
-% - As the flow begins to transition to turbulence, 
-%     oscillations appear in the flow, 
-%     despite the fact that the inlet flow rate does not vary with time. 
-% - It is then no longer possible to assume that the flow is invariant with time. 
-% - In this case, it is necessary to solve the time-dependent Navier-Stokes equations, 
-%     and the mesh used must be fine enough to resolve the size of the smallest eddies in the flow. 
-% - Such a situation is demonstrated in the Flow Past a Cylinder tutorial model. 
+% - In the laminar regime,
+%     the fluid flow can be completely predicted by solving Navier-Stokes equations,
+%     which gives the velocity and the pressure fields.
+% - Let us first assume that the velocity field does not vary with time.
+% - An example of this is outlined in The Blasius Boundary Layer tutorial model.
+% - As the flow begins to transition to turbulence,
+%     oscillations appear in the flow,
+%     despite the fact that the inlet flow rate does not vary with time.
+% - It is then no longer possible to assume that the flow is invariant with time.
+% - In this case, it is necessary to solve the time-dependent Navier-Stokes equations,
+%     and the mesh used must be fine enough to resolve the size of the smallest eddies in the flow.
+% - Such a situation is demonstrated in the Flow Past a Cylinder tutorial model.
 % - Note that the flow is unsteady, but still laminar in this model.
 
 % %% [markdown]
 % ![Using-a-Reynolds-Averaged-Navier-Stokes-formulation](Using-a-Reynolds-Averaged-Navier-Stokes-formulation.png)
 
 % %% [markdown]
-% - As the flow rate — and thus also the Reynolds number — increases, 
-%     the flow field exhibits small eddies and the spatial and temporal scales of the oscillations 
-%     become so small that it is computationally unfeasible to resolve them 
-%     using the Navier-Stokes equations, 
-%     at least for most practical cases. 
-% - In this flow regime, we can use a Reynolds-averaged Navier-Stokes (RANS) formulation, 
-%     which is based on the observation that the flow field (u) over time contains small, 
-%     local oscillations (u’) and can be treated in a time-averaged sense (U). 
-% - For one- and two-equation models, 
-%     additional transport equations are introduced for turbulence variables, 
+% - As the flow rate — and thus also the Reynolds number — increases,
+%     the flow field exhibits small eddies and the spatial and temporal scales of the oscillations
+%     become so small that it is computationally unfeasible to resolve them
+%     using the Navier-Stokes equations,
+%     at least for most practical cases.
+% - In this flow regime, we can use a Reynolds-averaged Navier-Stokes (RANS) formulation,
+%     which is based on the observation that the flow field (u) over time contains small,
+%     local oscillations (u’) and can be treated in a time-averaged sense (U).
+% - For one- and two-equation models,
+%     additional transport equations are introduced for turbulence variables,
 %     such as the turbulence kinetic energy (k in k-ε and k-ω).
 
 % %% [markdown]
-% - In algebraic models, 
-%     algebraic equations that depend on the velocity field — and, 
-% - in some cases, on the distance from the walls — are introduced 
-%     in order to describe the <b>turbulence intensity</b>. 
-% - From the estimates for the turbulence variables, 
-%     an <b>eddy viscosity</b> that adds to the molecular viscosity of the fluid is calculated. 
-% - The momentum that would be transferred by the small eddies 
-%     is instead translated to a viscous transport. 
-% - Turbulence dissipation usually dominates over viscous dissipation everywhere, 
-%     except for in the viscous sublayer close to solid walls. 
-% - Here, the turbulence model has to continuously reduce the turbulence level, 
-%     such as in low Reynolds number models. 
+% - In algebraic models,
+%     algebraic equations that depend on the velocity field — and,
+% - in some cases, on the distance from the walls — are introduced
+%     in order to describe the <b>turbulence intensity</b>.
+% - From the estimates for the turbulence variables,
+%     an <b>eddy viscosity</b> that adds to the molecular viscosity of the fluid is calculated.
+% - The momentum that would be transferred by the small eddies
+%     is instead translated to a viscous transport.
+% - Turbulence dissipation usually dominates over viscous dissipation everywhere,
+%     except for in the viscous sublayer close to solid walls.
+% - Here, the turbulence model has to continuously reduce the turbulence level,
+%     such as in low Reynolds number models.
 % - Or, new boundary conditions have to be computed using wall functions.
 
 % %% [markdown]
 % Low Reynolds Number Models
 %
-% - The term “low Reynolds number model” sounds like a contradiction, 
-%     since flows can only be turbulent if the Reynolds number is high enough. 
-% - The notation “low Reynolds number” does not refer to the flow on a global scale, 
-%     but to the region close to the wall where viscous effects dominate; 
-%     i.e., the viscous sublayer in the figure above. 
-% - A low Reynolds number model is a model that correctly reproduces 
-%     the limiting behaviors of various flow quantities 
-%     as the distance to the wall approaches zero. 
-% - So, a low Reynolds number model must, for example, 
-%     predict that k~$y^2$ as y→0. 
-% - Correct limiting behavior means that 
-%     the turbulence model can be used to model the whole boundary layer, 
+% - The term “low Reynolds number model” sounds like a contradiction,
+%     since flows can only be turbulent if the Reynolds number is high enough.
+% - The notation “low Reynolds number” does not refer to the flow on a global scale,
+%     but to the region close to the wall where viscous effects dominate;
+%     i.e., the viscous sublayer in the figure above.
+% - A low Reynolds number model is a model that correctly reproduces
+%     the limiting behaviors of various flow quantities
+%     as the distance to the wall approaches zero.
+% - So, a low Reynolds number model must, for example,
+%     predict that k~$y^2$ as y→0.
+% - Correct limiting behavior means that
+%     the turbulence model can be used to model the whole boundary layer,
 %     including the viscous sublayer and the buffer layer.
 % $$$$
-% - Most ω-based models are low Reynolds number models by construction. 
-% - But the standard k-ε model and other commonly encountered k-ε models are 
-%     not low Reynolds number models. 
-% - Some of them can, however, be supplemented with so-called damping functions 
-%     that give the correct limiting behavior. 
+% - Most ω-based models are low Reynolds number models by construction.
+% - But the standard k-ε model and other commonly encountered k-ε models are
+%     not low Reynolds number models.
+% - Some of them can, however, be supplemented with so-called damping functions
+%     that give the correct limiting behavior.
 % - They are then known as low Reynolds number k-ε models.
 % $$$$
-% - Low Reynolds number models often give a very accurate description of the boundary layer. 
-% - The sharp gradients close to walls do, however, require very high mesh resolutions and that, in turn, 
-%     means that the high accuracy comes at a high computational cost. 
-% - This is why alternative methods to model the flow close to walls are often employed 
+% - Low Reynolds number models often give a very accurate description of the boundary layer.
+% - The sharp gradients close to walls do, however, require very high mesh resolutions and that, in turn,
+%     means that the high accuracy comes at a high computational cost.
+% - This is why alternative methods to model the flow close to walls are often employed
 %     for industrial applications.
 
 % %% [markdown]
 % Wall Functions
 %
-% - The turbulent flow near a flat wall can be divided into four regions. 
-% - At the wall, the fluid velocity is zero, 
-%     and in a thin layer above this, the flow velocity is linear with distance from the wall. 
-% - This region is called the viscous sublayer, or laminar sublayer. 
+% - The turbulent flow near a flat wall can be divided into four regions.
+% - At the wall, the fluid velocity is zero,
+%     and in a thin layer above this, the flow velocity is linear with distance from the wall.
+% - This region is called the viscous sublayer, or laminar sublayer.
 % $$$$
-% - Further away from the wall is a region called the buffer layer. 
-% - In the buffer region, turbulence stresses begin to dominate over viscous stresses and 
-%     it eventually connects to a region where the flow is fully turbulent 
-%     and the average flow velocity is related to the log of the distance to the wall. 
-% - This is known as the log-law region. 
+% - Further away from the wall is a region called the buffer layer.
+% - In the buffer region, turbulence stresses begin to dominate over viscous stresses and
+%     it eventually connects to a region where the flow is fully turbulent
+%     and the average flow velocity is related to the log of the distance to the wall.
+% - This is known as the log-law region.
 % $$$$
-% - Even further away from the wall, the flow transitions to the free-stream region. 
-% - The viscous and buffer layers are very thin and 
-%     if the distance to the end of the buffer layer is $\delta$, 
+% - Even further away from the wall, the flow transitions to the free-stream region.
+% - The viscous and buffer layers are very thin and
+%     if the distance to the end of the buffer layer is $\delta$,
 %     then the log-law region will extend about $100 \delta$ away from the wall.
 
 % %% [markdown]
 % ![Four-regimes-of-tubulent-flow](Four-regimes-of-tubulent-flow.png)
 
 % %% [markdown]
-% - It is possible to use a RANS model to compute the flow field in all four of these regions. 
-% - However, since the thickness of the buffer layer is so small, 
-%     it can be advantageous to use an approximation in this region. 
-% - Wall functions ignore the flow field in the buffer region 
-%     and analytically compute a nonzero fluid velocity at the wall. 
-% - By using a wall function formulation, 
-%     you assume an analytic solution for the flow in the viscous layer 
-%     and the resultant models will have significantly lower computational requirements. 
+% - It is possible to use a RANS model to compute the flow field in all four of these regions.
+% - However, since the thickness of the buffer layer is so small,
+%     it can be advantageous to use an approximation in this region.
+% - Wall functions ignore the flow field in the buffer region
+%     and analytically compute a nonzero fluid velocity at the wall.
+% - By using a wall function formulation,
+%     you assume an analytic solution for the flow in the viscous layer
+%     and the resultant models will have significantly lower computational requirements.
 % - This is a very useful approach for many practical engineering applications.
 
 % %% [markdown]
 % ![Implementing-a-wall-function-formulation](Implementing-a-wall-function-formulation.png)
 
 % %% [markdown]
-% - If you need a level of accuracy beyond what the wall function formulations provide, 
-%     then you will want to consider a turbulence model 
-%     that solves the entire flow regime as described for the low Reynolds number models above. 
-% - For example, you may want to compute lift and drag on an object 
+% - If you need a level of accuracy beyond what the wall function formulations provide,
+%     then you will want to consider a turbulence model
+%     that solves the entire flow regime as described for the low Reynolds number models above.
+% - For example, you may want to compute lift and drag on an object
 %     or compute the heat transfer between the fluid and the wall.
 
 % %% [markdown]
 % Automatic Wall Treatment
 %
-% - The automatic wall treatment functionality, 
-%     combines benefits from both wall functions and low Reynolds number models. 
-% - Automatic wall treatment adapts the formulation to the mesh available in the model 
-%     so that you get both robustness and accuracy. 
-% - For instance, for a coarse boundary layer mesh, 
-%     the feature will utilize a robust wall function formulation. 
-% - However, for a dense boundary layer mesh, 
-%     the automatic wall treatment will use a low Reynolds number formulation 
+% - The automatic wall treatment functionality,
+%     combines benefits from both wall functions and low Reynolds number models.
+% - Automatic wall treatment adapts the formulation to the mesh available in the model
+%     so that you get both robustness and accuracy.
+% - For instance, for a coarse boundary layer mesh,
+%     the feature will utilize a robust wall function formulation.
+% - However, for a dense boundary layer mesh,
+%     the automatic wall treatment will use a low Reynolds number formulation
 %     to resolve the velocity profile completely to the wall.
 % $$$$
-% - Going from a low Reynolds number formulation 
-%     to a wall function formulation is a smooth transition. 
-% - The software blends the two formulations in the boundary elements. 
-% - Then, the software calculates the wall distance of the boundary elements’ grid points 
-%     (this is in viscous units given by a liftoff). 
+% - Going from a low Reynolds number formulation
+%     to a wall function formulation is a smooth transition.
+% - The software blends the two formulations in the boundary elements.
+% - Then, the software calculates the wall distance of the boundary elements’ grid points
+%     (this is in viscous units given by a liftoff).
 % - The combined formulations are then used for the boundary conditions.
 % $$$$
-% - All turbulence models, except the k-ε model, 
-%     support automatic wall treatment. 
-% - This means that the low Reynolds number models can be used for industrial applications 
-%     and that their low Reynolds number modeling capability is only invoked 
+% - All turbulence models, except the k-ε model,
+%     support automatic wall treatment.
+% - This means that the low Reynolds number models can be used for industrial applications
+%     and that their low Reynolds number modeling capability is only invoked
 %     when the mesh is fine enough.
 %
 % About the Various Turbulence Models
 %
-% - The eight RANS turbulence models differ in how they model the flow close to walls, 
-%     the number of additional variables solved for, 
-%     and what these variables represent. 
-% - All of these models augment the Navier-Stokes equations 
-%     with an additional turbulence eddy viscosity term, 
+% - The eight RANS turbulence models differ in how they model the flow close to walls,
+%     the number of additional variables solved for,
+%     and what these variables represent.
+% - All of these models augment the Navier-Stokes equations
+%     with an additional turbulence eddy viscosity term,
 %     but they differ in how it is computed.
 %
 % L-VEL and yPlus
 %
-% - The L-VEL and algebraic yPlus turbulence models compute 
-%     the eddy viscosity using algebraic expressions 
-%     based only on the local fluid velocity and the distance to the closest wall. 
-% - They do not solve any additional transport equations. 
-% - These models solve for the flow everywhere and are the most robust 
-%     and least computationally intensive of the eight turbulence models. 
-% - While they are generally the least accurate models, 
-%     they do provide good approximations for internal flow, 
+% - The L-VEL and algebraic yPlus turbulence models compute
+%     the eddy viscosity using algebraic expressions
+%     based only on the local fluid velocity and the distance to the closest wall.
+% - They do not solve any additional transport equations.
+% - These models solve for the flow everywhere and are the most robust
+%     and least computationally intensive of the eight turbulence models.
+% - While they are generally the least accurate models,
+%     they do provide good approximations for internal flow,
 %     especially in electronic cooling applications.
 %
 
 % %% [markdown]
 % Spalart-Allmaras
 %
-% - The Spalart-Allmaras model adds a single additional variable 
-%     for an undamped kinematic eddy viscosity. 
-% - It is a low Reynolds number model and can resolve the entire flow field down to the solid wall. 
-% - The model was originally developed for aerodynamics applications 
-%     and is advantageous in that it is relatively robust and has moderate resolution requirements. 
-% - Experience shows that this model does not accurately compute fields 
-%     that exhibit shear flow, separated flow, or decaying turbulence. 
+% - The Spalart-Allmaras model adds a single additional variable
+%     for an undamped kinematic eddy viscosity.
+% - It is a low Reynolds number model and can resolve the entire flow field down to the solid wall.
+% - The model was originally developed for aerodynamics applications
+%     and is advantageous in that it is relatively robust and has moderate resolution requirements.
+% - Experience shows that this model does not accurately compute fields
+%     that exhibit shear flow, separated flow, or decaying turbulence.
 % - Its advantage is that it is quite stable and shows good convergence.
 %
 % k-ε
 %
-% - The k-ε model solves for two variables: 
-%     - k, the turbulence kinetic energy; and 
-%     - ε (epsilon), the rate of dissipation of turbulence kinetic energy. 
-% - Wall functions are used in this model, 
-%     so the flow in the buffer region is not simulated. 
-% - The k-ε model has historically been very popular for industrial applications 
-%     due to its good convergence rate and relatively low memory requirements. 
-% - It does not very accurately compute flow fields that exhibit adverse pressure gradients, 
-%     strong curvature to the flow, or jet flow. 
-% - It does perform well for external flow problems around complex geometries. 
+% - The k-ε model solves for two variables:
+%     - k, the turbulence kinetic energy; and
+%     - ε (epsilon), the rate of dissipation of turbulence kinetic energy.
+% - Wall functions are used in this model,
+%     so the flow in the buffer region is not simulated.
+% - The k-ε model has historically been very popular for industrial applications
+%     due to its good convergence rate and relatively low memory requirements.
+% - It does not very accurately compute flow fields that exhibit adverse pressure gradients,
+%     strong curvature to the flow, or jet flow.
+% - It does perform well for external flow problems around complex geometries.
 % - For example, the k-ε model can be used to solve for the airflow around a bluff body.
 %
 % $$$$
 %
-% - The turbulence models listed below are all more nonlinear than the k-ε model 
-%     and they can often be difficult to converge unless a good initial guess is provided. 
-% - The k-ε model can be used to provide a good initial guess. 
-% - Just solve the model using the k-ε model and 
+% - The turbulence models listed below are all more nonlinear than the k-ε model
+%     and they can often be difficult to converge unless a good initial guess is provided.
+% - The k-ε model can be used to provide a good initial guess.
+% - Just solve the model using the k-ε model and
 %     then use the new Generate New Turbulence Interface functionality.
 %
 % k-ω
 %
-% - The k-ω model is similar to the k-ε model, 
-%     but it solves for ω (omega) — the specific rate of dissipation of kinetic energy. 
-% - It is a low Reynolds number model, but it can also be used in conjunction with wall functions. 
-% - It is more nonlinear, and thereby more difficult to converge than the k-ε model, 
-%     and it is quite sensitive to the initial guess of the solution. 
-% - The k-ω model is useful in many cases where the k-ε model is not accurate, 
-%     such as internal flows, flows that exhibit strong curvature, separated flows, and jets. 
+% - The k-ω model is similar to the k-ε model,
+%     but it solves for ω (omega) — the specific rate of dissipation of kinetic energy.
+% - It is a low Reynolds number model, but it can also be used in conjunction with wall functions.
+% - It is more nonlinear, and thereby more difficult to converge than the k-ε model,
+%     and it is quite sensitive to the initial guess of the solution.
+% - The k-ω model is useful in many cases where the k-ε model is not accurate,
+%     such as internal flows, flows that exhibit strong curvature, separated flows, and jets.
 % - A good example of internal flow is flow through a pipe bend.
 
 % %% [markdown]
 % Low Reynolds Number k-ε
 %
-% - The low Reynolds number k-ε model is similar to the k-ε model, 
-%     but does not need wall functions: it can solve for the flow everywhere. 
-% - It is a logical extension of the k-ε model and shares many of its advantages, 
-%     but generally requires a denser mesh; 
-%     not only at walls, but everywhere its low Reynolds number properties kick in and dampen the turbulence. 
-% - It can sometimes be useful to use the k-ε model 
-%     to first compute a good initial condition for solving the low Reynolds number k-ε model. 
-% - An alternative way is to use the automatic wall treatment 
-%     and start with a coarse boundary layer mesh to get wall functions 
-%     and then refine the boundary layer at the interesting walls 
+% - The low Reynolds number k-ε model is similar to the k-ε model,
+%     but does not need wall functions: it can solve for the flow everywhere.
+% - It is a logical extension of the k-ε model and shares many of its advantages,
+%     but generally requires a denser mesh;
+%     not only at walls, but everywhere its low Reynolds number properties kick in and dampen the turbulence.
+% - It can sometimes be useful to use the k-ε model
+%     to first compute a good initial condition for solving the low Reynolds number k-ε model.
+% - An alternative way is to use the automatic wall treatment
+%     and start with a coarse boundary layer mesh to get wall functions
+%     and then refine the boundary layer at the interesting walls
 %     to get the low Reynolds number models.
 % $$$$
-% - The low Reynolds number k-ε model can compute lift and drag forces 
-%     and heat fluxes can be modeled with higher accuracy 
-%     compared to the k-ε model. 
+% - The low Reynolds number k-ε model can compute lift and drag forces
+%     and heat fluxes can be modeled with higher accuracy
+%     compared to the k-ε model.
 % - It has also shown to predict separation and reattachment quite well for a number of cases.
 %
 % SST
 %
-% - The SST model is a combination of the k-ε model in the free stream 
-%     and the k-ω model near the walls. 
-% - It is a low Reynolds number model and kind of the “go to” model 
-%     for industrial applications. 
-% - It has similar resolution requirements to the k-ω model 
-%     and the low Reynolds number k-ε model, 
-%     but its formulation eliminates some weaknesses displayed by pure k-ω and k-ε models. 
-% - In a tutorial model example, 
-%     the SST model solves for flow over a NACA 0012 Airfoil. 
+% - The SST model is a combination of the k-ε model in the free stream
+%     and the k-ω model near the walls.
+% - It is a low Reynolds number model and kind of the “go to” model
+%     for industrial applications.
+% - It has similar resolution requirements to the k-ω model
+%     and the low Reynolds number k-ε model,
+%     but its formulation eliminates some weaknesses displayed by pure k-ω and k-ε models.
+% - In a tutorial model example,
+%     the SST model solves for flow over a NACA 0012 Airfoil.
 % - The results are shown to compare well with experimental data.
 %
 % v2-f
 %
-% - Close to wall boundaries, 
-%     the fluctuations of the velocity are usually much larger 
-%     in the parallel directions to the wall 
-%     in comparison with the direction perpendicular to the wall. 
-% - The velocity fluctuations are said to be anisotropic. 
-% - Further away from the wall, the fluctuations are of the same magnitude in all directions. 
+% - Close to wall boundaries,
+%     the fluctuations of the velocity are usually much larger
+%     in the parallel directions to the wall
+%     in comparison with the direction perpendicular to the wall.
+% - The velocity fluctuations are said to be anisotropic.
+% - Further away from the wall, the fluctuations are of the same magnitude in all directions.
 % - The velocity fluctuations become isotropic.
 % $$$$
-% - The v2-f turbulence model describes the anisotropy of the turbulence intensity 
-%     in the turbulent boundary layer using two new equations, 
-%     in addition to the two equations 
-%     for turbulence kinetic energy (k) and dissipation rate (ε). 
-% - The first equation describes the transport of turbulent velocity fluctuations normal to the streamlines. 
-% - The second equation accounts for nonlocal effects 
-%     such as the wall-induced damping of the redistribution of turbulence kinetic energy 
+% - The v2-f turbulence model describes the anisotropy of the turbulence intensity
+%     in the turbulent boundary layer using two new equations,
+%     in addition to the two equations
+%     for turbulence kinetic energy (k) and dissipation rate (ε).
+% - The first equation describes the transport of turbulent velocity fluctuations normal to the streamlines.
+% - The second equation accounts for nonlocal effects
+%     such as the wall-induced damping of the redistribution of turbulence kinetic energy
 %     between the normal and parallel directions.
 % $$$$
-% - You should use this model for enclosed flows over curved surfaces, 
+% - You should use this model for enclosed flows over curved surfaces,
 %     for example, to model cyclones.
 %
 % Meshing Considerations for CFD Problems
 %
-% - Solving for any kind of fluid flow problem — laminar or turbulent — is computationally intensive. 
-% - Relatively fine meshes are required and there are many variables to solve for. 
-% - Ideally, you would have a very fast computer with many gigabytes of RAM to solve such problems, 
-%     but simulations can still take hours or days for larger 3D models. 
-% - Therefore, we want to use as simple a mesh as possible, 
+% - Solving for any kind of fluid flow problem — laminar or turbulent — is computationally intensive.
+% - Relatively fine meshes are required and there are many variables to solve for.
+% - Ideally, you would have a very fast computer with many gigabytes of RAM to solve such problems,
+%     but simulations can still take hours or days for larger 3D models.
+% - Therefore, we want to use as simple a mesh as possible,
 %     while still capturing all of the details of the flow.
 % $$$$
-% - Referring back to the figure at the top of this blog post, 
-%     we can observe that for the flat plate (and for most flow problems), 
-%     the velocity field changes quite slowly in the direction tangential to the wall, 
-%     but quite rapidly in the normal direction, 
-%     especially if we consider the buffer layer region. 
-% - This observation motivates the use of a boundary layer mesh. 
-% - Boundary layer meshes 
-%     (which are the default mesh type on walls when using our physics-based meshing) 
-%     insert thin rectangles in 2D or triangular prisms in 3D at the walls. 
-% - These high-aspect-ratio elements will do a good job 
-%     of resolving the variations in the flow speed normal to the boundary, 
+% - Referring back to the figure at the top of this blog post,
+%     we can observe that for the flat plate (and for most flow problems),
+%     the velocity field changes quite slowly in the direction tangential to the wall,
+%     but quite rapidly in the normal direction,
+%     especially if we consider the buffer layer region.
+% - This observation motivates the use of a boundary layer mesh.
+% - Boundary layer meshes
+%     (which are the default mesh type on walls when using our physics-based meshing)
+%     insert thin rectangles in 2D or triangular prisms in 3D at the walls.
+% - These high-aspect-ratio elements will do a good job
+%     of resolving the variations in the flow speed normal to the boundary,
 %     while reducing the number of calculation points in the direction tangential to the boundary.
 
 % %% [markdown]
-% - The boundary layer mesh (magenta) around an airfoil 
+% - The boundary layer mesh (magenta) around an airfoil
 %     and the surrounding triangular mesh (cyan) for a 2D mesh.
-% - The boundary layer mesh (magenta) around a bluff body 
+% - The boundary layer mesh (magenta) around a bluff body
 %     and the surrounding tetrahedral mesh (cyan) for a 3D volumetric mesh.
 
 % %% [markdown]
 % Evaluating the Results of Your Turbulence Model
 %
-% - Once you’ve used one of these turbulence models to solve your flow simulation, 
-%     you will want to verify that the solution is accurate. 
-% - Of course, as you do with any finite element model, 
-%     you can simply run it with finer and finer meshes 
-%     and observe how the solution changes with increasing mesh refinement. 
-% - Once the solution does not change to within a value you find acceptable, 
-%     your simulation can be considered converged with respect to the mesh. 
+% - Once you’ve used one of these turbulence models to solve your flow simulation,
+%     you will want to verify that the solution is accurate.
+% - Of course, as you do with any finite element model,
+%     you can simply run it with finer and finer meshes
+%     and observe how the solution changes with increasing mesh refinement.
+% - Once the solution does not change to within a value you find acceptable,
+%     your simulation can be considered converged with respect to the mesh.
 % - However, there are additional values you need to check when modeling turbulence.
 % $$$$
-% - When using wall function formulations, 
-%     you will want to check the wall resolution viscous units 
-%     (this plot is generated by default). 
-% - This value tells you how far into the boundary layer your computational domain starts 
-%     and <b>should not be too large</b>. 
-% - You should consider refining your mesh in the wall normal direction 
-%     if there are regions where the wall resolution <b>exceeds several hundred</b>. 
-% - The second variable that you should check when using wall functions 
-%     is the <b>wall liftoff</b> (in length units). 
-% - This variable is related to the assumed thickness of the viscous layer 
-%     and should be small relative to the surrounding dimensions of the geometry. 
+% - When using wall function formulations,
+%     you will want to check the wall resolution viscous units
+%     (this plot is generated by default).
+% - This value tells you how far into the boundary layer your computational domain starts
+%     and <b>should not be too large</b>.
+% - You should consider refining your mesh in the wall normal direction
+%     if there are regions where the wall resolution <b>exceeds several hundred</b>.
+% - The second variable that you should check when using wall functions
+%     is the <b>wall liftoff</b> (in length units).
+% - This variable is related to the assumed thickness of the viscous layer
+%     and should be small relative to the surrounding dimensions of the geometry.
 % - If it is not, then you should refine the mesh in these regions as well.
 
 % %% [markdown]
-% - The maximum wall liftoff in viscous units is less than 100, 
+% - The maximum wall liftoff in viscous units is less than 100,
 %     so there is no need to refine the boundary layer mesh.
 
 % %% [markdown]
-% - When solving a model using low Reynolds number wall treatment, 
-%     check the dimensionless distance to cell center (also generated by default). 
-% - This value should be of order unity everywhere for the algebraic models 
-%     and less than 0.5 for all two-equation models and the v2-f model. 
+% - When solving a model using low Reynolds number wall treatment,
+%     check the dimensionless distance to cell center (also generated by default).
+% - This value should be of order unity everywhere for the algebraic models
+%     and less than 0.5 for all two-equation models and the v2-f model.
 % - If it is not, then refine the mesh in these regions.
 %
 % Concluding Thoughts
 %
-% - In this blog post, we have discussed the various turbulence models available in, 
-%     highlighting when and why you should use each one of them. 
+% - In this blog post, we have discussed the various turbulence models available in,
+%     highlighting when and why you should use each one of them.
 % - The real strength of the software is when you want to combine your fluid flow simulations with other physics,
-%     such as finding stresses on a solar panel in high winds, 
+%     such as finding stresses on a solar panel in high winds,
 %     forced convection modeling in a heat exchanger, or mass transfer in a mixer, among other possibilities.
 
 % %% [markdown]
@@ -530,10 +530,10 @@ sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 % - $k - \epsilon$
 
 % %% [markdown]
-% - A further increase of the Reynolds number will raise the frequency of the eddies 
-% and finally result in turbulent flow. 
-% - Particularly in the transition regime, 
-% 3D instabilities arise and must be resolved with a 3D laminar flow interface. 
+% - A further increase of the Reynolds number will raise the frequency of the eddies
+% and finally result in turbulent flow.
+% - Particularly in the transition regime,
+% 3D instabilities arise and must be resolved with a 3D laminar flow interface.
 % - Once the flow gets fully turbulent, you can switch back to 2D and use a turbulent flow interface.
 
 % %% [markdown]
@@ -543,45 +543,45 @@ sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 % - AMG
 
 % %% [markdown]
-% ## Automatic Wall Treatment 
+% ## Automatic Wall Treatment
 
 % %% [markdown]
-% - Wall-bounded turbulent flows display extreme gradient close to the walls. 
-% - The most accurate way to treat these gradients 
-%     is to resolve them using a low Reynolds number model, 
-%     which is computationally expensive. 
-% - Industrial applications use wall functions, 
-%     which model the flow closest to the wall rather than resolving it. 
-% - Wall functions are robust and efficient, but not particularly accurate. 
-% - New automatic wall treatment functionality in the software 
+% - Wall-bounded turbulent flows display extreme gradient close to the walls.
+% - The most accurate way to treat these gradients
+%     is to resolve them using a low Reynolds number model,
+%     which is computationally expensive.
+% - Industrial applications use wall functions,
+%     which model the flow closest to the wall rather than resolving it.
+% - Wall functions are robust and efficient, but not particularly accurate.
+% - New automatic wall treatment functionality in the software
 %     combines the benefits of wall functions and the low Reynolds number model.
 
 % %% [markdown]
 % How Automatic Wall Treatment Works
 %
-% - The new automatic wall treatment functionality in 
+% - The new automatic wall treatment functionality in
 %     - combines the robustness of wall functions with the accuracy of low Reynolds number models
-%         by adapting the formulation to the mesh available in the model. 
-% - If the boundary layer mesh is coarse, 
-%     a robust wall function formulation is used. 
-% - If the boundary layer mesh is dense, 
-%     a low Reynolds number formulation is used, 
+%         by adapting the formulation to the mesh available in the model.
+% - If the boundary layer mesh is coarse,
+%     a robust wall function formulation is used.
+% - If the boundary layer mesh is dense,
+%     a low Reynolds number formulation is used,
 %     which resolves the velocity profile all the way to the wall.
 % $$$$
-% - The transition between the low Reynolds number formulation and the wall function formulation 
-%     is smooth and is done by blending the two formulations in the boundary elements. 
-% - By calculating the wall distance of the boundary elements’ grid points 
-%     in viscous units given by a liftoff, 
+% - The transition between the low Reynolds number formulation and the wall function formulation
+%     is smooth and is done by blending the two formulations in the boundary elements.
+% - By calculating the wall distance of the boundary elements’ grid points
+%     in viscous units given by a liftoff,
 %     the combination of the two formulations is used for the boundary conditions.
 % $$$$
-% - The figure below exemplifies the transition between the low Reynolds number formulation 
-%     and the logarithmic wall functions for the low Re k-ε turbulence model. 
-% - The wall distance in viscous units, y+, 
-%     is plotted against the turbulence dissipation rate, ε. 
-% - The green curve represents the low Re formulation of ε, 
-%     the blue curve is the wall function representation, 
-%     while the red curve is the Wolfshtein model that is used for the automatic wall treatment. 
-% - Observe the smooth transition obtained with the Wolfshtein model (red) 
+% - The figure below exemplifies the transition between the low Reynolds number formulation
+%     and the logarithmic wall functions for the low Re k-ε turbulence model.
+% - The wall distance in viscous units, y+,
+%     is plotted against the turbulence dissipation rate, ε.
+% - The green curve represents the low Re formulation of ε,
+%     the blue curve is the wall function representation,
+%     while the red curve is the Wolfshtein model that is used for the automatic wall treatment.
+% - Observe the smooth transition obtained with the Wolfshtein model (red)
 %     for y+ values ranging from 1 to 20; i.e., in the buffer layer.
 
 % %% [markdown]
@@ -589,62 +589,62 @@ sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 % Low Re formulation (green), wall functions (blue), and automatic wall treatment (red).
 
 % %% [markdown]
-% - In order to verify the definition of a model, 
-%     we can investigate how the walls are treated by plotting the y+ variable at the boundaries, 
-%     as shown in the figure below. 
-% - For this pipe elbow benchmark model, 
-%     we can see that the low Reynolds number formulation dominates at the inner curved surface of the bend, 
+% - In order to verify the definition of a model,
+%     we can investigate how the walls are treated by plotting the y+ variable at the boundaries,
+%     as shown in the figure below.
+% - For this pipe elbow benchmark model,
+%     we can see that the low Reynolds number formulation dominates at the inner curved surface of the bend,
 %     while at the straight sections of the pipe, the wall function formulation dominates.
 
 % %% [markdown]
 % - The deep red regions have a value of y+, or around 20, while the blue regions are at around 1.
 % - Addressing a Wide Range of Problems with Automatic Wall Treatment.
 % $$$$
-% - The functionality for automatic wall treatment 
-%     allows the use of low Reynolds number models for a wider range of problems. 
-% - Examples are coupled problems where certain surfaces are subjected 
-%     to flux of heat, chemical reactions, or fluid-structure interactions. 
-% - Instead of having to use a dense mesh on all surfaces, 
-%     which could be very computationally expensive, 
-%     we can apply a dense mesh only on the relevant surfaces 
+% - The functionality for automatic wall treatment
+%     allows the use of low Reynolds number models for a wider range of problems.
+% - Examples are coupled problems where certain surfaces are subjected
+%     to flux of heat, chemical reactions, or fluid-structure interactions.
+% - Instead of having to use a dense mesh on all surfaces,
+%     which could be very computationally expensive,
+%     we can apply a dense mesh only on the relevant surfaces
 %     where we need to accurately resolve the boundary layer.
 % $$$$
-% - The figure below shows the boundary layer mesh for the solar panel model in the Application Library. 
-% - We can see that the mesh on the surface of the panels is dense with tight boundary elements. 
-% - On these surfaces, we need the forces exerted by the fluid on the structure with high accuracy 
-%     in order to compute the stresses and strains as well as the displacements. 
-% - The concrete base is not influenced by the forces of the wind and the forces on these surfaces 
-%     do not require the same accuracy. 
-% - The automatic wall treatment functionality allows for the solution of this problem 
-%     by just clicking the Compute button, 
-%     while a conventional low Reynolds number model would require a dense boundary layer mesh 
+% - The figure below shows the boundary layer mesh for the solar panel model in the Application Library.
+% - We can see that the mesh on the surface of the panels is dense with tight boundary elements.
+% - On these surfaces, we need the forces exerted by the fluid on the structure with high accuracy
+%     in order to compute the stresses and strains as well as the displacements.
+% - The concrete base is not influenced by the forces of the wind and the forces on these surfaces
+%     do not require the same accuracy.
+% - The automatic wall treatment functionality allows for the solution of this problem
+%     by just clicking the Compute button,
+%     while a conventional low Reynolds number model would require a dense boundary layer mesh
 %     on all boundaries in order to converge.
 
 % %% [markdown]
-% - In this fluid-structure interaction tutorial of a solar panel, 
-%     we can use a coarse boundary layer mesh for the ground and the concrete foundation 
-%     and a fine mesh on the surface of the panels, 
+% - In this fluid-structure interaction tutorial of a solar panel,
+%     we can use a coarse boundary layer mesh for the ground and the concrete foundation
+%     and a fine mesh on the surface of the panels,
 %     where the forces need to be calculated with accuracy.
 %
 % Simplified Model Development
 %
-% - The new functionality is also of great use in model development. 
-% - In order to iron out the proper assumptions and boundary conditions, 
-%     we may need quick results on a coarse mesh as a first step. 
-% - Once we have verified our model formulation, 
-%     we can refine the mesh in order to obtain more accurate results. 
-% - The automatic wall treatment functionality allows for this type of model development 
-%     with a minimum number of obstacles and operations: 
+% - The new functionality is also of great use in model development.
+% - In order to iron out the proper assumptions and boundary conditions,
+%     we may need quick results on a coarse mesh as a first step.
+% - Once we have verified our model formulation,
+%     we can refine the mesh in order to obtain more accurate results.
+% - The automatic wall treatment functionality allows for this type of model development
+%     with a minimum number of obstacles and operations:
 %     the “only” thing we need to do is to refine the mesh.
 % $$$$
-% - The robustness that this new functionality provides also simplifies 
-%     the use of low Reynolds number turbulence models in general. 
-% - A common procedure is to solve the model equations 
-%     using wall functions with high Reynolds number models 
-%     and then use this solution as the starting guess in the low Reynolds number models. 
-% - The adaptive wall treatment reduces this procedure 
-%     to the sequential solution of the model equations for a coarse and fine mesh; 
-%     i.e., it eliminates the need for the formulation 
+% - The robustness that this new functionality provides also simplifies
+%     the use of low Reynolds number turbulence models in general.
+% - A common procedure is to solve the model equations
+%     using wall functions with high Reynolds number models
+%     and then use this solution as the starting guess in the low Reynolds number models.
+% - The adaptive wall treatment reduces this procedure
+%     to the sequential solution of the model equations for a coarse and fine mesh;
+%     i.e., it eliminates the need for the formulation
 %     and solution of a high Reynolds number model as a first step.
 %
 % Turbulent Flow Interfaces
@@ -662,45 +662,45 @@ sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 %
 % The automatic wall treatment functionality is available in the Settings windows for all of the above-mentioned flow interfaces. The figure below shows the selection for the Turbulent Flow, k-ω interface. In this flow interface, we can select from three different wall treatment options: automatic, wall functions, and low Reynolds number.
 
-% %%
-The three available options for the Turbulent Flow, k-ω interface: automatic, wall functions, and low Reynolds number.
+% %% [markdown]
+% The three available options for the Turbulent Flow, k-ω interface: automatic, wall functions, and low Reynolds number.
 
-% %%
-ahmed body
+% %% [markdown]
+% ahmed body
 
 % %% [markdown]
 % # Drag and Lift
 
 % %% [markdown]
-% - In fluid flow simulations, it is often important to evaluate the forces that the fluid exerts onto the body 
-%     — for example, 
-%     lift and drag forces on an airfoil or a car. 
-% - Engineers can use these body forces to quantify the efficiency and aerodynamic performance of designs. 
+% - In fluid flow simulations, it is often important to evaluate the forces that the fluid exerts onto the body
+%     — for example,
+%     lift and drag forces on an airfoil or a car.
+% - Engineers can use these body forces to quantify the efficiency and aerodynamic performance of designs.
 % - Today, we will discuss different ways to compute lift and drag in.
 %
 % Defining Lift and Drag
 %
-% - When fluid flow passes a body, it will exert a force on the surface. 
-% - As shown in the figure below, 
-%     the force component that is perpendicular to the flow direction is called lift. 
-% - The force component that is parallel to the flow direction is called drag. 
-% - For simplicity, let’s assume that the flow direction is aligned with the coordinate system of the model. 
-% - Later on, we will show you how to compute the lift and drag forces in a direction 
-%     that is not aligned with the model coordinate system. 
+% - When fluid flow passes a body, it will exert a force on the surface.
+% - As shown in the figure below,
+%     the force component that is perpendicular to the flow direction is called lift.
+% - The force component that is parallel to the flow direction is called drag.
+% - For simplicity, let’s assume that the flow direction is aligned with the coordinate system of the model.
+% - Later on, we will show you how to compute the lift and drag forces in a direction
+%     that is not aligned with the model coordinate system.
 
 % %% [markdown]
-% - There are two distinct contributors to lift and drag forces 
-%     — pressure force and viscous force. 
-% - The pressure force, often referred to as pressure-gradient force, 
-%     is the force due to the pressure difference across the surface. 
-% - The viscous force is the force due to friction that acts in the opposite direction of the flow. 
-% - The magnitudes of pressure force and viscous force can vary significantly, depending on the type of flow. 
+% - There are two distinct contributors to lift and drag forces
+%     — pressure force and viscous force.
+% - The pressure force, often referred to as pressure-gradient force,
+%     is the force due to the pressure difference across the surface.
+% - The viscous force is the force due to friction that acts in the opposite direction of the flow.
+% - The magnitudes of pressure force and viscous force can vary significantly, depending on the type of flow.
 % - The flow around a moving car, for instance, is often dominated by the pressure force.
 
 % %% [markdown]
-% - Simulation of airflow over an Ahmed body. 
-% - The surface plot shows the pressure distribution, 
-% - and the streamlines are colored by the velocity magnitude. 
+% - Simulation of airflow over an Ahmed body.
+% - The surface plot shows the pressure distribution,
+% - and the streamlines are colored by the velocity magnitude.
 % - The arrow surface behind the Ahmed body shows the circulation in the wake zone.
 
 % %%
@@ -1355,7 +1355,7 @@ y(2+(ii-1)*3,:) = mphint2(model, ...
     '-spf.T_stressy / (1/2*spf.rho)','line','selection',s_box, 'dataset','dset2') / ((sb.U_in^2) * sb.D);
 y(3+(ii-1)*3,:) = mphint2(model, ...
     '(-spf.T_stressx*y + -spf.T_stressy*-x) / (1/2*spf.rho)','line','selection',s_box, ...
-    'dataset','dset2') / ((sb.U_in^2) * sb.D);
+    'dataset','dset2') / ((sb.U_in^2) * sb.D^2);
 end
 
 % %%
@@ -1375,10 +1375,10 @@ yf = fft(y(:,lc)');
 lc_fN_m = output(@() max(abs(yf(2:end,:))), 2)+1;
 
 % %%
-sb.res(3,1:9) = mean(y(:,lc)');
-sb.res(3,10) = f(lc_fN_m(2))*sb.D/sb.U(150);
-sb.res(3,11) = f(lc_fN_m(5))*sb.D/sb.U(150);
-sb.res(3,12) = f(lc_fN_m(8))*sb.D/sb.U(150);
+sb.res(2,1:9) = mean(y(:,lc)');
+sb.res(2,10) = f(lc_fN_m(2))*sb.D/sb.U(150);
+sb.res(2,11) = f(lc_fN_m(5))*sb.D/sb.U(150);
+sb.res(2,12) = f(lc_fN_m(8))*sb.D/sb.U(150);
 sb.res
 
 % %%
@@ -1457,7 +1457,7 @@ save(sprintf('rib_upper_laminarT_Re%d',sb.Re),'sb')
 % model = mphload('rib_upper_laminarT_Re150n.mph');
 
 % %%
-% init: Physics 
+% init: Physics
 %   991      195.32     0.20997     2018  995 2018     2     0      0  3.8e-14  6.4e-16
 % Time-stepping completed.
 % Solution time: 198 s. (3 minutes, 18 seconds)
@@ -1499,8 +1499,17 @@ model.study('std3').feature('time').setIndex('punit', 'm/s', 0);
 model.study('std3').feature('time').setIndex('pname', 'seo_U_in', 0);
 model.study('std3').feature('time').setIndex('plistarr', '', 0);
 model.study('std3').feature('time').setIndex('punit', 'm/s', 0);
-model.study('std3').feature('time').setIndex('plistarr', '0.1 0.2', 0);
+model.study('std3').feature('time').setIndex('plistarr', '0.1 0.15', 0);
 
+
+% %%
+model.sol.create('sol3');
+model.sol('sol3').study('std3');
+
+model.study('std3').feature('time').set('notlistsolnum', 1);
+model.study('std3').feature('time').set('notsolnum', 'auto');
+model.study('std3').feature('time').set('listsolnum', 1);
+model.study('std3').feature('time').set('solnum', 'auto');
 
 % %%
 model.sol('sol3').create('st1', 'StudyStep');
@@ -1511,8 +1520,8 @@ model.sol('sol3').feature('v1').set('control', 'time');
 model.sol('sol3').create('t1', 'Time');
 model.sol('sol3').feature('t1').set('tlist', 'range(0,0.1,.9)*1.22e+01 range(1,1/2^6,2^4)*1.22e+01');
 model.sol('sol3').feature('t1').set('plot', 'off');
-model.sol('sol3').feature('t1').set('plotgroup', 'pg1');
-model.sol('sol3').feature('t1').set('plotfreq', 'tout');
+% model.sol('sol3').feature('t1').set('plotgroup', 'pg1');
+% model.sol('sol3').feature('t1').set('plotfreq', 'tout');
 model.sol('sol3').feature('t1').set('probesel', 'all');
 model.sol('sol3').feature('t1').set('probes', {});
 model.sol('sol3').feature('t1').set('probefreq', 'tsteps');
@@ -1595,8 +1604,118 @@ model.sol('sol3').attach('std3');
 
 
 % %%
-mphsave(model,sprintf('rib_upper_laminarTa_Re%d',sb.Re))
+telap = toc(tcomp);
+model.sol('sol3').runAll;
+telap = toc(tcomp) - telap;
+fprintf('Total elapsed time = %.3f s.\n',telap)
+
+% %%
+% mphsave(model,sprintf('rib_upper_laminarTa_Re%d',sb.Re))
+% save(sprintf('rib_upper_laminarTa_Re%d',sb.Re),'sb')
+
+% %%
+load(sprintf('rib_upper_laminarT_Re%d',sb.Re),'sb')
+sb.res
+if 0
+sb.res(2,[3,6,9]) = sb.res(2,[3,6,9]) / sb.D;
+save(sprintf('rib_upper_laminarT_Re%d',sb.Re),'sb')
+end
+load(sprintf('rib_upper_laminarTa_Re%d',sb.Re),'sb')
+if 0
+% if 1
+sb.res(2,[3,6,9]) = sb.res(2,[3,6,9]) / sb.D;
 save(sprintf('rib_upper_laminarTa_Re%d',sb.Re),'sb')
+end
+sb.res
+
+% %%
+% model = mphload('rib_upper_laminarT_Re150.mph');
+model = mphload('rib_upper_laminarTa_Re150.mph');
+
+% %% [markdown]
+% ## Post
+
+% %%
+t = [[0:0.1:.9]*sb.T_viv(150), [1:1/2^6:2^4]*sb.T_viv(150)]';
+
+% %%
+sb.res
+
+% %%
+for ii=1:3
+% ii = 1;
+s_box = ['box',num2str(ii)];
+y(1+(ii-1)*3,:) = mphint2(model, ...
+    '-spf.T_stressx / (1/2*spf.rho)', ...
+    'line','selection',s_box, 'dataset','dset3') / ((sb.U_in^2) * sb.D);
+y(2+(ii-1)*3,:) = mphint2(model, ...
+    '-spf.T_stressy / (1/2*spf.rho)', ...
+    'line','selection',s_box, 'dataset','dset3') / ((sb.U_in^2) * sb.D);
+y(3+(ii-1)*3,:) = mphint2(model, ...
+    '(-spf.T_stressx*y + -spf.T_stressy*-x) / (1/2*spf.rho)', ...
+    'line','selection',s_box, ...
+    'dataset','dset3') / ((sb.U_in^2) * sb.D^2);
+end
+
+% %%
+n_t = floor(length(t)/2);
+lc = n_t:n_t*2;
+tn = t(lc);
+d_t = mean(diff(tn))
+std(diff(tn))
+
+% %%
+n_ty = size(y,2);
+y1 = y(:,1:n_ty/2);
+y2 = y(:,[1:n_ty/2]+n_ty/2);
+
+d_f = 1/n_t/d_t;
+n_f = floor(n_t/2+1);
+f = [0:n_f-1]*d_f;
+yf1 = fft(y1(:,lc)');
+yf2 = fft(y2(:,lc)');
+
+% %%
+lc_fN_m1 = output(@() max(abs(yf1(2:end,:))), 2)+1;
+lc_fN_m2 = output(@() max(abs(yf2(2:end,:))), 2)+1;
+
+% %%
+sb.U_in
+
+% %%
+Gam = eye(9)*(sb.U_in/.1)^2;
+sb.res(4,1:9) = mean(y1(:,lc)')*Gam;
+sb.res(4,10) = f(lc_fN_m1(2))*sb.D/0.1;
+sb.res(4,11) = f(lc_fN_m1(5))*sb.D/0.1;
+sb.res(4,12) = f(lc_fN_m1(8))*sb.D/0.1;
+
+Gam = eye(9)*(sb.U_in/.15)^2;
+sb.res(5,1:9) = mean(y2(:,lc)')*Gam;
+sb.res(5,10) = f(lc_fN_m2(2))*sb.D/0.15;
+sb.res(5,11) = f(lc_fN_m2(5))*sb.D/0.15;
+sb.res(5,12) = f(lc_fN_m2(8))*sb.D/0.15;
+
+lc = [1,2,4,5];
+figure(1)
+clf
+for ii=1:3
+%     ii = 1;
+    subplot(1,3,ii)
+    plot(sb.res(lc,ii), '-o', 'MarkerSize',6-3)
+end
+gcfG;gcfH;gcfLFont;gcfS;%gcfP
+for ii=1:3
+    subplot(1,3,ii)
+    plot(sb.res(lc,ii+3), '-s', 'MarkerSize',6-2)
+    plot(sb.res(lc,ii+6), '-d', 'MarkerSize',6-2)
+end
+
+
+% %% [markdown]
+% # Turbulent
+
+% %%
+[model,sb] = rib_turbulent_200918;
 
 % %% [markdown]
 % # FINE

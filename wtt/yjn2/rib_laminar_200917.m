@@ -782,7 +782,7 @@ y(2+(ii-1)*3,:) = mphint2(model, ...
     '-spf.T_stressy / (1/2*spf.rho)','line','selection',s_box, 'dataset','dset2') / ((sb.U_in^2) * sb.D);
 y(3+(ii-1)*3,:) = mphint2(model, ...
     '(-spf.T_stressx*y + -spf.T_stressy*-x) / (1/2*spf.rho)','line','selection',s_box, ...
-    'dataset','dset2') / ((sb.U_in^2) * sb.D);
+    'dataset','dset2') / ((sb.U_in^2) * sb.D^2);
 end
 
 % %%
@@ -903,9 +903,17 @@ model.study('std3').feature('time').setIndex('punit', 'm/s', 0);
 model.study('std3').feature('time').setIndex('pname', 'seo_U_in', 0);
 model.study('std3').feature('time').setIndex('plistarr', '', 0);
 model.study('std3').feature('time').setIndex('punit', 'm/s', 0);
-model.study('std3').feature('time').setIndex('plistarr', '0.1 0.2', 0);
+model.study('std3').feature('time').setIndex('plistarr', '0.1 0.15', 0);
 
 % %%
+model.sol.create('sol3');
+model.sol('sol3').study('std3');
+
+model.study('std3').feature('time').set('notlistsolnum', 1);
+model.study('std3').feature('time').set('notsolnum', 'auto');
+model.study('std3').feature('time').set('listsolnum', 1);
+model.study('std3').feature('time').set('solnum', 'auto');
+
 model.sol('sol3').create('st1', 'StudyStep');
 model.sol('sol3').feature('st1').set('study', 'std3');
 model.sol('sol3').feature('st1').set('studystep', 'time');
@@ -914,8 +922,8 @@ model.sol('sol3').feature('v1').set('control', 'time');
 model.sol('sol3').create('t1', 'Time');
 model.sol('sol3').feature('t1').set('tlist', 'range(0,0.1,.9)*1.22e+01 range(1,1/2^6,2^4)*1.22e+01');
 model.sol('sol3').feature('t1').set('plot', 'off');
-model.sol('sol3').feature('t1').set('plotgroup', 'pg1');
-model.sol('sol3').feature('t1').set('plotfreq', 'tout');
+% model.sol('sol3').feature('t1').set('plotgroup', 'pg1');
+% model.sol('sol3').feature('t1').set('plotfreq', 'tout');
 model.sol('sol3').feature('t1').set('probesel', 'all');
 model.sol('sol3').feature('t1').set('probes', {});
 model.sol('sol3').feature('t1').set('probefreq', 'tsteps');
@@ -995,6 +1003,16 @@ model.sol('sol3').feature('t1').feature('fc1').set('ntolfact', 0.5);
 model.sol('sol3').feature('t1').feature('fc1').set('maxiter', 8);
 model.sol('sol3').feature('t1').feature.remove('fcDef');
 model.sol('sol3').attach('std3');
+
+% %%
+telap = toc(tcomp);
+model.sol('sol3').runAll;
+telap = toc(tcomp) - telap;
+fprintf('Total elapsed time = %.3f s.\n',telap)
+
+% %%
+mphsave(model,sprintf('rib_upper_laminarTa_Re%d',sb.Re))
+save(sprintf('rib_upper_laminarTa_Re%d',sb.Re),'sb')
 
 % %% [markdown]
 % # FINE
