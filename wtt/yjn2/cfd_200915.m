@@ -1782,11 +1782,98 @@ end
 %     solving the potential flow equation.
 % - Assuming irrotational, inviscid flow, 
 %     the velocity potential $\phi$ is defined as
-% $$\mathrm{ u = - \Del \phi
+% $$\mathrm{ u = - \nabla \phi
 % }$$
 % - The velocity potential $\phi$ must satisfy the continuity equation
-%     for incompressible flow, $$. 
-% - The continuity equation can be expressed as a Laplace equationwhich is the potential flow equation. u–=u0=–0
+%     for incompressible flow, $\nabla \cdot u = 0$. 
+% - The continuity equation can be expressed as a Laplace equation
+% $$\mathrm{ \nabla \cdot (- \nabla \phi) = 0
+% }$$
+% which is the potential flow equation.
+
+% %% [markdown]
+% - Once the velocity potential $\phi$ is computed, 
+%     the pressure can be approximated using Bernoulli’s equation 
+%     for steady flows:
+% Once the velocity potential     is computed, the pressure can be approximated using Bernoulli’s equation for steady flows
+% $$\mathrm{
+%     p = - \frac{\rho}{2} | \nabla \phi |^2
+% }$$
+
+% %% [markdown]
+% ## Results and Discussion
+
+% %% [markdown]
+% - The study performs a Parametric Sweep with the angle of attack $\alpha$
+%     taking the values,
+% - Figure 3 shows the velocity magnitude and the streamlines 
+%     for the steady flow around the NACA 0012 profile at $\alpha$ = 14 $^\circ$.
+
+% %% [markdown]
+% Figure 3: Velocity magnitude and streamlines 
+%     for the flow around a NACA 0012 airfoil.
+
+% %% [markdown]
+% - A small separation bubble appears at the trailing edge 
+%     for higher values of $\alpha$
+%     and the flow is unlikely to remain steady and two-dimensional hereon. 
+% - Ref. 1 provides experimental data for the lift coefficient 
+%     versus the angle of attack,
+
+% %% [markdown]
+% $$\mathrm{
+%     C_L (\alpha) = \oint\limits_c ()
+% }$$
+
+% %% [markdown]
+% - where the pressure coefficient is defined as
+%
+% - and c is the chord length. 
+% - Note that the normal is directed outward from the flow domain 
+%     (into the airfoil). 
+% - Figure 4 shows computational and experimental results 
+%     for the lift coefficient versus angle of attack.
+
+% %% [markdown]
+% Figure 4: Computational (solid) and experimental (dots) results 
+%     for the lift coefficient vs. angle of attack.
+
+% %% [markdown]
+% - No discernible discrepancy 
+%     between the computational and experimental results occurs 
+%     within the range of $\alpha$ values used in the computations. 
+% - The experimental results continue through the parameter regime 
+%     where the airfoil stalls. 
+% - Figure 5 shows a comparison between the computed pressure coefficient 
+%     at 10 and the experimental results in Ref. 2.
+
+% %% [markdown]
+% Figure 5: Computational (solid) and experimental (dots) 
+%     results for the pressure coefficient along the airfoil.
+
+% %% [markdown]
+% - Experimental data is only available on the low-pressure side of the airfoil.
+% - The agreement between the computational and experimental results is very good.
+
+% %% [markdown]
+% References
+%
+% - 1. C.L. Ladson, 
+%     “Effects of Independent Variation of Mach and Reynolds Numbers 
+%     on the Low-Speed Aerodynamic Characteristics 
+%     of the NACA 0012 Airfoil Section,” 
+%     NASA TM 4074, 1988.
+
+% %%
+- lx 2*pi [m] length of channel section
+- ly 1[m] maximum wall distance
+- lz 2/3*pi[m] width of channel section
+- Re_T 395 turbulent reynolds number
+rho 1 [kg/m^3] density
+- mu 1{Pa*s]/Re_T dynamic viscosity}
+U 26.3175 [m/s] initial centreline velocity
+u_dist 5 [m/s] disturbance amplitude
+k 10
 
 % %% [markdown]
 % # FINE
