@@ -1864,16 +1864,26 @@ end
 %     of the NACA 0012 Airfoil Section,” 
 %     NASA TM 4074, 1988.
 
+% %% [markdown]
+% - U_inf free-stream velocity
+% - rho-inf free-stream density
+% - mu-inf free-stream dynamic viscosity
+% - L domain reference length
+% - c chord length
+% - k_inf free-stream turbulent kinetic energy
+% - om-inf freestream specific dissipation rate
+% - alpha angle of attack
+
+% %% [markdown]
+% - Dirichlet boundary condition
+% - Neuman
+
+% %% [markdown]
+%
+
 % %%
-- lx 2*pi [m] length of channel section
-- ly 1[m] maximum wall distance
-- lz 2/3*pi[m] width of channel section
-- Re_T 395 turbulent reynolds number
-rho 1 [kg/m^3] density
-- mu 1{Pa*s]/Re_T dynamic viscosity}
-U 26.3175 [m/s] initial centreline velocity
-u_dist 5 [m/s] disturbance amplitude
-k 10
+1/0.0025
+1000/60
 
 % %% [markdown]
 % # FINE
