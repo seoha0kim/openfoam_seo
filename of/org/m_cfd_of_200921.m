@@ -18,7 +18,7 @@
 
 % %% [markdown]
 % Saang Bum Kim <br>
-% 2020-09-21 08:30:46 
+% 2020-09-21 08:30:46
 
 % %%
 %
@@ -60,6 +60,127 @@ id_angle = 5;
 al = -angle_p(id_angle)*pi/180;
 fprintf('Angle of attack: %d',(al*180/pi))
 s_angle = s_angle_p(id_angle)
+
+% %% [markdown]
+% ## from CSL: YJN2, rib
+
+% %%
+cd ~/Work/git/openfoam_seo/wtt/yjn2/
+
+% %%
+load rib_upper_laminarTa_Re150.mat
+
+% %%
+model = mphload('rib_upper_laminar_Re150.mph')
+
+% %%
+% mphmesh(model)
+% x = model.mesh("mesh1").getVertex();
+
+% %%
+[meshstats,meshdata] = mphmeshstats(model);
+
+% %%
+c_box1 = mpheval(model,'X','selection','box1')
+c_box2 = mpheval(model,'X','selection','box2')
+c_box3 = mpheval(model,'X','selection','box3')
+
+% %%
+% save imsi200921 x meshdata c_box1 c_box2 c_box3
+
+% %%
+whos -file imsi200921
+load imsi200921
+
+% %%
+c_box1
+c_box1.d1(1:3)
+c_box1.p(:,1:3)
+c_box1.t(:,1:3)
+c_box1.ve(1:3,:)
+
+% %%
+id_pause = true;
+figure(1)
+for ii=1:size(c_box2.t,2)
+    id = c_box2.t(:,ii)+1;
+    x_id = c_box2.p(:,id);
+% plot(c_box1.p(1,ii),c_box1.p(2,ii),'o','MarkerSize',6-4)
+plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+end
+figure(2)
+plot(c_box2.ve)
+
+% %%
+fid = fopen(sprintf('blockMeshDict_%s.foam',datestr(now,'yymmdd')),'w+');
+
+fprintf(fid,'/*--------------------------------*- C++ -*----------------------------------*\\\n');
+fprintf(fid,'| =========                 |                                                 |\n');
+fprintf(fid,'| \\\\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |\n');
+fprintf(fid,'|   \\\\  /    O peration     | Web:      https://www.OpenFOAM.org              |\n');
+fprintf(fid,'|  \\\\    /   A nd           | Version:  8                                     |\n');
+fprintf(fid,'|    \\\\/     M anipulation  |                                                 |\n');
+fprintf(fid,'\\*---------------------------------------------------------------------------*/\n');
+fprintf(fid,'FoamFile\n');
+fprintf(fid,'{\n');
+fprintf(fid,'    version     2.0;\n');
+fprintf(fid,'    format      ascii;\n');
+fprintf(fid,'    class       dictionary;\n');
+fprintf(fid,'    object      blockMeshDict;\n');
+fprintf(fid,'}\n');
+fprintf(fid,'// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //\n');
+fprintf(fid,'\n');
+fprintf(fid,'convertToMeters 1;\n');
+fprintf(fid,'\n');
+fprintf(fid,'vertices\n');
+fprintf(fid,'(\n');
+
+% for ii=1:size(meshdata.vertex,2)
+for ii=1:2^4
+    fprintf(fid,'(%f %f)\n',meshdata.vertex(:,ii) );
+    % fprintf(fid,'(%.56f %.56f)\n',meshdata.vertex(:,ii) );
+end
+
+% fprintf(fid,'vertices #codeStream\n');
+% fprintf(fid,'{\n');
+% fprintf(fid,'    codeInclude\n');
+% fprintf(fid,'    #{\n');
+% fprintf(fid,'        #include "pointField.H"\n');
+% fprintf(fid,'    #};\n');
+% fprintf(fid,'\n');
+% fprintf(fid,'    code\n');
+% fprintf(fid,'    #{\n');
+% fprintf(fid,'        pointField points(%d);\n'%int(np.shape(of_xyz)[1]/2));
+% % for ii in range(len(of_xyz[0])):
+% for ii in range(int(np.shape(of_xyz)[1]/2)):
+%     fprintf(fid,'        points[%d] = point(%f, %f, %f);\n'%(ii,of_xyz[0][ii],of_xyz[1][ii],of_xyz[2][ii]));
+% fprintf(fid,'\n');
+% fprintf(fid,'        // Duplicate z points\n');
+% fprintf(fid,'        label sz = points.size();\n');
+% fprintf(fid,'        points.setSize(2*sz);\n');
+% fprintf(fid,'        for (label i = 0; i < sz; i++)\n');
+% fprintf(fid,'        {\n');
+% fprintf(fid,'            const point& pt = points[i];\n');
+% fprintf(fid,'            points[i+sz] = point(pt.x(), pt.y(), -pt.z());\n');
+% % fprintf(fid,'            points[i+sz] = point(pt.x(), pt.y(), 1);\n');
+% fprintf(fid,'        }\n');
+% fprintf(fid,'\n');
+% fprintf(fid,'        os << points;\n');
+% fprintf(fid,'    #};\n');
+% fprintf(fid,'};\n');
+
+fprintf(fid,');\n');
+fprintf(fid,'\n');
+fprintf(fid,'blocks\n');
+fprintf(fid,'(\n');
+% fprintf(fid,'    hex (0 1 2 3 4 5 6 7) (20 20 1) simpleGrading (1 1 1)\n');
+
+
+
 
 % %% [markdown]
 % # Main Process
