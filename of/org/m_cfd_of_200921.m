@@ -44,7 +44,7 @@ id_pl = false;
 id_jupyter = true;
 
 % %%
-clear seo
+clear sb
 
 % %% [markdown]
 % # Pre Process
@@ -72,6 +72,7 @@ load rib_upper_laminarTa_Re150.mat
 
 % %%
 model = mphload('rib_upper_laminar_Re150.mph')
+% model = mphload('rid.mph')
 
 % %%
 % mphmesh(model)
@@ -84,9 +85,16 @@ model = mphload('rib_upper_laminar_Re150.mph')
 c_box1 = mpheval(model,'X','selection','box1')
 c_box2 = mpheval(model,'X','selection','box2')
 c_box3 = mpheval(model,'X','selection','box3')
+try
+c_box4 = mpheval(model,'X','selection','box4')
+end
 
 % %%
 % save imsi200921 x meshdata c_box1 c_box2 c_box3
+% save imsi200922 meshdata c_box1 c_box2 c_box3 c_box4
+
+% %% [markdown]
+% ### data load
 
 % %%
 whos -file imsi200921
@@ -98,6 +106,9 @@ c_box1.d1(1:3)
 c_box1.p(:,1:3)
 c_box1.t(:,1:3)
 c_box1.ve(1:3,:)
+
+% %% [markdown]
+% ### c_box
 
 % %%
 id_pause = true;
@@ -112,8 +123,103 @@ plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
         id_pause = false;
     end
 end
-figure(2)
-plot(c_box2.ve)
+% figure(2)
+% plot(c_box2.ve)
+
+% %% [markdown]
+% ### sb
+
+% %%
+sb.v.n = size(meshdata.vertex,2);
+sb.v.x = meshdata.vertex;
+sb.b4.n = size(meshdata.elem{2},2);
+sb.b4.id = meshdata.elem{2}+1;
+sb.b3.n = size(meshdata.elem{3},2);
+sb.b3.id = meshdata.elem{3}+1;
+
+% %% [markdown]
+% ### triangular
+
+% %%
+i_34 = 'b3';
+% i_34 = 'b4';
+id_pause = true;
+figure(1)
+clf
+% for ii=1:sb.(i_34).n
+% for ii=1:2^0
+for ii=1:2^2
+% for ii=1:2^4
+    plot(sb.v.x(1,sb.(i_34).id(:,ii)), sb.v.x(2,sb.(i_34).id(:,ii)), '-o', 'MarkerSize', 6-3)
+    for jj=1:length(sb.(i_34).id(:,ii))
+        text(sb.v.x(1,sb.(i_34).id(jj,ii)), sb.v.x(2,sb.(i_34).id(jj,ii)), sprintf('%d',jj))
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+end
+
+% %% [markdown]
+% ### quad
+
+% %%
+% i_34 = 'b3';
+i_34 = 'b4';
+id_pause = true;
+figure(1)
+clf
+% for ii=1:sb.(i_34).n
+% for ii=1:2^0
+for ii=1:2^2
+% for ii=1:2^4
+    plot(sb.v.x(1,sb.(i_34).id(:,ii)), sb.v.x(2,sb.(i_34).id(:,ii)), '-o', 'MarkerSize', 6-3)
+    for jj=1:length(sb.(i_34).id(:,ii))
+        text(sb.v.x(1,sb.(i_34).id(jj,ii)), sb.v.x(2,sb.(i_34).id(jj,ii)), sprintf('%d',jj))
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+end
+
+% %% [markdown]
+% ### Whole
+
+% %%
+% i_34 = 'b3';
+i_34 = 'b4';
+id_pause = true;
+figure(1)
+clf
+for ii=1:sb.(i_34).n
+% for ii=1:2^0
+% for ii=1:2^2
+% for ii=1:2^10
+    plot(sb.v.x(1,sb.(i_34).id(:,ii)), sb.v.x(2,sb.(i_34).id(:,ii)), '-o', 'MarkerSize', 6-3)
+    for jj=1:length(sb.(i_34).id(:,ii))
+        text(sb.v.x(1,sb.(i_34).id(jj,ii)), sb.v.x(2,sb.(i_34).id(jj,ii)), sprintf('%d',jj))
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+end
+i_34 = 'b3';
+% for ii=1:2^2
+for ii=1:2^8
+    plot(sb.v.x(1,sb.(i_34).id(:,ii)), sb.v.x(2,sb.(i_34).id(:,ii)), '-o', 'MarkerSize', 6-3)
+    for jj=1:length(sb.(i_34).id(:,ii))
+        text(sb.v.x(1,sb.(i_34).id(jj,ii)), sb.v.x(2,sb.(i_34).id(jj,ii)), sprintf('%d',jj))
+    end
+%     if id_pause
+%         gcfG;gcfH;gcfLFont;gcfS;%gcfP
+%         id_pause = false;
+%     end
+end
+
+% %% [markdown]
+% ### openFoam
 
 % %%
 fid = fopen(sprintf('blockMeshDict_%s.foam',datestr(now,'yymmdd')),'w+');
@@ -141,7 +247,12 @@ fprintf(fid,'(\n');
 
 % for ii=1:size(meshdata.vertex,2)
 for ii=1:2^4
-    fprintf(fid,'(%f %f)\n',meshdata.vertex(:,ii) );
+    fprintf(fid,'(%f %f 0)\n',meshdata.vertex(:,ii) );
+    % fprintf(fid,'(%.56f %.56f)\n',meshdata.vertex(:,ii) );
+end
+
+for ii=1:2^4
+    fprintf(fid,'(%f %f 1)\n',meshdata.vertex(:,ii) );
     % fprintf(fid,'(%.56f %.56f)\n',meshdata.vertex(:,ii) );
 end
 
