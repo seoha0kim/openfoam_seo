@@ -413,6 +413,43 @@ model.component('comp1').selection('box3').set('xmax', 0.15);
 model.component('comp1').selection('box3').set('ymin', -0.1);
 model.component('comp1').selection('box3').set('ymax', 0.12);
 
+model.component('comp1').selection.create('box4', 'Box');
+model.component('comp1').selection('box4').set('entitydim', 1);
+model.component('comp1').selection('box4').set('xmin', -1.6);
+model.component('comp1').selection('box4').set('xmax', -1.4);
+model.component('comp1').selection('box4').set('ymin', -1);
+model.component('comp1').selection('box4').set('ymax', 1);
+model.component('comp1').selection('box4').set('condition', 'inside');
+% model.component('comp1').selection('box4').set('condition', 'allvertices');
+% mphviewselection(model,'box4')
+
+model.component('comp1').selection.create('box5', 'Box');
+model.component('comp1').selection('box5').set('entitydim', 1);
+model.component('comp1').selection('box5').set('xmin', 2.9);
+model.component('comp1').selection('box5').set('xmax', 3.1);
+model.component('comp1').selection('box5').set('ymin', -1);
+model.component('comp1').selection('box5').set('ymax', 1);
+model.component('comp1').selection('box5').set('condition', 'inside');
+% mphviewselection(model,'box5')
+
+model.component('comp1').selection.create('box6', 'Box');
+model.component('comp1').selection('box6').set('entitydim', 1);
+model.component('comp1').selection('box6').set('xmin', -1.6);
+model.component('comp1').selection('box6').set('xmax', 3.1);
+model.component('comp1').selection('box6').set('ymin', -.8);
+model.component('comp1').selection('box6').set('ymax', -.7);
+model.component('comp1').selection('box6').set('condition', 'inside');
+% mphviewselection(model,'box6')
+
+model.component('comp1').selection.create('box7', 'Box');
+model.component('comp1').selection('box7').set('entitydim', 1);
+model.component('comp1').selection('box7').set('xmin', -1.6);
+model.component('comp1').selection('box7').set('xmax', 3.1);
+model.component('comp1').selection('box7').set('ymin', .7);
+model.component('comp1').selection('box7').set('ymax', .8);
+model.component('comp1').selection('box7').set('condition', 'inside');
+% mphviewselection(model,'box7')
+
 % model.component('comp1').physics.create('spf', 'LaminarFlow', 'geom1');
 
 % %%
@@ -474,6 +511,8 @@ model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('haut
 model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 9);
 
 model.component('comp1').mesh('mesh1').run;
+
+% mphsave(model,sprintf('rib_upper_laminarTa_Re%d_of',sb.Re))
 
 % %%
 % model.study.create('std1');
