@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  5.0                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -20,42 +20,42 @@ FoamFile
     top
     {
         type            wall;
-        inGroups        1(wall);
+        inGroups        List<word> 1(wall);
         nFaces          396;
         startFace       309875;
     }
     bottom
     {
         type            wall;
-        inGroups        1(wall);
+        inGroups        List<word> 1(wall);
         nFaces          390;
         startFace       310271;
     }
     inlet
     {
         type            wall;
-        inGroups        1(wall);
+        inGroups        List<word> 1(wall);
         nFaces          396;
         startFace       310661;
     }
     outlet
     {
         type            wall;
-        inGroups        1(wall);
+        inGroups        List<word> 1(wall);
         nFaces          396;
         startFace       311057;
     }
     deck
     {
         type            wall;
-        inGroups        1(wall);
+        inGroups        List<word> 1(wall);
         nFaces          264;
         startFace       311453;
     }
     frontAndBack
     {
         type            empty;
-        inGroups        1(empty);
+        inGroups        List<word> 1(empty);
         nFaces          310796;
         startFace       311717;
     }
