@@ -1,0 +1,2 @@
+#!/bin/sh
+nohup nice -n -20 potentialFoam > log.potentialFoam
