@@ -66,28 +66,27 @@ model = mphload('rid_m01.mph')
 % %%
 [meshstats,meshdata] = mphmeshstats(model);
 
-% %%
-c_box1 = mpheval(model,'X','selection','box1')
-c_box2 = mpheval(model,'X','selection','box2')
-c_box3 = mpheval(model,'X','selection','box3')
-try
-c_box4 = mpheval(model,'X','selection','box4')
-end
-
 % %% [markdown]
 % ### sb
 
 % %%
 sb.v.n = size(meshdata.vertex,2);
 sb.v.x = meshdata.vertex;
+sb.v.xn = [[sb.v.x;zeros(1,sb.v.n)],[sb.v.x;ones(1,sb.v.n)]];
 sb.b4.n = size(meshdata.elem{2},2);
 sb.b4.id = meshdata.elem{2}+1;
 sb.b3.n = size(meshdata.elem{3},2);
 sb.b3.id = meshdata.elem{3}+1;
 
 % %%
-% save imsi200921 x meshdata c_box1 c_box2 c_box3
-% save imsi200922 meshdata c_box1 c_box2 c_box3 c_box4 sb
+for ii=1:4
+    sb.box(ii) = mpheval(model,'X','selection',sprintf('box%d',ii));
+end
+sb.boxA = mpheval(model,'X');
+
+% %%
+% save imsi200921 x meshdata
+% save imsi200922 meshdata sb
 
 % %% [markdown]
 % ### data load
@@ -113,22 +112,22 @@ for ii=1:length(lc)-1
 end
 
 % %%
-c_box1
-c_box1.d1(1:3)
-c_box1.p(:,1:3)
-c_box1.t(:,1:3)
-c_box1.ve(1:3,:)
+sb.box(1)
+sb.box(1).d1(1:3)
+sb.box(1).p(:,1:3)
+sb.box(1).t(:,1:3)
+sb.box(1).ve(1:3,:)
 
 % %% [markdown]
-% ### c_box
+% ### box
 
 % %%
 id_pause = true;
 figure(1)
-for ii=1:size(c_box2.t,2)
-    id = c_box2.t(:,ii)+1;
-    x_id = c_box2.p(:,id);
-% plot(c_box1.p(1,ii),c_box1.p(2,ii),'o','MarkerSize',6-4)
+for ii=1:size(sb.box(2).t,2)
+    id = sb.box(2).t(:,ii)+1;
+    x_id = sb.box(2).p(:,id);
+% plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
 plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
     if id_pause
         gcfG;gcfH;gcfLFont;gcfS;%gcfP
@@ -136,7 +135,41 @@ plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
     end
 end
 % figure(2)
-% plot(c_box2.ve)
+% plot(sb.box(2).ve)
+
+% %%
+id_pause = true;
+figure(1)
+for ii=1:size(sb.boxA.t,2)
+    id = sb.boxA.t(:,ii)+1;
+    x_id = sb.boxA.p(:,id);
+% plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
+plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+end
+
+% %%
+for ii=1:4
+    % ii = 1;
+    sb.box(ii).n = size(sb.box(ii).t,2);
+    for jj = 1:size(sb.box(ii).p,2)
+        % jj = 1;
+        x_ii = sb.box(ii).p(:,jj);
+        lc1 = find(sb.v.x(1,:) == x_ii(1));
+        lc2 = find(sb.v.x(2,lc1) == x_ii(2));
+        lc = lc1(lc2);
+        sb.box(ii).id(jj) = lc;
+        if any(size(lc) ~= [1,1])
+            fprintf('Error: %d %d', ii, jj)
+        end
+    end
+    for jj = 1:sb.box(ii).n
+        sb.box(ii).lc(:,jj) = sb.box(ii).id( sb.box(ii).t(:,jj)+1 );
+    end
+end
 
 % %% [markdown]
 % ### triangular
@@ -311,14 +344,36 @@ for ii=1:sb.(i_34).n
     % end
     % s_lc = [lc(1:2)+sb.v.n;lc([2,1]);lc(3:4)+sb.v.n;lc([4,3])];
     s_lc = [lc(1) lc(1)+sb.v.n lc(2)+sb.v.n lc(2) lc(3) lc(3)+sb.v.n lc(4)+sb.v.n lc(4)];
-    fprintf(fid, '    hex (%d %d %d %d %d %d %d %d) (1 1 1) simpleGrading (1 1 1)\n', s_lc);
+    fprintf(fid, '    hex (%d %d %d %d %d %d %d %d) (1 1 1) simpleGrading (1 1 1)\n', s_lc-1);
+    % if 0
+    %     i_34 = 'b4';
+    %     ii = 1;
+    %     ii = 2;
+    %     ii = 4;
+    %     lc = sb.(i_34).id(:,ii);
+    %     s_lc = [lc(1) lc(1)+sb.v.n lc(2)+sb.v.n lc(2) lc(3) lc(3)+sb.v.n lc(4)+sb.v.n lc(4)];
+
+    %     id_pause = true;
+    %     figure(1)
+    %     % clf
+    %     plot3(sb.v.xn(1,s_lc),sb.v.xn(2,s_lc),sb.v.xn(3,s_lc),'-o', ...
+    %         'MarkerSize',6-3)
+    %         % 'MarkerSize',6-3,'Color',rgb('Navy'))
+    %     for jj=1:length(sb.(i_34).id(:,ii))
+    %         text(sb.v.x(1,sb.(i_34).id(jj,ii)), sb.v.x(2,sb.(i_34).id(jj,ii)), sprintf('%d',jj))
+    %     end
+    %     if id_pause
+    %         gcfG;gcfH;gcfLFont;gcfS;%gcfP
+    %         id_pause = false;
+    %     end
+    % end
 end
 % end
 i_34 = 'b3';
 for ii=1:sb.(i_34).n
     lc = sb.(i_34).id(:,ii);
     s_lc = [lc(1) lc(1)+sb.v.n lc(2)+sb.v.n lc(2) lc(3) lc(3)+sb.v.n lc(3)+sb.v.n lc(3)];
-    fprintf(fid, '    hex (%d %d %d %d %d %d %d %d) (1 1 1) simpleGrading (1 1 1)\n', s_lc);
+    fprintf(fid, '    hex (%d %d %d %d %d %d %d %d) (1 1 1) simpleGrading (1 1 1)\n', s_lc-1);
 end
 
 fprintf(fid,');\n');
@@ -329,67 +384,73 @@ fprintf(fid,');\n');
 fprintf(fid,'\n');
 fprintf(fid,'boundary\n');
 fprintf(fid,'(\n');
-fprintf(fid,'    top\n');
-fprintf(fid,'    {\n');
-% fprintf(fid,'        type wall;\n');
-fprintf(fid,'        type symmetryPlane;\n');
-fprintf(fid,'        faces\n');
-fprintf(fid,'        (\n');
-# fprintf(fid,'            (3 7 6 2)\n');
-for ii in range(np.shape(of_face_top)[0]):
-    fprintf(fid,'            (%s)\n'%(' '.join( str(of_face_top[ii][jj]) for jj in range(4) )) );
-fprintf(fid,'        );\n');
-fprintf(fid,'    }\n');
-fprintf(fid,'    bottom\n');
-fprintf(fid,'    {\n');
-# fprintf(fid,'        type wall;\n');
-fprintf(fid,'        type symmetryPlane;\n');
-fprintf(fid,'        faces\n');
-fprintf(fid,'        (\n');
-# fprintf(fid,'            (1 5 4 0)\n');
-for ii in range(np.shape(of_face_bottom)[0]):
-    fprintf(fid,'            (%s)\n'%(' '.join( str(of_face_bottom[ii][jj]) for jj in range(4) )) );
-fprintf(fid,'        );\n');
-fprintf(fid,'    }\n');
-fprintf(fid,'    inlet\n');
-fprintf(fid,'    {\n');
-# fprintf(fid,'        type wall;\n');
-fprintf(fid,'        type patch;\n');
-fprintf(fid,'        faces\n');
-fprintf(fid,'        (\n');
-for ii in range(np.shape(of_face_inlet)[0]):
-    fprintf(fid,'            (%s)\n'%(' '.join( str(of_face_inlet[ii][jj]) for jj in range(4) )) );
-fprintf(fid,'        );\n');
-fprintf(fid,'    }\n');
-fprintf(fid,'    outlet\n');
-fprintf(fid,'    {\n');
-# fprintf(fid,'        type wall;\n');
-fprintf(fid,'        type patch;\n');
-fprintf(fid,'        faces\n');
-fprintf(fid,'        (\n');
-for ii in range(np.shape(of_face_outlet)[0]):
-    fprintf(fid,'            (%s)\n'%(' '.join( str(of_face_outlet[ii][jj]) for jj in range(4) )) );
-fprintf(fid,'        );\n');
-fprintf(fid,'    }\n');
-fprintf(fid,'    deck\n');
+fprintf(fid,'    movingWall\n');
 fprintf(fid,'    {\n');
 fprintf(fid,'        type wall;\n');
-# fprintf(fid,'        type symmetry;\n');
+% fprintf(fid,'        type symmetryPlane;\n');
 fprintf(fid,'        faces\n');
 fprintf(fid,'        (\n');
-for ii in range(np.shape(of_face_deck)[0]):
-    fprintf(fid,'            (%s)\n'%(' '.join( str(of_face_deck[ii][jj]) for jj in range(4) )) );
+% fprintf(fid,'            (3 7 6 2)\n');
+% if 0
+%     id_pause = true;
+%     figure(1)
+%     clf
+%     for ii=1:size(sb.box(4).t,2)
+%         id = sb.box(4).t(:,ii)+1;
+%         x_id = sb.box(4).p(:,id);
+%     % plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
+%     plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
+%         if id_pause
+%             gcfG;gcfH;gcfLFont;gcfS;%gcfP
+%             id_pause = false;
+%         end
+%     end
+% end
+    id_bd = 4;
+    for ii=1:sb.box(id_bd).n
+        id = sb.box(id_bd).lc(:,ii);
+        ids = [id+sb.v.n;id([2,1])];
+        % x_id = sb.v.x(:,id);
+        fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
+    end
 fprintf(fid,'        );\n');
 fprintf(fid,'    }\n');
+fprintf(fid,'    fixedWalls\n');
+fprintf(fid,'    {\n');
+fprintf(fid,'        type wall;\n');
+% fprintf(fid,'        type symmetryPlane;\n');
+fprintf(fid,'        faces\n');
+fprintf(fid,'        (\n');
+% fprintf(fid,'            (1 5 4 0)\n');
+    for id_bd = 1:3
+        for ii=1:sb.box(id_bd).n
+            id = sb.box(id_bd).lc(:,ii);
+            ids = [id+sb.v.n;id([2,1])];
+            % x_id = sb.v.x(:,id);
+            fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
+        end
+    end
+fprintf(fid,'        );\n');
+fprintf(fid,'    }\n');
+
 fprintf(fid,'    frontAndBack\n');
 fprintf(fid,'    {\n');
 fprintf(fid,'        type empty;\n');
 fprintf(fid,'        faces\n');
 fprintf(fid,'        (\n');
-for ii in range(np.shape(of_face_front)[0]):
-    fprintf(fid,'            (%s)\n'%(' '.join( str(of_face_front[ii][jj]) for jj in range(4) )) );
-for ii in range(np.shape(of_face_back)[0]):
-    fprintf(fid,'            (%s)\n'%(' '.join( str(of_face_back[ii][jj]) for jj in range(4) )) );
+
+i_34 = 'b4';
+for ii=1:sb.(i_34).n
+    lc = sb.(i_34).id(:,ii)-1;
+    fprintf(fid,'            (%d %d %d %d)\n', lc([2,1,3,4]) );
+    fprintf(fid,'            (%d %d %d %d)\n', lc([1,2,4,3])+sb.v.n );
+end
+i_34 = 'b3';
+for ii=1:sb.(i_34).n
+    lc = sb.(i_34).id(:,ii)-1;
+    fprintf(fid,'            (%d %d %d %d)\n', lc([2,1,3,3]) );
+    fprintf(fid,'            (%d %d %d %d)\n', lc([1,2,3,3])+sb.v.n );
+end
 fprintf(fid,'        );\n');
 fprintf(fid,'    }\n');
 fprintf(fid,');\n');
@@ -400,7 +461,7 @@ fprintf(fid,');\n');
 fprintf(fid,'\n');
 fprintf(fid,'// ************************************************************************* //\n');
 
-f.close()
+fclose(fid)
 
 
 
