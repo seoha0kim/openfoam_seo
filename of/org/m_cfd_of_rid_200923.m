@@ -257,7 +257,7 @@ end
 % ### openFoam
 
 % %%
-fid = fopen(sprintf('blockMeshDict_rid_%s.foam',datestr(now,'yymmdd')),'w+');
+fid = fopen(sprintf('blockMeshDict_rib_%s.foam',datestr(now,'yymmdd')),'w+');
 
 fprintf(fid,'/*--------------------------------*- C++ -*----------------------------------*\\\n');
 fprintf(fid,'| =========                 |                                                 |\n');
@@ -384,10 +384,75 @@ fprintf(fid,');\n');
 fprintf(fid,'\n');
 fprintf(fid,'boundary\n');
 fprintf(fid,'(\n');
-fprintf(fid,'    movingWall\n');
+% fprintf(fid,'    movingWall\n');
+fprintf(fid,'    top\n');
 fprintf(fid,'    {\n');
-fprintf(fid,'        type wall;\n');
-% fprintf(fid,'        type symmetryPlane;\n');
+% fprintf(fid,'        type wall;\n');
+fprintf(fid,'        type symmetryPlane;\n');
+fprintf(fid,'        faces\n');
+fprintf(fid,'        (\n');
+% fprintf(fid,'            (3 7 6 2)\n');
+% if 0
+%     id_pause = true;
+%     figure(1)
+%     clf
+%     for ii=1:size(sb.box(4).t,2)
+%         id = sb.box(4).t(:,ii)+1;
+%         x_id = sb.box(4).p(:,id);
+%     % plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
+%     plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
+%         if id_pause
+%             gcfG;gcfH;gcfLFont;gcfS;%gcfP
+%             id_pause = false;
+%         end
+%     end
+% end
+    id_bd = 7;
+    for ii=1:sb.box(id_bd).n
+        id = sb.box(id_bd).lc(:,ii);
+        ids = [id+sb.v.n;id([2,1])];
+        % x_id = sb.v.x(:,id);
+        fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
+    end
+fprintf(fid,'        );\n');
+fprintf(fid,'    }\n');
+
+fprintf(fid,'    bottom\n');
+fprintf(fid,'    {\n');
+% fprintf(fid,'        type wall;\n');
+fprintf(fid,'        type symmetryPlane;\n');
+fprintf(fid,'        faces\n');
+fprintf(fid,'        (\n');
+% fprintf(fid,'            (3 7 6 2)\n');
+% if 0
+%     id_pause = true;
+%     figure(1)
+%     clf
+%     for ii=1:size(sb.box(4).t,2)
+%         id = sb.box(4).t(:,ii)+1;
+%         x_id = sb.box(4).p(:,id);
+%     % plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
+%     plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
+%         if id_pause
+%             gcfG;gcfH;gcfLFont;gcfS;%gcfP
+%             id_pause = false;
+%         end
+%     end
+% end
+    id_bd = 6;
+    for ii=1:sb.box(id_bd).n
+        id = sb.box(id_bd).lc(:,ii);
+        ids = [id+sb.v.n;id([2,1])];
+        % x_id = sb.v.x(:,id);
+        fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
+    end
+fprintf(fid,'        );\n');
+fprintf(fid,'    }\n');
+
+fprintf(fid,'    inlet\n');
+fprintf(fid,'    {\n');
+% fprintf(fid,'        type wall;\n');
+fprintf(fid,'        type patch;\n');
 fprintf(fid,'        faces\n');
 fprintf(fid,'        (\n');
 % fprintf(fid,'            (3 7 6 2)\n');
@@ -415,20 +480,67 @@ fprintf(fid,'        (\n');
     end
 fprintf(fid,'        );\n');
 fprintf(fid,'    }\n');
-fprintf(fid,'    fixedWalls\n');
+
+fprintf(fid,'    outlet\n');
+fprintf(fid,'    {\n');
+% fprintf(fid,'        type wall;\n');
+fprintf(fid,'        type patch;\n');
+fprintf(fid,'        faces\n');
+fprintf(fid,'        (\n');
+% fprintf(fid,'            (3 7 6 2)\n');
+% if 0
+%     id_pause = true;
+%     figure(1)
+%     clf
+%     for ii=1:size(sb.box(4).t,2)
+%         id = sb.box(4).t(:,ii)+1;
+%         x_id = sb.box(4).p(:,id);
+%     % plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
+%     plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
+%         if id_pause
+%             gcfG;gcfH;gcfLFont;gcfS;%gcfP
+%             id_pause = false;
+%         end
+%     end
+% end
+    id_bd = 5;
+    for ii=1:sb.box(id_bd).n
+        id = sb.box(id_bd).lc(:,ii);
+        ids = [id+sb.v.n;id([2,1])];
+        % x_id = sb.v.x(:,id);
+        fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
+    end
+fprintf(fid,'        );\n');
+fprintf(fid,'    }\n');
+
+fprintf(fid,'    deck\n');
 fprintf(fid,'    {\n');
 fprintf(fid,'        type wall;\n');
 % fprintf(fid,'        type symmetryPlane;\n');
 fprintf(fid,'        faces\n');
 fprintf(fid,'        (\n');
-% fprintf(fid,'            (1 5 4 0)\n');
-    for id_bd = 1:3
-        for ii=1:sb.box(id_bd).n
-            id = sb.box(id_bd).lc(:,ii);
-            ids = [id+sb.v.n;id([2,1])];
-            % x_id = sb.v.x(:,id);
-            fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
-        end
+% fprintf(fid,'            (3 7 6 2)\n');
+% if 0
+%     id_pause = true;
+%     figure(1)
+%     clf
+%     for ii=1:size(sb.box(4).t,2)
+%         id = sb.box(4).t(:,ii)+1;
+%         x_id = sb.box(4).p(:,id);
+%     % plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
+%     plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
+%         if id_pause
+%             gcfG;gcfH;gcfLFont;gcfS;%gcfP
+%             id_pause = false;
+%         end
+%     end
+% end
+    id_bd = 1;
+    for ii=1:sb.box(id_bd).n
+        id = sb.box(id_bd).lc(:,ii);
+        ids = [id+sb.v.n;id([2,1])];
+        % x_id = sb.v.x(:,id);
+        fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
     end
 fprintf(fid,'        );\n');
 fprintf(fid,'    }\n');
@@ -463,6 +575,11 @@ fprintf(fid,'// ****************************************************************
 
 fclose(fid)
 
+% %% [markdown]
+% ### openFoam
+
+% %%
+fid = fopen(sprintf('controlDict_rib_%s.foam',datestr(now,'yymmdd')),'w+');
 
 
 
