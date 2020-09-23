@@ -30,7 +30,7 @@ clear all
 tcomp = tic;
 telap = toc(tcomp);
 
-s_dir = 'git/openfoam_seo/of/org/Mauritius';
+s_dir = 'git/openfoam_seo/of/org/';
 
 seo_init
 
@@ -99,6 +99,10 @@ end
 % %%
 whos -file imsi200921
 load imsi200921
+
+% %%
+whos -file imsi200922
+load imsi200922
 
 % %%
 c_box1
