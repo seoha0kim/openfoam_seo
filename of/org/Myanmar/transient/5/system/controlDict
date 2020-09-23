@@ -1,0 +1,118 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  5                                     |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// application     simpleFoam;
+application     icoFoam;
+// application     pisoFoam;
+
+startFrom       latestTime;
+// startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+// endTime         5;
+// endTime         500;
+// endTime         5000;
+// endTime         5;
+endTime         3.025e-01;
+
+// deltaT          1;
+// deltaT          0.005;
+// deltaT          3.025e-03;
+deltaT          3.025e-05;
+// deltaT          0.000497261;
+
+writeControl    timeStep;
+
+writeInterval   50;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+functions
+{
+//     #includeFunc streamlines
+
+    forces
+    {
+        type                    forces;
+        functionObjectLibs      ( "libforces.so" );
+        patches                 ( wall );
+        // pName                   p;
+        // UName                   U;
+        // rhoName                 rhoInf;
+
+        p                   p;
+        U                   U;
+        rho                 rhoInf;
+
+        rhoInf                  1.225;
+        // rhoName                 rho;
+        // rho                     1.225;
+        // CofR                    ( 0.2704 -0.0012 4.0128 );
+        CofR                    ( 0 0 0 );
+        // outputControl           timeStep;
+        // outputInterval          100;
+        writeControl            timeStep;
+        writeInterval           100;
+    }
+    forceCoeffs
+    {
+        type                    forceCoeffs;
+        functionObjectLibs      ( "libforces.so" );
+        patches                 ( wall );
+        // pName                   p;
+        // UName                   U;
+        // rhoName                 rhoInf;
+
+        p                   p;
+        U                   U;
+        rho                 rhoInf;
+
+        rhoInf                  1.225;
+        // rhoName                 rho;
+        // rho                     1.225;
+        // CofR                    ( 0.2704 -0.0012 4.0128 );
+        CofR                    ( 0 0 0 );
+        liftDir                 (0 1 0);
+        dragDir                 (1 0 0);
+        pitchAxis               (0 0 1);
+        // magUInf                 45;                                      //
+        magUInf                 5;                                      //
+        lRef                    1;                                      //
+        Aref                    0.1;                                    //
+        // outputControl           timeStep;
+        // outputInterval          100;
+        writeControl            timeStep;
+        writeInterval           100;
+    }
+};
+
+// ************************************************************************* //

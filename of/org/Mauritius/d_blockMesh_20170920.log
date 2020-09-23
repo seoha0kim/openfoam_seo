@@ -1,0 +1,154 @@
+#
+#   d_openFoam
+#   Author: Saang Bum Kim, sbkim1601@gmail.com
+#   Date  : 2017-08-25T16:55:40+09:00
+#
+
+Angle of attack: 6
+dx: 24.700000, 3.200000
+dx_min: 0.002335
+Block ID: 0, # of mesh cell in a block, 41, R: 47.011924 48.189060, 42, R:50.761368 49.206319
+Block ID: 1, # of mesh cell in a block, 66, R: 1.000000 1.000000, 42, R:49.206319 50.014532
+Block ID: 2, # of mesh cell in a block, 3, R: 1.000000 1.000000, 42, R:50.014532 50.060164
+Block ID: 3, # of mesh cell in a block, 4, R: 1.000000 1.000000, 42, R:50.060164 50.115805
+Block ID: 4, # of mesh cell in a block, 1, R: 1.000000 1.000000, 42, R:50.115805 50.132887
+Block ID: 5, # of mesh cell in a block, 10, R: 1.000000 1.000000, 42, R:50.132887 50.266616
+Block ID: 6, # of mesh cell in a block, 8, R: 1.000000 1.000000, 42, R:50.266616 50.373252
+Block ID: 7, # of mesh cell in a block, 1, R: 1.000000 1.000000, 42, R:50.373252 50.379380
+Block ID: 8, # of mesh cell in a block, 36, R: 1.000000 1.000000, 42, R:50.379380 50.824971
+Block ID: 9, # of mesh cell in a block, 36, R: 1.000000 1.000000, 42, R:50.824971 51.271224
+Block ID: 10, # of mesh cell in a block, 1, R: 1.000000 1.000000, 42, R:51.271224 51.277370
+Block ID: 11, # of mesh cell in a block, 8, R: 1.000000 1.000000, 42, R:51.277370 51.384367
+Block ID: 12, # of mesh cell in a block, 10, R: 1.000000 1.000000, 42, R:51.384367 51.518655
+Block ID: 13, # of mesh cell in a block, 1, R: 1.000000 1.000000, 42, R:51.518655 51.535817
+Block ID: 14, # of mesh cell in a block, 4, R: 1.000000 1.000000, 42, R:51.535817 51.591732
+Block ID: 15, # of mesh cell in a block, 3, R: 1.000000 1.000000, 42, R:51.591732 51.637605
+Block ID: 16, # of mesh cell in a block, 198, R: 1.000000 1.000000, 42, R:51.637605 54.088389
+Block ID: 17, # of mesh cell in a block, 53, R: 152.084611 151.270928, 42, R:54.088389 50.761368
+Block ID: 18, # of mesh cell in a block, 41, R: 48.189060 47.224013, 77, R:1.000000 1.000000
+Block ID: 19, # of mesh cell in a block, 66, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 20, # of mesh cell in a block, 3, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 21, # of mesh cell in a block, 4, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 22, # of mesh cell in a block, 1, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 23, # of mesh cell in a block, 10, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 24, # of mesh cell in a block, 8, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 25, # of mesh cell in a block, 1, R: 1.000000 1.000000, 77, R:1.000000 0.993204
+Block ID: 26, # of mesh cell in a block, 36, R: 1.000000 1.000000, 77, R:0.993204 0.993204
+Block ID: 27, # of mesh cell in a block, 36, R: 1.000000 1.000000, 77, R:0.993204 0.993204
+Block ID: 28, # of mesh cell in a block, 1, R: 1.000000 1.000000, 77, R:0.993204 1.000000
+Block ID: 29, # of mesh cell in a block, 8, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 30, # of mesh cell in a block, 10, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 31, # of mesh cell in a block, 1, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 32, # of mesh cell in a block, 4, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 33, # of mesh cell in a block, 3, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 34, # of mesh cell in a block, 198, R: 1.000000 1.000000, 77, R:1.000000 1.000000
+Block ID: 35, # of mesh cell in a block, 53, R: 151.270928 152.175510, 77, R:1.000000 1.000000
+Block ID: 36, # of mesh cell in a block, 41, R: 47.224013 47.191694, 2, R:1.000000 1.000000
+Block ID: 37, # of mesh cell in a block, 66, R: 1.000000 1.000000, 2, R:1.000000 1.000000
+Block ID: 38, # of mesh cell in a block, 3, R: 1.000000 1.000000, 2, R:1.000000 1.000000
+Block ID: 39, # of mesh cell in a block, 4, R: 1.000000 1.000000, 2, R:1.000000 1.000000
+Block ID: 40, # of mesh cell in a block, 1, R: 1.000000 1.000000, 2, R:1.000000 1.000000
+Block ID: 41, # of mesh cell in a block, 10, R: 1.000000 1.000000, 2, R:1.000000 1.000000
+Block ID: 42, # of mesh cell in a block, 8, R: 1.000000 1.334857, 2, R:1.000000 1.275176
+Block ID: 43, # of mesh cell in a block, 8, R: 1.000000 1.334857, 2, R:1.275176 1.000000
+Block ID: 44, # of mesh cell in a block, 10, R: 1.000000 1.000000, 2, R:1.000000 1.000000
+Block ID: 45, # of mesh cell in a block, 1, R: 1.000000 1.000000, 2, R:1.000000 1.000000
+Block ID: 46, # of mesh cell in a block, 4, R: 1.000000 1.000000, 2, R:1.000000 1.000000
+Block ID: 47, # of mesh cell in a block, 3, R: 1.000000 1.000000, 2, R:1.000000 1.000000
+Block ID: 48, # of mesh cell in a block, 198, R: 1.000000 1.000000, 2, R:1.000000 1.000000
+Block ID: 49, # of mesh cell in a block, 53, R: 152.175510 152.205872, 2, R:1.000000 1.000000
+Block ID: 50, # of mesh cell in a block, 41, R: 47.191694 47.054577, 11, R:1.000000 1.000000
+Block ID: 51, # of mesh cell in a block, 66, R: 1.000000 1.000000, 11, R:1.000000 1.000000
+Block ID: 52, # of mesh cell in a block, 3, R: 1.000000 1.000625, 11, R:1.000000 1.016965
+Block ID: 53, # of mesh cell in a block, 4, R: 1.000000 1.279240, 11, R:1.016965 0.603014
+Block ID: 54, # of mesh cell in a block, 1, R: 1.000000 2.801329, 11, R:0.603014 1.044170
+Block ID: 55, # of mesh cell in a block, 10, R: 1.000000 1.000625, 11, R:1.044170 1.094733
+Block ID: 56, # of mesh cell in a block, 8, R: 1.334857 0.861043, 11, R:1.094733 0.837092
+Block ID: 57, # of mesh cell in a block, 8, R: 1.334857 0.861043, 11, R:0.837092 1.094733
+Block ID: 58, # of mesh cell in a block, 10, R: 1.000000 1.000625, 11, R:1.094733 1.044170
+Block ID: 59, # of mesh cell in a block, 1, R: 1.000000 2.801329, 11, R:1.044170 0.603014
+Block ID: 60, # of mesh cell in a block, 4, R: 1.000000 1.279240, 11, R:0.603014 1.016965
+Block ID: 61, # of mesh cell in a block, 3, R: 1.000000 1.000625, 11, R:1.016965 1.000000
+Block ID: 62, # of mesh cell in a block, 198, R: 1.000000 1.000000, 11, R:1.000000 1.000000
+Block ID: 63, # of mesh cell in a block, 53, R: 152.205872 152.334738, 11, R:1.000000 1.000000
+Block ID: 64, # of mesh cell in a block, 41, R: 47.054577 47.034588, 1, R:1.000000 1.000000
+Block ID: 65, # of mesh cell in a block, 66, R: 1.000000 1.000000, 1, R:1.000000 1.000000
+Block ID: 66, # of mesh cell in a block, 198, R: 1.000000 1.000000, 1, R:1.000000 1.000000
+Block ID: 67, # of mesh cell in a block, 53, R: 152.334738 152.353531, 1, R:1.000000 1.000000
+Block ID: 68, # of mesh cell in a block, 41, R: 47.034588 46.056365, 78, R:1.000000 1.000000
+Block ID: 69, # of mesh cell in a block, 66, R: 1.000000 1.000000, 78, R:1.000000 1.000000
+Block ID: 70, # of mesh cell in a block, 66, R: 1.000625 1.000001, 78, R:1.000000 0.958310
+Block ID: 71, # of mesh cell in a block, 66, R: 1.000625 1.000000, 78, R:0.958310 1.000000
+Block ID: 72, # of mesh cell in a block, 198, R: 1.000000 1.000000, 78, R:1.000000 1.000000
+Block ID: 73, # of mesh cell in a block, 53, R: 152.353531 153.275332, 78, R:1.000000 1.000000
+Block ID: 74, # of mesh cell in a block, 41, R: 46.056365 47.011924, 42, R:51.528067 53.242850
+Block ID: 75, # of mesh cell in a block, 66, R: 1.000000 1.000000, 42, R:53.242850 52.416613
+Block ID: 76, # of mesh cell in a block, 66, R: 1.000000 1.000000, 42, R:52.416613 51.592564
+Block ID: 77, # of mesh cell in a block, 66, R: 1.000000 1.000000, 42, R:51.592564 50.770731
+Block ID: 78, # of mesh cell in a block, 198, R: 1.000000 1.000000, 42, R:50.770731 48.318845
+Block ID: 79, # of mesh cell in a block, 53, R: 153.275332 152.084611, 42, R:48.318845 51.528067
+B & D: 0.309 m, 0.04 m
+nu: 0.002564
+
+Re: 195.000000
+U_mu: 1.62 m/s, 12.5 m/s
+U_F: 20.2 m/s, 156 m/s
+
+Re: 1.204e+03 1.560e+02
+U_mu: 10.000000 m/s
+U_F: 125.000000 m/s
+
+Re: 9.633e+02 1.248e+02
+U_mu: 8.000000 m/s
+U_F: 100.000000 m/s
+
+#   Turbulence
+
+Turbulence intensity: 0.05 0.05 0.05
+Turbulence length scale [m]: 0.021613 0.002800
+
+U_mu: 5.000000 m/s
+sig_U [m/s]: 0.25 0.25 0.25
+k: 0.093750
+epsilon: 0.218240 1.684538
+omega: 25.865448 199.648927
+nu_t: 0.006617 0.000857
+nu_t: 0.003625 0.000470
+nu_tilda: 0.018123 0.002348
+d_t [s]: 0.000466947
+T_f [s]: 0.061750 0.008000
+n_int: 13 1
+T_vor [s]: 3.088e-01 4.000e-02
+n_vor: 661 85
+
+U_mu: 10.000000 m/s
+sig_U [m/s]: 0.5 0.5 0.5
+k: 0.375000
+epsilon: 1.745918 13.476303
+omega: 51.730896 399.297853
+nu_t: 0.013235 0.001715
+nu_t: 0.007249 0.000939
+nu_tilda: 0.036245 0.004696
+d_t [s]: 0.000233473
+T_f [s]: 0.030875 0.004000
+n_int: 13 1
+T_vor [s]: 1.544e-01 2.000e-02
+n_vor: 661 85
+
+U_mu: 8000.000000 m/s
+sig_U [m/s]: 400.0 400.0 400.0
+k: 240000.000000
+epsilon: 893909882.035010 6899866901.999253
+omega: 41384.716761 319438.282500
+nu_t: 10.587919 1.371714
+nu_t: 5.799242 0.751319
+nu_tilda: 28.996211 3.756594
+d_t [s]: 2.91842e-07
+T_f [s]: 0.000039 0.000005
+n_int: 13 1
+T_vor [s]: 1.930e-04 2.500e-05
+n_vor: 661 85
+
+#
+#   FINE
+#
