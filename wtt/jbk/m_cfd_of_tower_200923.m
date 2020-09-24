@@ -57,7 +57,8 @@ clear sb
 cd ~/Work/git/openfoam_seo/wtt/jbk/
 
 % %%
-model = mphload('imsi.mph')
+% model = mphload('imsi.mph')
+model = mphload('tower_large.mph')
 
 % %%
 % mphmesh(model)
@@ -79,14 +80,19 @@ sb.b3.n = size(meshdata.elem{3},2);
 sb.b3.id = meshdata.elem{3}+1;
 
 % %%
+sb.box_ids = model.selection.tags();
+sb.box_n = length(sb.box_ids);
 % for ii=1:7
-for ii=[1 4:7]
-    sb.box(ii) = mpheval(model,'X','selection',sprintf('box%d',ii));
+% for ii=[1 4:7]
+for ii=1:sb.box_n
+    % sb.box(ii) = mpheval(model,'X','selection',sprintf('box%d',ii));
+    sb.box(ii) = mpheval(model,'X','selection',sb.box_ids(ii));
 end
 
 % %%
 % for ii=1:7
-for ii=[1 4:7]
+% for ii=[1 4:7]
+for ii=1:sb.box_n
     % ii = 1;
     sb.box(ii).n = size(sb.box(ii).t,2);
     for jj = 1:size(sb.box(ii).p,2)
@@ -112,13 +118,14 @@ end
 % ### data load
 
 % %%
-whos -file imsi_tower_200923
-load imsi_tower_200923
+% whos -file imsi_tower_200923
+% load imsi_tower_200923
 
 % %%
-meshdata
+% meshdata
 
 % %%
+if id_pl
 lc = meshdata.elem{find(cellfun(@(x) strcmpi(x,'vtx'), meshdata.types))}+1;
 id_pause = true;
 figure(1)
@@ -130,18 +137,22 @@ for ii=1:length(lc)-1
         id_pause = false;
     end
 end
+end
 
 % %%
+if id_pl
 sb.box(1)
 sb.box(1).d1(1:3)
 sb.box(1).p(:,1:3)
 sb.box(1).t(:,1:3)
 sb.box(1).ve(1:3,:)
+end
 
 % %% [markdown]
 % ### c_box
 
 % %%
+if id_pl
 id_pause = true;
 figure(1)
 for ii=1:size(sb.box(2).t,2)
@@ -154,6 +165,7 @@ plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
         id_pause = false;
     end
 end
+end
 % figure(2)
 % plot(sb.box(2).ve)
 
@@ -161,6 +173,7 @@ end
 % ### triangular
 
 % %%
+if id_pl
 i_34 = 'b3';
 % i_34 = 'b4';
 id_pause = true;
@@ -179,11 +192,13 @@ for ii=1:sb.(i_34).n
         id_pause = false;
     end
 end
+end
 
 % %% [markdown]
 % ### quad
 
 % %%
+if id_pl
 % i_34 = 'b3';
 i_34 = 'b4';
 id_pause = true;
@@ -202,11 +217,13 @@ for ii=1:2^2
         id_pause = false;
     end
 end
+end
 
 % %% [markdown]
 % ### Whole
 
 % %%
+if id_pl
 % i_34 = 'b3';
 i_34 = 'b4';
 id_pause = true;
@@ -236,6 +253,7 @@ for ii=1:2^8
 %         gcfG;gcfH;gcfLFont;gcfS;%gcfP
 %         id_pause = false;
 %     end
+end
 end
 
 % %% [markdown]
@@ -393,7 +411,8 @@ fprintf(fid,'        (\n');
 %         end
 %     end
 % end
-    id_bd = 7;
+    % id_bd = 7;
+    id_bd = 5;
     for ii=1:sb.box(id_bd).n
         id = sb.box(id_bd).lc(:,ii);
         ids = [id+sb.v.n;id([2,1])];
@@ -411,7 +430,9 @@ if 1
     fprintf(fid,'        faces\n');
     fprintf(fid,'        (\n');
     % fprintf(fid,'            (1 5 4 0)\n');
-        for id_bd = 2:6
+        % for id_bd = 2:6
+        % for id_bd = [1 4 5 6]
+        for id_bd = 1:4
             for ii=1:sb.box(id_bd).n
                 id = sb.box(id_bd).lc(:,ii);
                 % ids = [id+sb.v.n;id([2,1])];
@@ -587,13 +608,10 @@ fclose(fid);
 % ### openFoam
 
 % %%
-fid = fopen(sprintf('controlDict_rib_%s.foam',datestr(now,'yymmdd')),'w+');
+% fid = fopen(sprintf('controlDict_rib_%s.foam',datestr(now,'yymmdd')),'w+');
 
 % %% [markdown]
 % ### openFoam
-
-% %%
-fid = fopen(sprintf('controlDict_rib_%s.foam',datestr(now,'yymmdd')),'w+');
 
 % %% [markdown]
 % # Main Process
