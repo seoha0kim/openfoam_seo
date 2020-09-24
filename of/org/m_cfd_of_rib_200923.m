@@ -408,10 +408,11 @@ if 1
     fprintf(fid,'        faces\n');
     fprintf(fid,'        (\n');
     % fprintf(fid,'            (1 5 4 0)\n');
-        for id_bd = 1:6
+        for id_bd = 2:6
             for ii=1:sb.box(id_bd).n
                 id = sb.box(id_bd).lc(:,ii);
-                ids = [id+sb.v.n;id([2,1])];
+                % ids = [id+sb.v.n;id([2,1])];
+                ids = [id;id([2,1])+sb.v.n];
                 % x_id = sb.v.x(:,id);
                 fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
             end
