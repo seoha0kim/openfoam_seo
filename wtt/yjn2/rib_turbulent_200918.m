@@ -754,20 +754,20 @@ model.component('comp1').physics('spf2').feature('sym1').selection.named('box3')
 model.component('comp1').physics('spf2').create('sym2', 'Symmetry', 1);
 model.component('comp1').physics('spf2').feature('sym2').selection.named('box4');
 
-% model.component('comp1').probe.create('bnd1', 'Boundary');
-model.component('comp1').probe('bnd1').set('intsurface', true);
-model.component('comp1').probe('bnd1').selection.named('box5');
-model.component('comp1').probe('bnd1').set('expr', '-spf2.T_stressx/(1/2*spf2.rho*(seo_U_in^2)*seo_B)');
+model.component('comp1').probe.create('bnd4', 'Boundary');
+model.component('comp1').probe('bnd4').set('intsurface', true);
+model.component('comp1').probe('bnd4').selection.named('box5');
+model.component('comp1').probe('bnd4').set('expr', '-spf2.T_stressx/(1/2*spf2.rho*(seo_U_in^2)*seo_B)');
 
-% model.component('comp1').probe.create('bnd2', 'Boundary');
-model.component('comp1').probe('bnd2').set('intsurface', true);
-model.component('comp1').probe('bnd2').selection.named('box5');
-model.component('comp1').probe('bnd2').set('expr', '-spf2.T_stressy/(1/2*spf2.rho*(seo_U_in^2)*seo_B)');
+model.component('comp1').probe.create('bnd5', 'Boundary');
+model.component('comp1').probe('bnd5').set('intsurface', true);
+model.component('comp1').probe('bnd5').selection.named('box5');
+model.component('comp1').probe('bnd5').set('expr', '-spf2.T_stressy/(1/2*spf2.rho*(seo_U_in^2)*seo_B)');
 
-% model.component('comp1').probe.create('bnd3', 'Boundary');
-model.component('comp1').probe('bnd3').set('intsurface', true);
-model.component('comp1').probe('bnd3').selection.named('box5');
-model.component('comp1').probe('bnd3').set('expr', ...
+model.component('comp1').probe.create('bnd6', 'Boundary');
+model.component('comp1').probe('bnd6').set('intsurface', true);
+model.component('comp1').probe('bnd6').selection.named('box5');
+model.component('comp1').probe('bnd6').set('expr', ...
     '(-spf2.T_stressx*y + -spf2.T_stressy*-x)/(1/2*spf2.rho*(seo_U_in^2)*(seo_B^2))');
 
 model.sol.create('sol2');
@@ -1121,35 +1121,97 @@ for ii=1:sb.Re_n
 
     sb.Re = sb.Re_pool(ii);
 
+% if 1
+if 0
+    model = mphload(sprintf('rib_upper_turbulentSST_Re%d',sb.Re));
+else
     % model.param.set('seo_U_in', sprintf('%f[m/s]',sb.U(150)));
     model.param.set('seo_U_in', sprintf('%f[m/s]',sb.U( sb.Re )));
     % model.component('comp1').physics('spf').feature('inl1').set('U0in', 'seo_U_in');
     model.component('comp1').physics('spf2').feature('inl1').set('U0in', 'seo_U_in');
 
+
+model.component('comp1').mesh('mesh1').feature('size').set('table', 'cfd');
+% model.component('comp1').mesh('mesh1').feature('size').set('hauto', 3);
+% model.component('comp1').mesh('mesh1').feature('size').set('hauto', 2);
+
+% model.component('comp1').mesh('mesh1').feature('size').set('hauto', 4);
+% model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 9);
+% model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 9);
+% model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 9);
+
+model.component('comp1').mesh('mesh1').feature('size').set('hauto', 4-1);
+model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 9-1);
+model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 9-1);
+model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 9-1);
+
+model.component('comp1').mesh('mesh1').run;
+
+
     % model.sol('sol1').runAll;
     model.sol('sol2').runAll;
     telap = toc(tcomp) - telap;
     fprintf('Total elapsed time = %.3f s.\n',telap)
+end
 
-    sb.DLM(ii+sb.Re_n,1) = mphglobal(model,'bnd1');
-    sb.DLM(ii+sb.Re_n,2) = mphglobal(model,'bnd2');
-    sb.DLM(ii+sb.Re_n,3) = mphglobal(model,'bnd3');
+% model.component('comp1').probe('bnd1').set('expr', '-spf.T_stressx/(1/2*spf.rho*(seo_U_in^2)*seo_B)');
+% model.component('comp1').probe('bnd1').genResult('sol1');
+% mphglobal(model,'bnd1')
+
+model.component('comp1').probe('bnd1').set('expr', '-spf2.T_stressx/(1/2*spf2.rho*(seo_U_in^2)*seo_B)');
+model.component('comp1').probe('bnd1').genResult('sol2');
+
+    sb.DLM(ii+sb.Re_n*2,1) = mphglobal(model,'bnd1','dataset','dset2');
+    sb.DLM(ii+sb.Re_n*2,2) = mphglobal(model,'bnd2','dataset','dset2');
+    sb.DLM(ii+sb.Re_n*2,3) = mphglobal(model,'bnd3','dataset','dset2');
 
     figure(1)
     for jj = 1:3
         subplot(1,3,jj)
         % plot(sb.Re, sb.DLM(ii,jj),'o','Color',rgb('Navy'))
-        plot(sb.Re, sb.DLM(ii,jj),'s','Color',rgb('Orange'))
+        plot(sb.Re, sb.DLM(ii+sb.Re_n*2,jj),'s','Color',rgb('Orange'))
     end
     if id_pause
         gcfG;gcfH;gcfLFont;gcfS;%gcfP
         id_pause = false;
     end
 
-    mphsave(model,sprintf('rib_upper_turbulentSST_Re%d',sb.Re))
-    save(sprintf('rib_upper_turbulentSST_Re%d',sb.Re),'sb')
+    mphsave(model,sprintf('rib_upper_turbulentSST1_Re%d',sb.Re))
+    save(sprintf('rib_upper_turbulentSST1_Re%d',sb.Re),'sb')
 
 end
+
+if 0
+id_pause = true;
+figure(1)
+clf
+for ii=1:sb.Re_n
+    sb.Re = sb.Re_pool(ii);
+    figure(1)
+    for jj = 1:3
+        subplot(1,3,jj)
+        plot(sb.Re, sb.DLM(ii,jj),'o','Color',rgb('Navy'))
+        % plot(sb.Re, sb.DLM(ii+sb.Re_n,jj),'s','Color',rgb('Orange'))
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+    for jj = 1:3
+        subplot(1,3,jj)
+        % plot(sb.Re, sb.DLM(ii,jj),'o','Color',rgb('Navy'))
+        plot(sb.Re, sb.DLM(ii+sb.Re_n,jj),'s','Color',rgb('Orange'))
+    end
+    for jj = 1:3
+        subplot(1,3,jj)
+        % plot(sb.Re, sb.DLM(ii,jj),'o','Color',rgb('Navy'))
+        plot(sb.Re, sb.DLM(ii+sb.Re_n,jj),'d','Color',rgb('DeepPink'))
+    end
+end
+end
+
+
+
 
 % %% [markdown]
 % # FINE

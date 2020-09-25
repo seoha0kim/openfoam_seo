@@ -1886,4 +1886,38 @@ end
 1000/60
 
 % %% [markdown]
+% # Arch Rib: Upper
+
+% %%
+load rib_upper_turbulentSST1_Re200000.mat
+
+% %%
+id_pause = true;
+figure(1)
+clf
+for ii=1:sb.Re_n
+    sb.Re = sb.Re_pool(ii);
+    figure(1)
+    for jj = 1:3
+        subplot(1,3,jj)
+        plot(sb.Re, sb.DLM(ii,jj),'o','Color',rgb('Navy'))
+        % plot(sb.Re, sb.DLM(ii+sb.Re_n,jj),'s','Color',rgb('Orange'))
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+    for jj = 1:3
+        subplot(1,3,jj)
+        % plot(sb.Re, sb.DLM(ii,jj),'o','Color',rgb('Navy'))
+        plot(sb.Re, sb.DLM(ii+sb.Re_n,jj),'s','Color',rgb('Orange'))
+    end
+    for jj = 1:3
+        subplot(1,3,jj)
+        % plot(sb.Re, sb.DLM(ii,jj),'o','Color',rgb('Navy'))
+        plot(sb.Re, sb.DLM(ii+sb.Re_n*2,jj),'d','Color',rgb('Crimson'))
+    end
+end
+
+% %% [markdown]
 % # FINE
