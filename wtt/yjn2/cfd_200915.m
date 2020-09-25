@@ -147,6 +147,33 @@ sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 % - A plot of the turbulent flow around an airfoil.
 
 % %% [markdown]
+% ## k-e
+
+% %% [markdown]
+% - Ref.3
+%     - inlet
+% $$\mathrm{
+%     \mu_T = 10 \cdot \mu
+% }$$
+%     - outlet
+%         - pressure condition
+% - 293 K, 1 atm
+
+% %% [markdown]
+% - Free-stream turbulent kinetic energy
+%
+% $$\mathrm{
+% k_\infty = 0.1 \frac{\mu_\infty U_\infty}{\rho_\infty L}
+% }$$
+%
+% - dissipation rate
+%
+% $$\mathrm{
+% \omega_\infty = 10 \frac{U_\infty}{L}
+% }$$
+%
+
+% %% [markdown]
 % # Turbulent model
 
 % %% [markdown]
@@ -1722,9 +1749,9 @@ end
 
 % %% [markdown]
 % - The SST model combines the near-wall capabilities of the k-$\omega$ model
-%     with the superior free-stream behavior of the k-$\epsilon$ model 
-%     to enable accurate simulations of a wide variety of 
-%     internal and external flow problems. 
+%     with the superior free-stream behavior of the k-$\epsilon$ model
+%     to enable accurate simulations of a wide variety of
+%     internal and external flow problems.
 % - See the theory for the SST turbulence model in the CFD Module User’s Guide
 %     for further information.
 
@@ -1732,20 +1759,20 @@ end
 % ## Model Definition
 
 % %% [markdown]
-% - Consider the flow relative to a reference frame fixed on 
-%     a arch-rib of YJN2 Bridge with depth (chord-length) sb.D = 0.04 m. 
-% - The temperature of the ambient air is 20 $^\circ$C 
-%     and the relative free-stream velocity is U = 50 m/s 
-%     resulting in a Mach number of 0.15 = $\mathrm{\frac{U}{V_{sound}}}$. 
+% - Consider the flow relative to a reference frame fixed on
+%     a arch-rib of YJN2 Bridge with depth (chord-length) sb.D = 0.04 m.
+% - The temperature of the ambient air is 20 $^\circ$C
+%     and the relative free-stream velocity is U = 50 m/s
+%     resulting in a Mach number of 0.15 = $\mathrm{\frac{U}{V_{sound}}}$.
 % - The Reynolds number based on the chord length is roughly $\mathrm{6·10^6}$,
-%     so you can assume that the boundary layers are turbulent 
-%     over practically the entire airfoil. 
+%     so you can assume that the boundary layers are turbulent
+%     over practically the entire airfoil.
 % - The airfoil is inclined at an angle $\alpha$ to the oncoming stream,
-% - To obtain a sharp trailing edge, 
+% - To obtain a sharp trailing edge,
 %     the airfoil is slightly altered from its original shape (Ref. 3),
-% - The upstream, top, and bottom edges of the computational domain are 
-%     located 100 chord-lengths away from the trailing edge of the airfoil 
-%     and the downstream edge is located 200 chord-lengths away. 
+% - The upstream, top, and bottom edges of the computational domain are
+%     located 100 chord-lengths away from the trailing edge of the airfoil
+%     and the downstream edge is located 200 chord-lengths away.
 % - This is to minimize the effect of the applied boundary conditions.
 
 % %% [markdown]
@@ -1756,44 +1783,44 @@ end
 % }$$
 % - where the free-stream value of the turbulence kinetic energy is given by
 %     $k_\infty = \nu_{T_\infty} \omega_\infty$
-%     and L is the appropriate length of the computational domain. 
-% - The current model applies the upper limit 
+%     and L is the appropriate length of the computational domain.
+% - The current model applies the upper limit
 %     of the provided free-stream turbulence values,
 % $$\mathrm{
 % \omega_\infty = (1 \rightarrow 10) \frac{U_\infty}{L}
 % }$$
-%     
+%
 
 % %% [markdown]
 % Close-up of the airfoil section
 
 % %% [markdown]
-% - The computations employ a structured mesh with a high size ratio 
+% - The computations employ a structured mesh with a high size ratio
 %     between the outermost and wall-adjacent elements.
 
 % %% [markdown]
 % ## POTENTIAL FLOW SOLUTION
 
 % %% [markdown]
-% - The simplest option when setting the initial velocity field is 
-%     to use a constant velocity, 
-%     which does not satisfy the wall boundary conditions. 
-% - A more accurate and robust initial guess can be obtained 
+% - The simplest option when setting the initial velocity field is
+%     to use a constant velocity,
+%     which does not satisfy the wall boundary conditions.
+% - A more accurate and robust initial guess can be obtained
 %     solving the potential flow equation.
-% - Assuming irrotational, inviscid flow, 
+% - Assuming irrotational, inviscid flow,
 %     the velocity potential $\phi$ is defined as
 % $$\mathrm{ u = - \nabla \phi
 % }$$
 % - The velocity potential $\phi$ must satisfy the continuity equation
-%     for incompressible flow, $\nabla \cdot u = 0$. 
+%     for incompressible flow, $\nabla \cdot u = 0$.
 % - The continuity equation can be expressed as a Laplace equation
 % $$\mathrm{ \nabla \cdot (- \nabla \phi) = 0
 % }$$
 % which is the potential flow equation.
 
 % %% [markdown]
-% - Once the velocity potential $\phi$ is computed, 
-%     the pressure can be approximated using Bernoulli’s equation 
+% - Once the velocity potential $\phi$ is computed,
+%     the pressure can be approximated using Bernoulli’s equation
 %     for steady flows:
 % Once the velocity potential     is computed, the pressure can be approximated using Bernoulli’s equation for steady flows
 % $$\mathrm{
@@ -1806,18 +1833,18 @@ end
 % %% [markdown]
 % - The study performs a Parametric Sweep with the angle of attack $\alpha$
 %     taking the values,
-% - Figure 3 shows the velocity magnitude and the streamlines 
+% - Figure 3 shows the velocity magnitude and the streamlines
 %     for the steady flow around the NACA 0012 profile at $\alpha$ = 14 $^\circ$.
 
 % %% [markdown]
-% Figure 3: Velocity magnitude and streamlines 
+% Figure 3: Velocity magnitude and streamlines
 %     for the flow around a NACA 0012 airfoil.
 
 % %% [markdown]
-% - A small separation bubble appears at the trailing edge 
+% - A small separation bubble appears at the trailing edge
 %     for higher values of $\alpha$
-%     and the flow is unlikely to remain steady and two-dimensional hereon. 
-% - Ref. 1 provides experimental data for the lift coefficient 
+%     and the flow is unlikely to remain steady and two-dimensional hereon.
+% - Ref. 1 provides experimental data for the lift coefficient
 %     versus the angle of attack,
 
 % %% [markdown]
@@ -1828,27 +1855,27 @@ end
 % %% [markdown]
 % - where the pressure coefficient is defined as
 %
-% - and c is the chord length. 
-% - Note that the normal is directed outward from the flow domain 
-%     (into the airfoil). 
-% - Figure 4 shows computational and experimental results 
+% - and c is the chord length.
+% - Note that the normal is directed outward from the flow domain
+%     (into the airfoil).
+% - Figure 4 shows computational and experimental results
 %     for the lift coefficient versus angle of attack.
 
 % %% [markdown]
-% Figure 4: Computational (solid) and experimental (dots) results 
+% Figure 4: Computational (solid) and experimental (dots) results
 %     for the lift coefficient vs. angle of attack.
 
 % %% [markdown]
-% - No discernible discrepancy 
-%     between the computational and experimental results occurs 
-%     within the range of $\alpha$ values used in the computations. 
-% - The experimental results continue through the parameter regime 
-%     where the airfoil stalls. 
-% - Figure 5 shows a comparison between the computed pressure coefficient 
+% - No discernible discrepancy
+%     between the computational and experimental results occurs
+%     within the range of $\alpha$ values used in the computations.
+% - The experimental results continue through the parameter regime
+%     where the airfoil stalls.
+% - Figure 5 shows a comparison between the computed pressure coefficient
 %     at 10 and the experimental results in Ref. 2.
 
 % %% [markdown]
-% Figure 5: Computational (solid) and experimental (dots) 
+% Figure 5: Computational (solid) and experimental (dots)
 %     results for the pressure coefficient along the airfoil.
 
 % %% [markdown]
@@ -1858,10 +1885,10 @@ end
 % %% [markdown]
 % References
 %
-% - 1. C.L. Ladson, 
-%     “Effects of Independent Variation of Mach and Reynolds Numbers 
-%     on the Low-Speed Aerodynamic Characteristics 
-%     of the NACA 0012 Airfoil Section,” 
+% - 1. C.L. Ladson,
+%     “Effects of Independent Variation of Mach and Reynolds Numbers
+%     on the Low-Speed Aerodynamic Characteristics
+%     of the NACA 0012 Airfoil Section,”
 %     NASA TM 4074, 1988.
 
 % %% [markdown]
@@ -1918,6 +1945,287 @@ for ii=1:sb.Re_n
         plot(sb.Re, sb.DLM(ii+sb.Re_n*2,jj),'d','Color',rgb('Crimson'))
     end
 end
+
+% %% [markdown]
+% # Arch Rib: Upper
+
+% %%
+sb.Re_n = length(sb.Re_pool);
+
+% model.param.set('seo_D', sprintf('%f[m]',sb.D));
+model.param.set('seo_D', sprintf('%f[m]',0.04371855781));
+
+telap = toc(tcomp);
+id_pause = true;
+figure(1)
+clf
+for ii=1:sb.Re_n
+
+    sb.Re = sb.Re_pool(ii);
+
+if 1
+% if 0
+    model = mphload(sprintf('rib_upper_turbulentSST1_Re%d',sb.Re));
+%     model = mphload(sprintf('rib_lower_turbulentSST1_Re%d',sb.Re));
+else
+    % model.param.set('seo_U_in', sprintf('%f[m/s]',sb.U(150)));
+    model.param.set('seo_U_in', sprintf('%f[m/s]',sb.U( sb.Re )));
+    % model.component('comp1').physics('spf').feature('inl1').set('U0in', 'seo_U_in');
+    model.component('comp1').physics('spf2').feature('inl1').set('U0in', 'seo_U_in');
+
+model.component('comp1').mesh('mesh1').feature('size').set('table', 'cfd');
+% model.component('comp1').mesh('mesh1').feature('size').set('hauto', 3);
+% model.component('comp1').mesh('mesh1').feature('size').set('hauto', 2);
+
+% model.component('comp1').mesh('mesh1').feature('size').set('hauto', 4);
+% model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 9);
+% model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 9);
+% model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 9);
+
+% id_mesh =
+model.component('comp1').mesh('mesh1').feature('size').set('hauto', 4-3);
+% model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 9-3);
+model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 1);
+% model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 9-3);
+model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 5);
+model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 8);
+
+model.component('comp1').mesh('mesh1').run;
+
+    % model.sol('sol1').runAll;
+    model.sol('sol2').runAll;
+    telap = toc(tcomp) - telap;
+    fprintf('Total elapsed time = %.3f s.\n',telap)
+end
+
+% upper
+% [Sep 25, 2020 3:19 PM] Distance: 0.04868991123 [m], (0.03245740123, 0.03629358843) [m].  Point 8 (co1) to 19 (co1). Average coordinates: (-0.05059038115, 0.0181467942) [m].  Points: 8, 19 (co1).
+% [Sep 25, 2020 3:23 PM] Distance: 0.04868991124 [m], (0.02143350552, 0.04371855781) [m].  Point 26 (co1) to 29 (co1). Average coordinates: (0.05059038116, 0.0181467942) [m].  Points: 26, 29 (co1).
+
+% lower
+% [Sep 25, 2020 3:05 PM] Distance: 0.04868991123 [m], (0.03245740123, 0.03629358843) [m].  Point 8 to 19. Average coordinates: (-0.08260446711, 3.480226871E-11) [m].  Points: 8, 19.
+% [Sep 25, 2020 3:05 PM] Distance: 0.04868991124 [m], (0.02143350552, 0.04371855781) [m].  Point 26 to 29. Average coordinates: (0.08260446711, 3.510498836E-11) [m].  Points: 26, 29.
+
+% model.param.set('seo_D', sprintf('%f[m]',sb.D));
+model.param.set('seo_D', sprintf('%f[m]',0.04371855781));
+
+sb.DLM(ii+sb.Re_n*0,1+3*0) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,2+3*0) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,3+3*0) = mphint2(model, ...
+    '(-spf.T_stressx*(y - .0181467942) + -spf.T_stressy*-x)/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box5','dataset','dset1');
+
+sb.DLM(ii+sb.Re_n*0,1+3*1) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,2+3*1) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,3+3*1) = mphint2(model, ...
+    '(-spf.T_stressx*(y - .0181467942) + -spf.T_stressy*-(x+0.05059038116))/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box6','dataset','dset1');
+
+sb.DLM(ii+sb.Re_n*0,1+3*2) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,2+3*2) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,3+3*2) = mphint2(model, ...
+    '(-spf.T_stressx*(y - .0181467942) + -spf.T_stressy*-(x-0.05059038116))/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box7','dataset','dset1');
+
+
+sb.DLM(ii+sb.Re_n*1,1+3*0) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,2+3*0) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,3+3*0) = mphint2(model, ...
+    '(-spf.T_stressx*(y - .0181467942) + -spf.T_stressy*-x)/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box5','dataset','dset2');
+
+sb.DLM(ii+sb.Re_n*1,1+3*1) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,2+3*1) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,3+3*1) = mphint2(model, ...
+    '(-spf.T_stressx*(y - .0181467942) + -spf.T_stressy*-(x+0.05059038116))/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box6','dataset','dset2');
+
+sb.DLM(ii+sb.Re_n*1,1+3*2) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,2+3*2) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,3+3*2) = mphint2(model, ...
+    '(-spf.T_stressx*(y - .0181467942) + -spf.T_stressy*-(x-0.05059038116))/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box7','dataset','dset2');
+
+
+sb.DLM(ii+sb.Re_n*2,1+3*0) = mphint2(model,'-spf2.T_stressx / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,2+3*0) = mphint2(model,'-spf2.T_stressy / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,3+3*0) = mphint2(model, ...
+    '(-spf2.T_stressx*(y - .0181467942) + -spf2.T_stressy*-x)/(1/2*spf2.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box5','dataset','dset2');
+
+sb.DLM(ii+sb.Re_n*2,1+3*1) = mphint2(model,'-spf2.T_stressx / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,2+3*1) = mphint2(model,'-spf2.T_stressy / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,3+3*1) = mphint2(model, ...
+    '(-spf2.T_stressx*(y - .0181467942) + -spf2.T_stressy*-(x+0.05059038116))/(1/2*spf2.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box6','dataset','dset2');
+
+sb.DLM(ii+sb.Re_n*2,1+3*2) = mphint2(model,'-spf2.T_stressx / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,2+3*2) = mphint2(model,'-spf2.T_stressy / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,3+3*2) = mphint2(model, ...
+    '(-spf2.T_stressx*(y - .0181467942) + -spf2.T_stressy*-(x-0.05059038116))/(1/2*spf2.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box7','dataset','dset2');
+
+    figure(1)
+    for jj = 1:3
+        subplot(1,3,jj)
+        plot(sb.Re, sb.DLM(ii,jj),'o','Color',rgb('Navy'))
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+    for jj = 1:3
+        subplot(1,3,jj)
+        plot(sb.Re, sb.DLM(ii+sb.Re_n*1,jj),'d','Color',rgb('Crimson'))
+        plot(sb.Re, sb.DLM(ii+sb.Re_n*2,jj),'s','Color',rgb('Orange'))
+    end
+
+%     mphsave(model,sprintf('rib_upper_turbulentSST_p_Re%d',sb.Re))
+    save(sprintf('rib_upper_turbulentSST_p1_Re%d',sb.Re),'sb')
+
+end
+
+% %%
+figure(2)
+mphgeom(model)
+xlim([-1 1]*0.1)
+title('')
+axis off
+
+% %% [markdown]
+% # Arch Rib: Lower
+
+% %%
+sb.Re_n = length(sb.Re_pool);
+
+% model.param.set('seo_D', sprintf('%f[m]',sb.D));
+model.param.set('seo_D', sprintf('%f[m]',0.04371855781));
+
+telap = toc(tcomp);
+id_pause = true;
+figure(1)
+clf
+for ii=1:sb.Re_n
+
+    sb.Re = sb.Re_pool(ii);
+
+if 1
+% if 0
+    % model = mphload(sprintf('rib_upper_turbulentSST1_Re%d',sb.Re));
+    model = mphload(sprintf('rib_lower_turbulentSST1_Re%d',sb.Re));
+else
+    % model.param.set('seo_U_in', sprintf('%f[m/s]',sb.U(150)));
+    model.param.set('seo_U_in', sprintf('%f[m/s]',sb.U( sb.Re )));
+    % model.component('comp1').physics('spf').feature('inl1').set('U0in', 'seo_U_in');
+    model.component('comp1').physics('spf2').feature('inl1').set('U0in', 'seo_U_in');
+
+model.component('comp1').mesh('mesh1').feature('size').set('table', 'cfd');
+% model.component('comp1').mesh('mesh1').feature('size').set('hauto', 3);
+% model.component('comp1').mesh('mesh1').feature('size').set('hauto', 2);
+
+% model.component('comp1').mesh('mesh1').feature('size').set('hauto', 4);
+% model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 9);
+% model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 9);
+% model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 9);
+
+% id_mesh =
+model.component('comp1').mesh('mesh1').feature('size').set('hauto', 4-3);
+% model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 9-3);
+model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 1);
+% model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 9-3);
+model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 5);
+model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 8);
+
+model.component('comp1').mesh('mesh1').run;
+
+    % model.sol('sol1').runAll;
+    model.sol('sol2').runAll;
+    telap = toc(tcomp) - telap;
+    fprintf('Total elapsed time = %.3f s.\n',telap)
+end
+
+% upper
+% [Sep 25, 2020 3:19 PM] Distance: 0.04868991123 [m], (0.03245740123, 0.03629358843) [m].  Point 8 (co1) to 19 (co1). Average coordinates: (-0.05059038115, 0.0181467942) [m].  Points: 8, 19 (co1).
+
+% lower
+% [Sep 25, 2020 3:05 PM] Distance: 0.04868991123 [m], (0.03245740123, 0.03629358843) [m].  Point 8 to 19. Average coordinates: (-0.08260446711, 3.480226871E-11) [m].  Points: 8, 19.
+% [Sep 25, 2020 3:05 PM] Distance: 0.04868991124 [m], (0.02143350552, 0.04371855781) [m].  Point 26 to 29. Average coordinates: (0.08260446711, 3.510498836E-11) [m].  Points: 26, 29.
+
+% model.param.set('seo_D', sprintf('%f[m]',sb.D));
+model.param.set('seo_D', sprintf('%f[m]',0.04371855781));
+
+sb.DLM(ii+sb.Re_n*0,1+3*0) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,2+3*0) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,3+3*0) = mphint2(model, ...
+    '(-spf.T_stressx*y + -spf.T_stressy*-x)/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box5','dataset','dset1');
+
+sb.DLM(ii+sb.Re_n*0,1+3*1) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,2+3*1) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,3+3*1) = mphint2(model, ...
+    '(-spf.T_stressx*y + -spf.T_stressy*-(x+0.08260446711))/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box6','dataset','dset1');
+
+sb.DLM(ii+sb.Re_n*0,1+3*2) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,2+3*2) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset1');
+sb.DLM(ii+sb.Re_n*0,3+3*2) = mphint2(model, ...
+    '(-spf.T_stressx*y + -spf.T_stressy*-(x-0.08260446711))/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box7','dataset','dset1');
+
+
+sb.DLM(ii+sb.Re_n*1,1+3*0) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,2+3*0) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,3+3*0) = mphint2(model, ...
+    '(-spf.T_stressx*y + -spf.T_stressy*-x)/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box5','dataset','dset2');
+
+sb.DLM(ii+sb.Re_n*1,1+3*1) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,2+3*1) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,3+3*1) = mphint2(model, ...
+    '(-spf.T_stressx*y + -spf.T_stressy*-(x+0.08260446711))/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box6','dataset','dset2');
+
+sb.DLM(ii+sb.Re_n*1,1+3*2) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,2+3*2) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset2');
+sb.DLM(ii+sb.Re_n*1,3+3*2) = mphint2(model, ...
+    '(-spf.T_stressx*y + -spf.T_stressy*-(x-0.08260446711))/(1/2*spf.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box7','dataset','dset2');
+
+
+sb.DLM(ii+sb.Re_n*2,1+3*0) = mphint2(model,'-spf2.T_stressx / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,2+3*0) = mphint2(model,'-spf2.T_stressy / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box5','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,3+3*0) = mphint2(model, ...
+    '(-spf2.T_stressx*y + -spf2.T_stressy*-x)/(1/2*spf2.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box5','dataset','dset2');
+
+sb.DLM(ii+sb.Re_n*2,1+3*1) = mphint2(model,'-spf2.T_stressx / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,2+3*1) = mphint2(model,'-spf2.T_stressy / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box6','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,3+3*1) = mphint2(model, ...
+    '(-spf2.T_stressx*y + -spf2.T_stressy*-(x+0.08260446711))/(1/2*spf2.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box6','dataset','dset2');
+
+sb.DLM(ii+sb.Re_n*2,1+3*2) = mphint2(model,'-spf2.T_stressx / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,2+3*2) = mphint2(model,'-spf2.T_stressy / (1/2*spf2.rho*(seo_U_in^2)*seo_D)','line','selection','box7','dataset','dset2');
+sb.DLM(ii+sb.Re_n*2,3+3*2) = mphint2(model, ...
+    '(-spf2.T_stressx*y + -spf2.T_stressy*-(x-0.08260446711))/(1/2*spf2.rho*(seo_U_in^2)*(seo_D^2))','line','selection','box7','dataset','dset2');
+
+    figure(1)
+    for jj = 1:3
+        subplot(1,3,jj)
+        plot(sb.Re, sb.DLM(ii,jj),'o','Color',rgb('Navy'))
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+    for jj = 1:3
+        subplot(1,3,jj)
+        plot(sb.Re, sb.DLM(ii+sb.Re_n*1,jj),'d','Color',rgb('Crimson'))
+        plot(sb.Re, sb.DLM(ii+sb.Re_n*2,jj),'s','Color',rgb('Orange'))
+    end
+
+    % mphsave(model,sprintf('rib_lower_turbulentSST_p1_Re%d',sb.Re))
+    save(sprintf('rib_lower_turbulentSST_p1_Re%d',sb.Re),'sb')
+end
+
+% %%
+load rib_lower_turbulentSST1_Re200000_old.mat
+sb.DLM
+
+% %%
+id_pause = true;
+figure(1)
+clf
+for ii=1:3
+% ii = 1;
+subplot(1,3,ii)
+plot(sb.Re_pool, sb.DLM([1:sb.Re_n]+sb.Re_n*2,ii), ...
+    '-o','Color',rgb('Navy'),'MarkerSize',6-3)
+end
+gcfG;gcfH;gcfLFont;gcfS;%gcfP
 
 % %% [markdown]
 % # FINE
