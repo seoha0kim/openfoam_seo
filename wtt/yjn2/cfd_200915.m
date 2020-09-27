@@ -2085,7 +2085,8 @@ end
 % sb0 = load(sprintf('rib_%s_turbulent_Re%d', 'upper', 2e5),'sb');
 sb0 = load(sprintf('rib_%s_turbulent_SST_Re%d', 'upper', 2e5),'sb');
 sb0.sb
-sb0.sb.res(1).C.DLM
+sb0.sb.res(5).C.DLM
+sb0.sb.res(10).C.DLM
 
 % Total elapsed time = 20.573 s.
 % Total elapsed time = 35.757 s.
@@ -2119,7 +2120,24 @@ for ii=1:length(sb0.sb.Re_pool)
         semilogx(sb0.sb.Re_pool(ii), ...
             sb0.sb.res(ii).C.DLM(kk,jj), '<','Color',rgb('Crimson'),'MarkerSize',6-2)
     end
-
+    kk = 1;
+    for jj = 1:3
+        subplot(1,3,jj)
+        h = plot(sb.Re, C.DLM(kk,jj+3),'o','Color',rgb('Navy'),'MarkerSize',6-3);
+        h.MarkerFaceColor = h.Color;
+    end
+    kk = 2;
+    for jj = 1:3
+        subplot(1,3,jj)
+        h = plot(sb.Re, C.DLM(kk,jj+3),'>','Color',rgb('Teal'),'MarkerSize',6-2);
+        h.MarkerFaceColor = h.Color;
+    end
+    kk = 3;
+    for jj = 1:3
+        subplot(1,3,jj)
+        h = plot(sb.Re, C.DLM(kk,jj+3),'<','Color',rgb('Crimson'),'MarkerSize',6-2);
+        h.MarkerFaceColor = h.Color;
+    end
 end
 
 % %% [markdown]
