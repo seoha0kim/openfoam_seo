@@ -52,11 +52,40 @@ id_sv = false;
 % id_pl = true;
 id_pl = false;
 
-% %% [markdown]
-% # Smilarity
+    % %%
+    id_narrow = true;
+    id_geo = 2;
+
+    % %%
+    optargs = {id_geo, id_narrow};
+
+    % only want 1 optional inputs at most
+        numvarargs = length(varargin);
+        if numvarargs > length(optargs)
+            error('myfuns:somefun2Alt:TooManyInputs', ...
+                sprintf('requires at most %d optional inputs',length(optargs)));
+        end
+
+    % now put these defaults into the valuesToUse cell array,
+    % and overwrite the ones specified in varargin.
+        % optargs(1:numvarargs) = varargin;
+        % or ...
+        % [optargs{1:numvarargs}] = varargin{:};
+        % id = find(~isempty(varargin));
+        id = cellfun(@(x)~isempty(x), varargin);
+        optargs(id) = varargin(id);
+
+    % Place optional args in memorable variable names
+        [id_geo, id_narrow] = optargs{:};
 
 % %% [markdown]
-% ## Blockage ratio
+% # Geometry
+
+% %% [markdown]
+% ## Smilarity
+
+% %% [markdown]
+% ### Blockage ratio
 
 % %% [markdown]
 % $$\mathrm{
@@ -72,7 +101,7 @@ id_pl = false;
 % }$$
 
 % %% [markdown]
-% ## Small wind tunnel for 2d section models
+% ### Small wind tunnel for 2d section models
 
 % %% [markdown]
 % - Wind.wtt.s.B = 4.5 m = 1.5 + 3
@@ -83,19 +112,86 @@ id_pl = false;
 % - Wind.wtt.s.d = .04 m
 
 % %% [markdown]
-% ## Reynold Number
+% ### Upper rib
+
+% %%
+% maximize B
+% [Sep 17, 2020 4:20 AM] Distance: 8352.385221 [m], (8352.385221, 2.328852133E-8) [m].
+% Point 1 (del1) to 32 (del1). Average coordinates: (157127.4098, 10384.96539) [m].  Points: 1, 32 (del1).
+sb.geo.x_c = 157127.4098/1e3;
+sb.geo.B = 8352.385221/1e3;
+
+% centering the right segment
+% [Sep 27, 2020 9:18 AM] Distance: 3043.119452 [m], (1339.594095, 2732.409863) [m].
+% Point 38 (imp1) to 43 (imp1). Average coordinates: (160289.3086, 11519.14003) [m].  Points: 38, 43 (imp1).
+sb.geo.y_c = 11519.14003/1e3;
+
+sb.geo.B1 = 1339.594095/1e3;
+sb.geo.D = 2732.409863/1e3;
+
+% %% [markdown]
+% ### Lower rib
+
+% %%
+% maximize B
+% [Sep 25, 2020 1:53 PM] Distance: 12354.14597 [m], (12354.14597, 5.817128113E-9) [m].
+% Point 1 (del1) to 32 (del1). Average coordinates: (157127.4098, -11184.36674) [m].  Points: 1, 32 (del1).
+sb.geo.x_c = 157127.4098/1e3;
+sb.geo.B = 12354.14597/1e3;
+
+% centering the right segment
+% [Sep 25, 2020 1:53 PM] Distance: 3043.119452 [m], (1339.594095, 2732.409863) [m].
+% Point 22 (del1) to 27 (del1). Average coordinates: (162290.189, -10050.1921) [m].  Points: 22, 27 (del1).
+sb.geo.y_c = -10050.1921/1e3;
+
+sb.geo.B1 = 1339.594095/1e3;
+sb.geo.D = 2732.409863/1e3;
+
+% %%
+% Upper
+% sb.geo.id = 1;
+% Lower
+% sb.geo.id = 2;
+sb.geo.id = id_geo;
+
+sb.geo.x_c = 157127.4098/1e3;
+sb.geo.B = 1339.594095/1e3;
+sb.geo.D = 2732.409863/1e3;
+
+switch sb.geo.id
+    case 1
+        sb.s_geo = 'upper';
+        sb.geo.B0 = 8352.385221/1e3;
+        sb.geo.y_c = 11519.14003/1e3;
+    case 2
+        sb.s_geo = 'lower';
+        sb.geo.B0 = 12354.14597/1e3;
+        sb.geo.y_c = -10050.1921/1e3;
+    % otherwise
+end
 
 % %%
 % 0.04*sc = 2.5
 sb.scale = 2.5/0.04;
+fprintf('Scale = %f\n',sb.scale);
 
 % %%
-sb.B = 8.5/sb.scale;
-sb.B = 8352.385221/1000/sb.scale;
-sb.D = 2.5/sb.scale;
+% sb.B = 8.5/sb.scale;
+
+sb.B = sb.geo.B0/sb.scale;
+sb.D = sb.geo.D/sb.scale;
+fprintf('B_ori = %f, D_ori = %f\n',sb.geo.B0,sb.geo.D);
+fprintf('B = %f, D = %f\n',sb.B,sb.D);
 
 % %%
-sb
+% sb.narrow = true;
+sb.narrow = id_narrow;
+
+% %% [markdown]
+% # Fluid Mechanics
+
+% %% [markdown]
+% ## Reynold Number
 
 % %% [markdown]
 % $$\mathrm{
@@ -108,70 +204,22 @@ Wind = m_wind;
 sb.Re = 150;
 % Wind.air.mu(273.15+15)
 % Wind.air.rho(101325, 273.15+15)
-sb.U = @(rey_n) (rey_n * Wind.air.mu(273.15+15) / Wind.air.rho(101325, 273.15+15) / sb.D);
-sb.U(sb.Re)
+sb.U = @(rey_n) (rey_n * Wind.air.mu(273.15+15) / Wind.air.rho(101325, 273.15+15) / sb.B);
+% sb.U(sb.Re)
 sb.T_viv = @(rey_n) sb.B / sb.U(rey_n) / 0.2;
-sb.T_viv(sb.Re)
+% sb.T_viv(sb.Re)
 
 % %%
-sb.Re_target = Wind.air.rho(101325, 273.15+15) * 40 * sb.D / Wind.air.mu(273.15+15);
+sb.Re_target = Wind.air.rho(101325, 273.15+15) * 40 * sb.B / Wind.air.mu(273.15+15);
 fprintf('Target Reynolds number = %e.\n',sb.Re_target)
+fprintf('Wind speed = %e [m/s], Period for vortex shedding = %e [s].\n', ...
+    sb.U(sb.Re_target),sb.T_viv(sb.Re_target))
+fprintf('Start Reynolds number = %e.\n',sb.Re)
+fprintf('Wind speed = %e [m/s], Period for vortex shedding = %e [s].\n', ...
+    sb.U(sb.Re),sb.T_viv(sb.Re))
 
 % %%
 sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
-
-% %% [markdown]
-% # Placing Inlet and Outlet Boundaries for Exterior Flow
-
-% %% [markdown]
-% - In exterior flow applications, such as flow around vehicles and buildings,
-%     the conditions far away from the obstacle are usually set to a constant velocity vector
-%     on inlet boundaries and a constant pressure on outlet boundaries.
-% - The question again arises as to what extent the distance from the obstacle
-%     at which these conditions are applied influences the solution.
-% - For exterior flow, it turns out that this distance varies with the spatial dimensions of the model.
-% - For 2D models, the required distance is an order of magnitude larger than
-%     for 3D and 2D axisymmetric models.
-% - Once more, we look at ideal potential flow solutions to try to understand why this is so.
-% $$$$
-% - For exterior flow around an obstacle,
-%     vorticity is created in boundary layers on the solid surface.
-% - The boundary layers on different sides of the obstacle may merge at the trailing edge,
-%     forming a thin sheet of vorticity that is advected downstream into a wake.
-% - If the boundary layer on any side separates from the obstacle
-%     due to an instability or the existence of a sharp convex corner,
-%     the wake will be wider.
-% - In either case, the vorticity that is shed downstream is confined to the wake
-%     and the flow outside the wake is approximately irrotational.
-% $$$$
-% - A plot of the turbulent flow around an airfoil.
-
-% %% [markdown]
-% ## k-e
-
-% %% [markdown]
-% - Ref.3
-%     - inlet
-% $$\mathrm{
-%     \mu_T = 10 \cdot \mu
-% }$$
-%     - outlet
-%         - pressure condition
-% - 293 K, 1 atm
-
-% %% [markdown]
-% - Free-stream turbulent kinetic energy
-%
-% $$\mathrm{
-% k_\infty = 0.1 \frac{\mu_\infty U_\infty}{\rho_\infty L}
-% }$$
-%
-% - dissipation rate
-%
-% $$\mathrm{
-% \omega_\infty = 10 \frac{U_\infty}{L}
-% }$$
-%
 
 % %% [markdown]
 % # Turbulent model
@@ -736,11 +784,229 @@ sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 % Total Force 	-spf.T_stressy 	spf.nymesh*p + spf.rho*spf.u_tau*spf.u_tangy/spf.uPlus
 
 % %% [markdown]
+% # k-e
+
+% %% [markdown]
+% ## Placing Inlet and Outlet Boundaries for Exterior Flow
+
+% %% [markdown]
+% - In exterior flow applications, such as flow around vehicles and buildings,
+%     the conditions far away from the obstacle are usually set to a constant velocity vector
+%     on inlet boundaries and a constant pressure on outlet boundaries.
+% - The question again arises as to what extent the distance from the obstacle
+%     at which these conditions are applied influences the solution.
+% - For exterior flow, it turns out that this distance varies with the spatial dimensions of the model.
+% - For 2D models, the required distance is an order of magnitude larger than
+%     for 3D and 2D axisymmetric models.
+% - Once more, we look at ideal potential flow solutions to try to understand why this is so.
+% $$$$
+% - For exterior flow around an obstacle,
+%     vorticity is created in boundary layers on the solid surface.
+% - The boundary layers on different sides of the obstacle may merge at the trailing edge,
+%     forming a thin sheet of vorticity that is advected downstream into a wake.
+% - If the boundary layer on any side separates from the obstacle
+%     due to an instability or the existence of a sharp convex corner,
+%     the wake will be wider.
+% - In either case, the vorticity that is shed downstream is confined to the wake
+%     and the flow outside the wake is approximately irrotational.
+% $$$$
+% - A plot of the turbulent flow around an airfoil.
+
+% %% [markdown]
+% - Ref.3
+%     - inlet
+% $$\mathrm{
+%     \mu_T = 10 \cdot \mu
+% }$$
+%     - outlet
+%         - pressure condition
+% - 293 K, 1 atm
+
+% %% [markdown]
+% - Free-stream turbulent kinetic energy
+%
+% $$\mathrm{
+% k_\infty = 0.1 \frac{\mu_\infty U_\infty}{\rho_\infty L}
+% }$$
+%
+% - dissipation rate
+%
+% $$\mathrm{
+% \omega_\infty = 10 \frac{U_\infty}{L}
+% }$$
+%
+
+% %% [markdown]
+% # SST
+
+
+% %% [markdown]
+% ## Introduction
+
+% %% [markdown]
+% - The SST model combines the near-wall capabilities of the k-$\omega$ model
+%     with the superior free-stream behavior of the k-$\epsilon$ model
+%     to enable accurate simulations of a wide variety of
+%     internal and external flow problems.
+% - See the theory for the SST turbulence model in the CFD Module User’s Guide
+%     for further information.
+
+% %% [markdown]
+% ## Model Definition
+
+% %% [markdown]
+% - Consider the flow relative to a reference frame fixed on
+%     a arch-rib of YJN2 Bridge with depth (chord-length) sb.D = 0.04 m.
+% - The temperature of the ambient air is 20 $^\circ$C
+%     and the relative free-stream velocity is U = 50 m/s
+%     resulting in a Mach number of 0.15 = $\mathrm{\frac{U}{V_{sound}}}$.
+% - The Reynolds number based on the chord length is roughly $\mathrm{6·10^6}$,
+%     so you can assume that the boundary layers are turbulent
+%     over practically the entire airfoil.
+% - The airfoil is inclined at an angle $\alpha$ to the oncoming stream,
+% - To obtain a sharp trailing edge,
+%     the airfoil is slightly altered from its original shape (Ref. 3),
+% - The upstream, top, and bottom edges of the computational domain are
+%     located 100 chord-lengths away from the trailing edge of the airfoil
+%     and the downstream edge is located 200 chord-lengths away.
+% - This is to minimize the effect of the applied boundary conditions.
+
+% %% [markdown]
+% - Far-field values for the turbulence variables,
+% $$\mathrm{
+% \omega_\infty = (1 \rightarrow 10) \frac{U_\infty}{L},
+% \frac{v}{v}
+% }$$
+% - where the free-stream value of the turbulence kinetic energy is given by
+%     $k_\infty = \nu_{T_\infty} \omega_\infty$
+%     and L is the appropriate length of the computational domain.
+% - The current model applies the upper limit
+%     of the provided free-stream turbulence values,
+% $$\mathrm{
+% \omega_\infty = (1 \rightarrow 10) \frac{U_\infty}{L}
+% }$$
+%
+
+% %% [markdown]
+% Close-up of the airfoil section
+
+% %% [markdown]
+% - The computations employ a structured mesh with a high size ratio
+%     between the outermost and wall-adjacent elements.
+
+% %% [markdown]
+% ## POTENTIAL FLOW SOLUTION
+
+% %% [markdown]
+% - The simplest option when setting the initial velocity field is
+%     to use a constant velocity,
+%     which does not satisfy the wall boundary conditions.
+% - A more accurate and robust initial guess can be obtained
+%     solving the potential flow equation.
+% - Assuming irrotational, inviscid flow,
+%     the velocity potential $\phi$ is defined as
+% $$\mathrm{ u = - \nabla \phi
+% }$$
+% - The velocity potential $\phi$ must satisfy the continuity equation
+%     for incompressible flow, $\nabla \cdot u = 0$.
+% - The continuity equation can be expressed as a Laplace equation
+% $$\mathrm{ \nabla \cdot (- \nabla \phi) = 0
+% }$$
+% which is the potential flow equation.
+
+% %% [markdown]
+% - Once the velocity potential $\phi$ is computed,
+%     the pressure can be approximated using Bernoulli’s equation
+%     for steady flows:
+% Once the velocity potential     is computed, the pressure can be approximated using Bernoulli’s equation for steady flows
+% $$\mathrm{
+%     p = - \frac{\rho}{2} | \nabla \phi |^2
+% }$$
+
+% %% [markdown]
+% ## Results and Discussion
+
+% %% [markdown]
+% - The study performs a Parametric Sweep with the angle of attack $\alpha$
+%     taking the values,
+% - Figure 3 shows the velocity magnitude and the streamlines
+%     for the steady flow around the NACA 0012 profile at $\alpha$ = 14 $^\circ$.
+
+% %% [markdown]
+% Figure 3: Velocity magnitude and streamlines
+%     for the flow around a NACA 0012 airfoil.
+
+% %% [markdown]
+% - A small separation bubble appears at the trailing edge
+%     for higher values of $\alpha$
+%     and the flow is unlikely to remain steady and two-dimensional hereon.
+% - Ref. 1 provides experimental data for the lift coefficient
+%     versus the angle of attack,
+
+% %% [markdown]
+% $$\mathrm{
+%     C_L (\alpha) = \oint\limits_c ()
+% }$$
+
+% %% [markdown]
+% - where the pressure coefficient is defined as
+%
+% - and c is the chord length.
+% - Note that the normal is directed outward from the flow domain
+%     (into the airfoil).
+% - Figure 4 shows computational and experimental results
+%     for the lift coefficient versus angle of attack.
+
+% %% [markdown]
+% Figure 4: Computational (solid) and experimental (dots) results
+%     for the lift coefficient vs. angle of attack.
+
+% %% [markdown]
+% - No discernible discrepancy
+%     between the computational and experimental results occurs
+%     within the range of $\alpha$ values used in the computations.
+% - The experimental results continue through the parameter regime
+%     where the airfoil stalls.
+% - Figure 5 shows a comparison between the computed pressure coefficient
+%     at 10 and the experimental results in Ref. 2.
+
+% %% [markdown]
+% Figure 5: Computational (solid) and experimental (dots)
+%     results for the pressure coefficient along the airfoil.
+
+% %% [markdown]
+% - Experimental data is only available on the low-pressure side of the airfoil.
+% - The agreement between the computational and experimental results is very good.
+
+% %% [markdown]
+% References
+%
+% - 1. C.L. Ladson,
+%     “Effects of Independent Variation of Mach and Reynolds Numbers
+%     on the Low-Speed Aerodynamic Characteristics
+%     of the NACA 0012 Airfoil Section,”
+%     NASA TM 4074, 1988.
+
+% %% [markdown]
+% - U_inf free-stream velocity
+% - rho-inf free-stream density
+% - mu-inf free-stream dynamic viscosity
+% - L domain reference length
+% - c chord length
+% - k_inf free-stream turbulent kinetic energy
+% - om-inf freestream specific dissipation rate
+% - alpha angle of attack
+
+% %% [markdown]
+% - Dirichlet boundary condition
+% - Neuman
+
+% %% [markdown]
+%
+
+% %% [markdown]
 % # Parameter Setting
 
-
-% %%
-% wtt.
 
 % %% [markdown]
 % # Laminar
@@ -760,6 +1026,10 @@ import com.comsol.model.util.*
 model = ModelUtil.create('Model');
 
 model.modelPath('/home/sbkim/Work/git/openfoam_seo/wtt/yjn2');
+
+model.param.set('seo_U_in', sprintf('%f[m/s]',sb.U(150)));
+model.param.set('seo_B', sprintf('%f[m]',sb.B));
+model.param.set('seo_D', sprintf('%f[m]',sb.D));
 
 model.component.create('comp1', true);
 
@@ -791,8 +1061,12 @@ model.component('comp1').geom('geom1').feature('imp1').set('type', 'dxf');
 % '7' '6' ''});
 model.component('comp1').geom('geom1').feature('imp1').set('filename', ...
     '/media/sbkim/2266B8F966B8CEB3/git/openfoam_seo/wtt/yjn2/yjn2_cfd_rib_200915.dxf');
-
+if 0
 model.component('comp1').geom('geom1').feature('imp1').set('knit', 'curve');
+else
+model.component('comp1').geom('geom1').feature('imp1').set('knit', false);
+model.component('comp1').geom('geom1').feature('imp1').set('repairgeom', false);
+end
 model.component('comp1').geom('geom1').create('csol1', 'ConvertToSolid');
 % model.component('comp1').geom('geom1').feature('csol1').selection('input').set({ ...
     % 'imp1(2)' 'imp1(3)' 'imp1(4)' 'imp1(5)'});
@@ -804,29 +1078,22 @@ model.component('comp1').geom('geom1').create('del1', 'Delete');
 % model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1(1)', [1 2 3 4 5 6 7 19 20 21 29 30 31 32 37 38 39 40 41 42 43 51 52 53 54 55 57 58 59 62 66 70 72 75 76 78 80 83 84 85 87 89 92 93 94 96 98 101 102 104 106 109 110 112 114 115 116 117 118 125 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 145 146 158 165 171 172 174 176 179 180 182 184 187 188 190 192 195 196 198 200 203 204 206 208 211 212 214 216 219 220 222 224 227 228 230 232 235 236 238 239 241 245 246 248 250 253 254 256 258 261 262 264 266 269 270 272 274 277 278 280 282 285 286 288 290 293 294 296 298 301 302 304 306 309 310 312 313 314 315 317 318 319 320 321 322 323 324 325 326 327 329 330 331 332 333 334 335 337 338 340 341 363 364 365 366 367 368 369 370 371 372 373 374 377 389 390 391 407 408 409 411 412 413 414 415 416 417 418 419 420 421 422 423 424 425 426 427 428 429 430 431 432 433 434 435 436 439 440 443 444 459 470 473 474 477 478 481 482 485 486 489 490 493 494 495 496 497 498 499 500 501 502 503 504 505 506 511 523 524 527 528 531 532 535 536 539 540 543 544 547 548 551 552 555 556 559 560 563 564 567 568 571 572 575 576 579 580 583 584 587 588 591 592 594 595 596 597 598 599 600 601 602 603 604 605 607 608 609 610 611 612]);
 
 model.component('comp1').geom('geom1').feature('del1').selection('input').init(2);
-model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', [1 2 3 4 5 16 17 18 19 20]);
+switch sb.geo.id
+    case 1
+        model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', ...
+            [1 2 3 4 5 16 17 18 19 20]);
+    case 2
+        model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', ...
+            [6 7 8 9 10 11 12 13 14 15]);
+    % otherwise
+end
 model.component('comp1').geom('geom1').run('del1');
 
 % model.component('comp1').geom('geom1').measure.selection.init(2);
 % model.component('comp1').geom('geom1').measure.selection.all('del1(1)');
 
-model.component('comp1').geom('geom1').measure.selection.init(0);
-model.component('comp1').geom('geom1').measure.selection.set('del1', [1 32]);
-
-% 19959.15556 [m], (19959.15556, -8.381909993E-7) [m].
-% Point 1 (del1(2)) to 320 (del1(2)).
-% Average coordinates: (157333.0083, -1067.977166) [m].
-% Points: 1, 320 (del1(2)).
-
-% [Sep 17, 2020 4:20 AM]
-% Distance: 8352.385221 [m], (8352.385221, 2.328852133E-8) [m].
-% Point 1 (del1) to 32 (del1).
-% Average coordinates: (157127.4098, 10384.96539) [m].  Points: 1, 32 (del1).
-
-% [Sep 16, 2020 10:39 PM]
-% Distance: 12347.59452 [m], (12347.59452, 4.946377885E-8) [m].
-% Point 2 (csol1) to 63 (csol1). Average coordinates: (157127.4098, -11160.59134) [m].
-% Points: 2, 63 (csol1).
+% model.component('comp1').geom('geom1').measure.selection.init(0);
+% model.component('comp1').geom('geom1').measure.selection.set('del1', [1 32]);
 
 % %%
 model.component('comp1').geom('geom1').create('sca1', 'Scale');
@@ -835,8 +1102,12 @@ model.component('comp1').geom('geom1').feature('sca1').set('factor', '1e-3');
 model.component('comp1').geom('geom1').feature('sca1').selection('input').set({'del1'});
 
 model.component('comp1').geom('geom1').create('mov1', 'Move');
-model.component('comp1').geom('geom1').feature('mov1').setIndex('displx', '-157.1274098', 0);
-model.component('comp1').geom('geom1').feature('mov1').setIndex('disply', '-10.38496539', 0);
+% model.component('comp1').geom('geom1').feature('mov1').setIndex('displx', '-157.1274098', 0);
+% model.component('comp1').geom('geom1').feature('mov1').setIndex('disply', '10.0501921', 0);
+model.component('comp1').geom('geom1').feature('mov1').setIndex('displx', ...
+    sprintf('-%f',sb.geo.x_c), 0);
+model.component('comp1').geom('geom1').feature('mov1').setIndex('disply', ...
+    sprintf('-%f',sb.geo.y_c), 0);
 model.component('comp1').geom('geom1').feature('mov1').selection('input').set({'sca1'});
 
 % out = model;
@@ -849,10 +1120,16 @@ model.component('comp1').geom('geom1').feature('sca2').selection('input').set({'
 model.component('comp1').geom('geom1').create('mir1', 'Mirror');
 model.component('comp1').geom('geom1').feature('mir1').selection('input').set({'sca2'});
 model.component('comp1').geom('geom1').create('r1', 'Rectangle');
-model.component('comp1').geom('geom1').feature('r1').set('pos', {'-1.5' '-1.5/2'});
-model.component('comp1').geom('geom1').feature('r1').set('size', [4.5 1.5]);
+if sb.narrow
+    model.component('comp1').geom('geom1').feature('r1').set('pos', {'-1.5/2' '-1.5/2'});
+    model.component('comp1').geom('geom1').feature('r1').set('size', [4.5-2 1.5]);
+else
+    model.component('comp1').geom('geom1').feature('r1').set('pos', {'-1.5' '-1.5/2'});
+    model.component('comp1').geom('geom1').feature('r1').set('size', [4.5 1.5]);
+end
 model.component('comp1').geom('geom1').create('c1', 'Circle');
-model.component('comp1').geom('geom1').feature('c1').set('pos', {'0' '.02'});
+% model.component('comp1').geom('geom1').feature('c1').set('pos', {'0' '.02'});
+model.component('comp1').geom('geom1').feature('c1').set('pos', {'0' '.02*0'});
 model.component('comp1').geom('geom1').feature('c1').set('r', 0.2);
 model.component('comp1').geom('geom1').create('r2', 'Rectangle');
 model.component('comp1').geom('geom1').feature('r2').set('pos', [-0.5 -0.5]);
@@ -997,45 +1274,98 @@ model.component('comp1').material('mat1').propertyGroup('NonlinearModel').descr(
 % ## physics
 
 % %%
-model.component('comp1').selection.create('box1', 'Box');
-model.component('comp1').selection('box1').set('entitydim', 1);
-model.component('comp1').selection('box1').set('xmin', -0.15);
-model.component('comp1').selection('box1').set('xmax', 0.15);
-model.component('comp1').selection('box1').set('ymin', -0.1);
-model.component('comp1').selection('box1').set('ymax', 0.12);
+model.component('comp1').selection.create('box5', 'Box');
+model.component('comp1').selection('box5').set('entitydim', 1);
+model.component('comp1').selection('box5').set('xmin', -0.15);
+model.component('comp1').selection('box5').set('xmax', 0.15);
+model.component('comp1').selection('box5').set('ymin', -0.1);
+model.component('comp1').selection('box5').set('ymax', 0.12);
+
+model.component('comp1').selection.create('box6', 'Box');
+model.component('comp1').selection('box6').set('entitydim', 1);
+model.component('comp1').selection('box6').set('xmin', -0.15);
+model.component('comp1').selection('box6').set('xmax', 0);
+model.component('comp1').selection('box6').set('ymin', -0.1);
+model.component('comp1').selection('box6').set('ymax', 0.12);
+
+model.component('comp1').selection.create('box7', 'Box');
+model.component('comp1').selection('box7').set('entitydim', 1);
+model.component('comp1').selection('box7').set('xmin', 0);
+model.component('comp1').selection('box7').set('xmax', 0.15);
+model.component('comp1').selection('box7').set('ymin', -0.1);
+model.component('comp1').selection('box7').set('ymax', 0.12);
 
 % %%
+model.component('comp1').selection.create('box1', 'Box');
+model.component('comp1').selection('box1').set('entitydim', 1);
+model.component('comp1').selection('box1').set('xmin', -1.6);
+model.component('comp1').selection('box1').set('xmax', -1.4);
+model.component('comp1').selection('box1').set('ymin', -1);
+model.component('comp1').selection('box1').set('ymax', 1);
+model.component('comp1').selection('box1').set('condition', 'inside');
+% model.component('comp1').selection('box1').set('condition', 'allvertices');
+% mphviewselection(model,'box1')
+
+
 model.component('comp1').selection.create('box2', 'Box');
 model.component('comp1').selection('box2').set('entitydim', 1);
-model.component('comp1').selection('box2').set('xmin', -0.15);
-model.component('comp1').selection('box2').set('xmax', 0);
-model.component('comp1').selection('box2').set('ymin', -0.1);
-model.component('comp1').selection('box2').set('ymax', 0.12);
+model.component('comp1').selection('box2').set('xmin', 2.9);
+model.component('comp1').selection('box2').set('xmax', 3.1);
+model.component('comp1').selection('box2').set('ymin', -1);
+model.component('comp1').selection('box2').set('ymax', 1);
+model.component('comp1').selection('box2').set('condition', 'inside');
+% mphviewselection(model,'box2')
+
+if sb.narrow
+model.component('comp1').selection('box1').set('xmin', -.8);
+model.component('comp1').selection('box1').set('xmax', -.7);
+model.component('comp1').selection('box2').set('xmin', 1.7);
+model.component('comp1').selection('box2').set('xmax', 1.8);
+end
+
 
 model.component('comp1').selection.create('box3', 'Box');
 model.component('comp1').selection('box3').set('entitydim', 1);
-model.component('comp1').selection('box3').set('xmin', 0);
-model.component('comp1').selection('box3').set('xmax', 0.15);
-model.component('comp1').selection('box3').set('ymin', -0.1);
-model.component('comp1').selection('box3').set('ymax', 0.12);
+model.component('comp1').selection('box3').set('xmin', -1.6);
+model.component('comp1').selection('box3').set('xmax', 3.1);
+model.component('comp1').selection('box3').set('ymin', -.8);
+model.component('comp1').selection('box3').set('ymax', -.7);
+model.component('comp1').selection('box3').set('condition', 'inside');
+% mphviewselection(model,'box3')
+
+model.component('comp1').selection.create('box4', 'Box');
+model.component('comp1').selection('box4').set('entitydim', 1);
+model.component('comp1').selection('box4').set('xmin', -1.6);
+model.component('comp1').selection('box4').set('xmax', 3.1);
+model.component('comp1').selection('box4').set('ymin', .7);
+model.component('comp1').selection('box4').set('ymax', .8);
+model.component('comp1').selection('box4').set('condition', 'inside');
+% mphviewselection(model,'box4')
 
 % model.component('comp1').physics.create('spf', 'LaminarFlow', 'geom1');
 
 % %%
 model.component('comp1').physics('spf').create('inl1', 'InletBoundary', 1);
-model.component('comp1').physics('spf').feature('inl1').selection.set([1]);
+% model.component('comp1').physics('spf').feature('inl1').selection.set([1]);
+model.component('comp1').physics('spf').feature('inl1').selection.named('box1');
 model.component('comp1').physics('spf').create('out1', 'OutletBoundary', 1);
 % model.component('comp1').physics('spf').feature('out1').selection.set([229]);
-model.component('comp1').physics('spf').feature('out1').selection.set([36]);
+% model.component('comp1').physics('spf').feature('out1').selection.set([36]);
+model.component('comp1').physics('spf').feature('out1').selection.named('box2');
 model.component('comp1').physics('spf').create('sym1', 'Symmetry', 1);
-model.component('comp1').physics('spf').feature('sym1').selection.set([2 3]);
+% model.component('comp1').physics('spf').feature('sym1').selection.set([2 3]);
+model.component('comp1').physics('spf').feature('sym1').selection.named('box3');
+model.component('comp1').physics('spf').create('sym2', 'Symmetry', 1);
+model.component('comp1').physics('spf').feature('sym2').selection.named('box4');
 
 % %%
-sb.U_in = sb.U(150);
+% sb.U_in = sb.U(150);
 
 % %%
 % model.component('comp1').physics('spf').prop('PhysicalModelProperty').set('IncludeGravity', true);
-model.component('comp1').physics('spf').feature('inl1').set('U0in', sb.U_in);
+model.component('comp1').physics('spf').feature('inl1').set('U0in', 'seo_U_in');
+% model.component('comp1').physics('spf').feature('inl1').set('U0in', sb.U_in);
+% model.component('comp1').physics('spf').feature('inl1').set('U0in', sb.U(150));
 
 % %% [markdown]
 % ## mesh
@@ -1053,7 +1383,7 @@ model.component('comp1').mesh('mesh1').feature('bl1').create('blp', 'BndLayerPro
 % model.component('comp1').mesh('mesh1').feature('bl1').feature('blp').selection.set([10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 272 273 276 277 278 279 280 281 282 283 284 285 286 287 288 289 290 291 292 293 294 295 296 297 298 299 300 301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 333 334 335 336 337 338 339 340 341]);
 
 % %%
-model.component('comp1').mesh('mesh1').feature('bl1').feature('blp').selection.named('box1');
+model.component('comp1').mesh('mesh1').feature('bl1').feature('blp').selection.named('box5');
 
 model.component('comp1').mesh('mesh1').feature('fq2').selection.geom('geom1', 2);
 model.component('comp1').mesh('mesh1').feature('fq2').selection.set([3]);
@@ -1739,181 +2069,150 @@ end
 
 
 % %% [markdown]
-% # Turbulent
-
-% %%
-[model,sb] = rib_turbulent_200918;
-
-% %% [markdown]
-% ## Introduction
-
-% %% [markdown]
-% - The SST model combines the near-wall capabilities of the k-$\omega$ model
-%     with the superior free-stream behavior of the k-$\epsilon$ model
-%     to enable accurate simulations of a wide variety of
-%     internal and external flow problems.
-% - See the theory for the SST turbulence model in the CFD Module User’s Guide
-%     for further information.
-
-% %% [markdown]
-% ## Model Definition
-
-% %% [markdown]
-% - Consider the flow relative to a reference frame fixed on
-%     a arch-rib of YJN2 Bridge with depth (chord-length) sb.D = 0.04 m.
-% - The temperature of the ambient air is 20 $^\circ$C
-%     and the relative free-stream velocity is U = 50 m/s
-%     resulting in a Mach number of 0.15 = $\mathrm{\frac{U}{V_{sound}}}$.
-% - The Reynolds number based on the chord length is roughly $\mathrm{6·10^6}$,
-%     so you can assume that the boundary layers are turbulent
-%     over practically the entire airfoil.
-% - The airfoil is inclined at an angle $\alpha$ to the oncoming stream,
-% - To obtain a sharp trailing edge,
-%     the airfoil is slightly altered from its original shape (Ref. 3),
-% - The upstream, top, and bottom edges of the computational domain are
-%     located 100 chord-lengths away from the trailing edge of the airfoil
-%     and the downstream edge is located 200 chord-lengths away.
-% - This is to minimize the effect of the applied boundary conditions.
-
-% %% [markdown]
-% - Far-field values for the turbulence variables,
-% $$\mathrm{
-% \omega_\infty = (1 \rightarrow 10) \frac{U_\infty}{L},
-% \frac{v}{v}
-% }$$
-% - where the free-stream value of the turbulence kinetic energy is given by
-%     $k_\infty = \nu_{T_\infty} \omega_\infty$
-%     and L is the appropriate length of the computational domain.
-% - The current model applies the upper limit
-%     of the provided free-stream turbulence values,
-% $$\mathrm{
-% \omega_\infty = (1 \rightarrow 10) \frac{U_\infty}{L}
-% }$$
-%
-
-% %% [markdown]
-% Close-up of the airfoil section
-
-% %% [markdown]
-% - The computations employ a structured mesh with a high size ratio
-%     between the outermost and wall-adjacent elements.
-
-% %% [markdown]
-% ## POTENTIAL FLOW SOLUTION
-
-% %% [markdown]
-% - The simplest option when setting the initial velocity field is
-%     to use a constant velocity,
-%     which does not satisfy the wall boundary conditions.
-% - A more accurate and robust initial guess can be obtained
-%     solving the potential flow equation.
-% - Assuming irrotational, inviscid flow,
-%     the velocity potential $\phi$ is defined as
-% $$\mathrm{ u = - \nabla \phi
-% }$$
-% - The velocity potential $\phi$ must satisfy the continuity equation
-%     for incompressible flow, $\nabla \cdot u = 0$.
-% - The continuity equation can be expressed as a Laplace equation
-% $$\mathrm{ \nabla \cdot (- \nabla \phi) = 0
-% }$$
-% which is the potential flow equation.
-
-% %% [markdown]
-% - Once the velocity potential $\phi$ is computed,
-%     the pressure can be approximated using Bernoulli’s equation
-%     for steady flows:
-% Once the velocity potential     is computed, the pressure can be approximated using Bernoulli’s equation for steady flows
-% $$\mathrm{
-%     p = - \frac{\rho}{2} | \nabla \phi |^2
-% }$$
-
-% %% [markdown]
-% ## Results and Discussion
-
-% %% [markdown]
-% - The study performs a Parametric Sweep with the angle of attack $\alpha$
-%     taking the values,
-% - Figure 3 shows the velocity magnitude and the streamlines
-%     for the steady flow around the NACA 0012 profile at $\alpha$ = 14 $^\circ$.
-
-% %% [markdown]
-% Figure 3: Velocity magnitude and streamlines
-%     for the flow around a NACA 0012 airfoil.
-
-% %% [markdown]
-% - A small separation bubble appears at the trailing edge
-%     for higher values of $\alpha$
-%     and the flow is unlikely to remain steady and two-dimensional hereon.
-% - Ref. 1 provides experimental data for the lift coefficient
-%     versus the angle of attack,
-
-% %% [markdown]
-% $$\mathrm{
-%     C_L (\alpha) = \oint\limits_c ()
-% }$$
-
-% %% [markdown]
-% - where the pressure coefficient is defined as
-%
-% - and c is the chord length.
-% - Note that the normal is directed outward from the flow domain
-%     (into the airfoil).
-% - Figure 4 shows computational and experimental results
-%     for the lift coefficient versus angle of attack.
-
-% %% [markdown]
-% Figure 4: Computational (solid) and experimental (dots) results
-%     for the lift coefficient vs. angle of attack.
-
-% %% [markdown]
-% - No discernible discrepancy
-%     between the computational and experimental results occurs
-%     within the range of $\alpha$ values used in the computations.
-% - The experimental results continue through the parameter regime
-%     where the airfoil stalls.
-% - Figure 5 shows a comparison between the computed pressure coefficient
-%     at 10 and the experimental results in Ref. 2.
-
-% %% [markdown]
-% Figure 5: Computational (solid) and experimental (dots)
-%     results for the pressure coefficient along the airfoil.
-
-% %% [markdown]
-% - Experimental data is only available on the low-pressure side of the airfoil.
-% - The agreement between the computational and experimental results is very good.
-
-% %% [markdown]
-% References
-%
-% - 1. C.L. Ladson,
-%     “Effects of Independent Variation of Mach and Reynolds Numbers
-%     on the Low-Speed Aerodynamic Characteristics
-%     of the NACA 0012 Airfoil Section,”
-%     NASA TM 4074, 1988.
-
-% %% [markdown]
-% - U_inf free-stream velocity
-% - rho-inf free-stream density
-% - mu-inf free-stream dynamic viscosity
-% - L domain reference length
-% - c chord length
-% - k_inf free-stream turbulent kinetic energy
-% - om-inf freestream specific dissipation rate
-% - alpha angle of attack
-
-% %% [markdown]
-% - Dirichlet boundary condition
-% - Neuman
-
-% %% [markdown]
-%
-
-% %%
-1/0.0025
-1000/60
+% # Turbulent: k-e
 
 % %% [markdown]
 % # Arch Rib: Upper
+
+% %%
+% [model1, sb1] = rib_turbulent_lower_200925(1)
+
+% %%
+% sb0 = load(sprintf('rib_%s_turbulent_Re%d', sb.s_geo, sb.Re),'sb')
+sb0 = load(sprintf('rib_%s_turbulent_Re%d', 'upper', 2e5),'sb');
+sb0.sb
+sb0.sb.res(1).C.DLM
+
+% %%
+figure(1)
+clf
+id_pause = true;
+for ii=1:length(sb0.sb.Re_pool)
+    for jj=1:3
+        subplot(1,3,jj)
+        semilogx(sb0.sb.Re_pool(ii), ...
+            sb0.sb.res(ii).C.DLM(1,jj), 'o', 'Color', rgb('Navy'),'MarkerSize',6-2)
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+    kk = 2;
+    for jj = 1:3
+        subplot(1,3,jj)
+        semilogx(sb0.sb.Re_pool(ii), ...
+            sb0.sb.res(ii).C.DLM(kk,jj), '>','Color',rgb('Teal'),'MarkerSize',6-2)
+    end
+    kk = 3;
+    for jj = 1:3
+        subplot(1,3,jj)
+        semilogx(sb0.sb.Re_pool(ii), ...
+            sb0.sb.res(ii).C.DLM(kk,jj), '<','Color',rgb('Crimson'),'MarkerSize',6-2)
+    end
+
+end
+
+% %% [markdown]
+% # Arch Rib: Lower
+
+% %%
+% [model2, sb2] = rib_turbulent_lower_200925(2)
+
+% %%
+% sb0 = load(sprintf('rib_%s_turbulent_Re%d', sb.s_geo, sb.Re),'sb')
+sb1 = load(sprintf('rib_%s_turbulent_Re%d', 'lower', 2e5),'sb');
+sb1.sb
+sb1.sb.res(1).C.DLM
+
+% %%
+figure(1)
+clf
+id_pause = true;
+for ii=1:length(sb1.sb.Re_pool)
+    for jj=1:3
+        subplot(1,3,jj)
+        semilogx(sb1.sb.Re_pool(ii), ...
+            sb1.sb.res(ii).C.DLM(1,jj), 'o', 'Color', rgb('Navy'),'MarkerSize',6-2)
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+    kk = 2;
+    for jj = 1:3
+        subplot(1,3,jj)
+        semilogx(sb1.sb.Re_pool(ii), ...
+            sb1.sb.res(ii).C.DLM(kk,jj), '>','Color',rgb('Teal'),'MarkerSize',6-2)
+    end
+    kk = 3;
+    for jj = 1:3
+        subplot(1,3,jj)
+        semilogx(sb1.sb.Re_pool(ii), ...
+            sb1.sb.res(ii).C.DLM(kk,jj), '<','Color',rgb('Crimson'),'MarkerSize',6-2)
+    end
+
+end
+
+% %% [markdown]
+% # Arch Rib: Upper and Lower
+
+% %%
+figure(1)
+clf
+id_pause = true;
+for ii=1:length(sb1.sb.Re_pool)
+    for jj=1:3
+        subplot(1,3,jj)
+        semilogx(sb1.sb.Re_pool(ii), ...
+            sb1.sb.res(ii).C.DLM(1,jj), 'o', 'Color', rgb('Navy'),'MarkerSize',6-2)
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+    kk = 2;
+    for jj = 1:3
+        subplot(1,3,jj)
+        semilogx(sb1.sb.Re_pool(ii), ...
+            sb1.sb.res(ii).C.DLM(kk,jj), '>','Color',rgb('Teal'),'MarkerSize',6-2)
+    end
+    kk = 3;
+    for jj = 1:3
+        subplot(1,3,jj)
+        semilogx(sb1.sb.Re_pool(ii), ...
+            sb1.sb.res(ii).C.DLM(kk,jj), '<','Color',rgb('Crimson'),'MarkerSize',6-2)
+    end
+
+end
+subplot(131), title('Lower')
+figure(2)
+clf
+id_pause = true;
+for ii=1:length(sb0.sb.Re_pool)
+    for jj=1:3
+        subplot(1,3,jj)
+        semilogx(sb0.sb.Re_pool(ii), ...
+            sb0.sb.res(ii).C.DLM(1,jj), 'o', 'Color', rgb('Navy'),'MarkerSize',6-2)
+    end
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+    kk = 2;
+    for jj = 1:3
+        subplot(1,3,jj)
+        semilogx(sb0.sb.Re_pool(ii), ...
+            sb0.sb.res(ii).C.DLM(kk,jj), '>','Color',rgb('Teal'),'MarkerSize',6-2)
+    end
+    kk = 3;
+    for jj = 1:3
+        subplot(1,3,jj)
+        semilogx(sb0.sb.Re_pool(ii), ...
+            sb0.sb.res(ii).C.DLM(kk,jj), '<','Color',rgb('Crimson'),'MarkerSize',6-2)
+    end
+
+end
+subplot(131), title('Upper')
 
 % %%
 load rib_upper_turbulentSST1_Re200000.mat

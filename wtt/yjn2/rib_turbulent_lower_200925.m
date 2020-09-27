@@ -49,6 +49,32 @@ id_sv = false;
 % id_pl = true;
 id_pl = false;
 
+% %%
+    id_narrow = true;
+    id_geo = 2;
+
+% %%
+    optargs = {id_geo, id_narrow};
+
+    % only want 1 optional inputs at most
+        numvarargs = length(varargin);
+        if numvarargs > length(optargs)
+            error('myfuns:somefun2Alt:TooManyInputs', ...
+                sprintf('requires at most %d optional inputs',length(optargs)));
+        end
+
+    % now put these defaults into the valuesToUse cell array,
+    % and overwrite the ones specified in varargin.
+        % optargs(1:numvarargs) = varargin;
+        % or ...
+        % [optargs{1:numvarargs}] = varargin{:};
+        % id = find(~isempty(varargin));
+        id = cellfun(@(x)~isempty(x), varargin);
+        optargs(id) = varargin(id);
+
+    % Place optional args in memorable variable names
+        [id_geo, id_narrow] = optargs{:};
+
 % %% [markdown]
 % # Smilarity
 
@@ -82,17 +108,88 @@ id_pl = false;
 % %% [markdown]
 % ## Reynold Number
 
+% %% [markdown]
+% ### Geometry
+
+% %% [markdown]
+% #### Upper rib
+
+% %%
+% maximize B
+% [Sep 17, 2020 4:20 AM] Distance: 8352.385221 [m], (8352.385221, 2.328852133E-8) [m].
+% Point 1 (del1) to 32 (del1). Average coordinates: (157127.4098, 10384.96539) [m].  Points: 1, 32 (del1).
+sb.geo.x_c = 157127.4098/1e3;
+sb.geo.B = 8352.385221/1e3;
+
+% centering the right segment
+% [Sep 27, 2020 9:18 AM] Distance: 3043.119452 [m], (1339.594095, 2732.409863) [m].
+% Point 38 (imp1) to 43 (imp1). Average coordinates: (160289.3086, 11519.14003) [m].  Points: 38, 43 (imp1).
+sb.geo.y_c = 11519.14003/1e3;
+
+sb.geo.B1 = 1339.594095/1e3;
+sb.geo.D = 2732.409863/1e3;
+
+% %% [markdown]
+% #### Lower rib
+
+% %%
+% maximize B
+% [Sep 25, 2020 1:53 PM] Distance: 12354.14597 [m], (12354.14597, 5.817128113E-9) [m].
+% Point 1 (del1) to 32 (del1). Average coordinates: (157127.4098, -11184.36674) [m].  Points: 1, 32 (del1).
+sb.geo.x_c = 157127.4098/1e3;
+sb.geo.B = 12354.14597/1e3;
+
+% centering the right segment
+% [Sep 25, 2020 1:53 PM] Distance: 3043.119452 [m], (1339.594095, 2732.409863) [m].
+% Point 22 (del1) to 27 (del1). Average coordinates: (162290.189, -10050.1921) [m].  Points: 22, 27 (del1).
+sb.geo.y_c = -10050.1921/1e3;
+
+sb.geo.B1 = 1339.594095/1e3;
+sb.geo.D = 2732.409863/1e3;
+
+% %%
+% Upper
+% sb.geo.id = 1;
+% Lower
+% sb.geo.id = 2;
+sb.geo.id = id_geo;
+
+sb.geo.x_c = 157127.4098/1e3;
+sb.geo.B = 1339.594095/1e3;
+sb.geo.D = 2732.409863/1e3;
+
+switch sb.geo.id
+    case 1
+        sb.s_geo = 'upper';
+        sb.geo.B0 = 8352.385221/1e3;
+        sb.geo.y_c = 11519.14003/1e3;
+        sb.geo.x_c1 = 160289.3086/1e3;
+    case 2
+        sb.s_geo = 'lower';
+        sb.geo.B0 = 12354.14597/1e3;
+        sb.geo.y_c = -10050.1921/1e3;
+        sb.geo.x_c1 = 162290.189/1e3;
+    % otherwise
+end
+
 % %%
 % 0.04*sc = 2.5
 sb.scale = 2.5/0.04;
+fprintf('Scale = %f\n',sb.scale);
 
 % %%
-sb.B = 8.5/sb.scale;
-sb.B = 8352.385221/1000/sb.scale;
-sb.D = 2.5/sb.scale;
+% sb.B = 8.5/sb.scale;
+
+sb.B = sb.geo.B0/sb.scale;
+sb.D = sb.geo.D/sb.scale;
+sb.x_c = (sb.geo.x_c1 - sb.geo.x_c)/sb.scale;
+
+fprintf('B_ori = %f, D_ori = %f\n',sb.geo.B0,sb.geo.D);
+fprintf('B = %f, D = %f\n',sb.B,sb.D);
 
 % %%
-sb.narrow = true;
+% sb.narrow = true;
+sb.narrow = id_narrow;
 
 % %% [markdown]
 % $$\mathrm{
@@ -105,14 +202,19 @@ Wind = m_wind;
 sb.Re = 150;
 % Wind.air.mu(273.15+15)
 % Wind.air.rho(101325, 273.15+15)
-sb.U = @(rey_n) (rey_n * Wind.air.mu(273.15+15) / Wind.air.rho(101325, 273.15+15) / sb.D);
-sb.U(sb.Re)
+sb.U = @(rey_n) (rey_n * Wind.air.mu(273.15+15) / Wind.air.rho(101325, 273.15+15) / sb.B);
+% sb.U(sb.Re)
 sb.T_viv = @(rey_n) sb.B / sb.U(rey_n) / 0.2;
-sb.T_viv(sb.Re)
+% sb.T_viv(sb.Re)
 
 % %%
-sb.Re_target = Wind.air.rho(101325, 273.15+15) * 40 * sb.D / Wind.air.mu(273.15+15);
+sb.Re_target = Wind.air.rho(101325, 273.15+15) * 40 * sb.B / Wind.air.mu(273.15+15);
 fprintf('Target Reynolds number = %e.\n',sb.Re_target)
+fprintf('Wind speed = %e [m/s], Period for vortex shedding = %e [s].\n', ...
+    sb.U(sb.Re_target),sb.T_viv(sb.Re_target))
+fprintf('Start Reynolds number = %e.\n',sb.Re)
+fprintf('Wind speed = %e [m/s], Period for vortex shedding = %e [s].\n', ...
+    sb.U(sb.Re),sb.T_viv(sb.Re))
 
 % %%
 sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
@@ -206,10 +308,15 @@ model.component('comp1').geom('geom1').create('del1', 'Delete');
 % model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1(1)', [1 2 3 4 5 6 7 19 20 21 29 30 31 32 37 38 39 40 41 42 43 51 52 53 54 55 57 58 59 62 66 70 72 75 76 78 80 83 84 85 87 89 92 93 94 96 98 101 102 104 106 109 110 112 114 115 116 117 118 125 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 145 146 158 165 171 172 174 176 179 180 182 184 187 188 190 192 195 196 198 200 203 204 206 208 211 212 214 216 219 220 222 224 227 228 230 232 235 236 238 239 241 245 246 248 250 253 254 256 258 261 262 264 266 269 270 272 274 277 278 280 282 285 286 288 290 293 294 296 298 301 302 304 306 309 310 312 313 314 315 317 318 319 320 321 322 323 324 325 326 327 329 330 331 332 333 334 335 337 338 340 341 363 364 365 366 367 368 369 370 371 372 373 374 377 389 390 391 407 408 409 411 412 413 414 415 416 417 418 419 420 421 422 423 424 425 426 427 428 429 430 431 432 433 434 435 436 439 440 443 444 459 470 473 474 477 478 481 482 485 486 489 490 493 494 495 496 497 498 499 500 501 502 503 504 505 506 511 523 524 527 528 531 532 535 536 539 540 543 544 547 548 551 552 555 556 559 560 563 564 567 568 571 572 575 576 579 580 583 584 587 588 591 592 594 595 596 597 598 599 600 601 602 603 604 605 607 608 609 610 611 612]);
 
 model.component('comp1').geom('geom1').feature('del1').selection('input').init(2);
-% model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1',
-    % [1 2 3 4 5 16 17 18 19 20]);
-model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', ...
-    [6 7 8 9 10 11 12 13 14 15]);
+switch sb.geo.id
+    case 1
+        model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', ...
+            [1 2 3 4 5 16 17 18 19 20]);
+    case 2
+        model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', ...
+            [6 7 8 9 10 11 12 13 14 15]);
+    % otherwise
+end
 model.component('comp1').geom('geom1').run('del1');
 
 % model.component('comp1').geom('geom1').measure.selection.init(2);
@@ -218,29 +325,6 @@ model.component('comp1').geom('geom1').run('del1');
 % model.component('comp1').geom('geom1').measure.selection.init(0);
 % model.component('comp1').geom('geom1').measure.selection.set('del1', [1 32]);
 
-% 19959.15556 [m], (19959.15556, -8.381909993E-7) [m].
-% Point 1 (del1(2)) to 320 (del1(2)).
-% Average coordinates: (157333.0083, -1067.977166) [m].
-% Points: 1, 320 (del1(2)).
-
-% [Sep 17, 2020 4:20 AM]
-% Distance: 8352.385221 [m], (8352.385221, 2.328852133E-8) [m].
-% Point 1 (del1) to 32 (del1).
-% Average coordinates: (157127.4098, 10384.96539) [m].  Points: 1, 32 (del1).
-
-% [Sep 16, 2020 10:39 PM]
-% Distance: 12347.59452 [m], (12347.59452, 4.946377885E-8) [m].
-% Point 2 (csol1) to 63 (csol1). Average coordinates: (157127.4098, -11160.59134) [m].
-% Points: 2, 63 (csol1).
-
-%
-%%  lower
-%
-% [Sep 25, 2020 1:53 PM] Distance: 12354.14597 [m], (12354.14597, 5.817128113E-9) [m].
-% Point 1 (del1) to 32 (del1). Average coordinates: (157127.4098, -11184.36674) [m].  Points: 1, 32 (del1).
-% [Sep 25, 2020 1:53 PM] Distance: 3043.119452 [m], (1339.594095, 2732.409863) [m].
-% Point 22 (del1) to 27 (del1). Average coordinates: (162290.189, -10050.1921) [m].  Points: 22, 27 (del1).
-
 % %%
 model.component('comp1').geom('geom1').create('sca1', 'Scale');
 model.component('comp1').geom('geom1').feature('sca1').set('factor', '1e-3');
@@ -248,8 +332,12 @@ model.component('comp1').geom('geom1').feature('sca1').set('factor', '1e-3');
 model.component('comp1').geom('geom1').feature('sca1').selection('input').set({'del1'});
 
 model.component('comp1').geom('geom1').create('mov1', 'Move');
-model.component('comp1').geom('geom1').feature('mov1').setIndex('displx', '-157.1274098', 0);
-model.component('comp1').geom('geom1').feature('mov1').setIndex('disply', '10.0501921', 0);
+% model.component('comp1').geom('geom1').feature('mov1').setIndex('displx', '-157.1274098', 0);
+% model.component('comp1').geom('geom1').feature('mov1').setIndex('disply', '10.0501921', 0);
+model.component('comp1').geom('geom1').feature('mov1').setIndex('displx', ...
+    sprintf('-%f',sb.geo.x_c), 0);
+model.component('comp1').geom('geom1').feature('mov1').setIndex('disply', ...
+    sprintf('-%f',sb.geo.y_c), 0);
 model.component('comp1').geom('geom1').feature('mov1').selection('input').set({'sca1'});
 
 % out = model;
@@ -716,6 +804,8 @@ model.sol('sol1').attach('std2');
 id_pause = true;
 figure(1)
 clf
+
+telap = toc(tcomp);
 for ii=1:length(sb.Re_pool)
 
     sb.Re = sb.Re_pool(ii);
@@ -725,6 +815,9 @@ for ii=1:length(sb.Re_pool)
     model.component('comp1').physics('spf').feature('inl1').set('U0in', 'seo_U_in');
 
     model.sol('sol1').runAll;
+
+    sb.res(ii).C = s_cfd_comsol_DLM(model, sb, 'spf', 'dset1', 1);
+
     % sb.DLM(ii,1) = mphglobal(model,'bnd1');
     % sb.DLM(ii,2) = mphglobal(model,'bnd2');
     % sb.DLM(ii,3) = mphglobal(model,'bnd3');
@@ -739,11 +832,15 @@ for ii=1:length(sb.Re_pool)
     %     id_pause = false;
     % end
 
-    mphsave(model,sprintf('rib_lower_turbulent_Re%d',sb.Re))
-    save(sprintf('rib_lower_turbulent_Re%d',sb.Re),'sb')
+    % mphsave(model,sprintf('rib_lower_turbulent_Re%d',sb.Re))
+    mphsave(model,sprintf('rib_%s_turbulent_Re%d', sb.s_geo, sb.Re))
+    save(sprintf('rib_%s_turbulent_Re%d', sb.s_geo, sb.Re),'sb')
 
+    telap = toc(tcomp) - telap;
+    fprintf('Total elapsed time = %.3f s.\n',telap)
 end
 
+if 0
 % %% [markdown]
 % ## SST
 
@@ -1151,7 +1248,7 @@ else
     model.component('comp1').physics('spf2').feature('inl1').set('U0in', 'seo_U_in');
 
 
-model.component('comp1').mesh('mesh1').feature('size').set('table', 'cfd');
+% model.component('comp1').mesh('mesh1').feature('size').set('table', 'cfd');
 % model.component('comp1').mesh('mesh1').feature('size').set('hauto', 3);
 % model.component('comp1').mesh('mesh1').feature('size').set('hauto', 2);
 
@@ -1161,14 +1258,14 @@ model.component('comp1').mesh('mesh1').feature('size').set('table', 'cfd');
 % model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 9);
 
 % id_mesh =
-model.component('comp1').mesh('mesh1').feature('size').set('hauto', 4-3);
+% model.component('comp1').mesh('mesh1').feature('size').set('hauto', 4-3);
 % model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 9-3);
-model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 1);
+% model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 1);
 % model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 9-3);
-model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 5);
-model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 8);
+% model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 5);
+% model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 8);
 
-model.component('comp1').mesh('mesh1').run;
+% model.component('comp1').mesh('mesh1').run;
 
 
     % model.sol('sol1').runAll;
@@ -1276,6 +1373,8 @@ for ii=1:sb.Re_n
         plot(sb.Re, sb.DLM(ii+sb.Re_n,jj),'d','Color',rgb('DeepPink'))
     end
 end
+end
+
 end
 
 % %% [markdown]
