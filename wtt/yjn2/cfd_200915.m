@@ -147,6 +147,9 @@ sb.geo.y_c = -10050.1921/1e3;
 sb.geo.B1 = 1339.594095/1e3;
 sb.geo.D = 2732.409863/1e3;
 
+% %% [markdown]
+% ### Simulation Model
+
 % %%
 % Upper
 % sb.geo.id = 1;
@@ -2079,9 +2082,16 @@ end
 
 % %%
 % sb0 = load(sprintf('rib_%s_turbulent_Re%d', sb.s_geo, sb.Re),'sb')
-sb0 = load(sprintf('rib_%s_turbulent_Re%d', 'upper', 2e5),'sb');
+% sb0 = load(sprintf('rib_%s_turbulent_Re%d', 'upper', 2e5),'sb');
+sb0 = load(sprintf('rib_%s_turbulent_SST_Re%d', 'upper', 2e5),'sb');
 sb0.sb
 sb0.sb.res(1).C.DLM
+
+% Total elapsed time = 20.573 s.
+% Total elapsed time = 35.757 s.
+% Total elapsed time = 57.822 s.
+% Total elapsed time = 82.517 s.
+% Total elapsed time = 87.225 s.
 
 % %%
 figure(1)
@@ -2120,9 +2130,16 @@ end
 
 % %%
 % sb0 = load(sprintf('rib_%s_turbulent_Re%d', sb.s_geo, sb.Re),'sb')
-sb1 = load(sprintf('rib_%s_turbulent_Re%d', 'lower', 2e5),'sb');
+% sb1 = load(sprintf('rib_%s_turbulent_Re%d', 'lower', 2e5),'sb');
+sb1 = load(sprintf('rib_%s_turbulent_SST_Re%d', 'lower', 2e5),'sb');
 sb1.sb
 sb1.sb.res(1).C.DLM
+
+% Total elapsed time = 21.208 s.
+% Total elapsed time = 38.788 s.
+% Total elapsed time = 55.584 s.
+% Total elapsed time = 87.501 s.
+% Total elapsed time = 95.512 s.
 
 % %%
 figure(1)

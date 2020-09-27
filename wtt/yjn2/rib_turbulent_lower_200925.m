@@ -218,6 +218,7 @@ fprintf('Wind speed = %e [m/s], Period for vortex shedding = %e [s].\n', ...
 
 % %%
 sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
+sb.Re_n = length(sb.Re_pool);
 
 % %% [markdown]
 % # Turbulent model
@@ -247,6 +248,8 @@ sb.Re_pool = [150, 1e3, 1e4, 1e5, 2e5];
 % cfd_2d_laminar_00.m
 %
 % Model exported on Sep 16 2020, 09:04 by COMSOL 5.5.0.359.
+
+if 0
 
 import com.comsol.model.*
 import com.comsol.model.util.*
@@ -840,7 +843,17 @@ for ii=1:length(sb.Re_pool)
     fprintf('Total elapsed time = %.3f s.\n',telap)
 end
 
-if 0
+else
+    sb.Re_n = length(sb.Re_pool);
+    sb.Re = sb.Re_pool(sb.Re_n);
+
+    model = mphload(sprintf('rib_%s_turbulent_Re%d', sb.s_geo, sb.Re));
+    sb0 = load(sprintf('rib_%s_turbulent_Re%d', sb.s_geo, sb.Re));
+    sb = sb0.sb; clear sb0
+    sb.Re_n = length(sb.Re_pool);
+end
+
+% if 0
 % %% [markdown]
 % ## SST
 
@@ -886,6 +899,12 @@ model.component('comp1').probe('bnd6').selection.named('box5');
 model.component('comp1').probe('bnd6').set('expr', ...
     '(-spf2.T_stressx*y + -spf2.T_stressy*-x)/(1/2*spf2.rho*(seo_U_in^2)*(seo_B^2))');
 end
+
+% model.component('comp1').physics('spf2').feature('inl1').set( ...
+    % 'RANSVarOption', 'SpecifyTurbulentLengthScaleAndIntensity');
+
+model.study('std1').feature('wdi').setIndex('activate', false, 1);
+model.study('std1').feature('stat').setIndex('activate', false, 1);
 
 model.sol.create('sol2');
 model.sol('sol2').study('std1');
@@ -971,14 +990,17 @@ model.sol('sol2').feature('s2').create('seDef', 'Segregated');
 model.sol('sol2').feature('s2').create('se1', 'Segregated');
 model.sol('sol2').feature('s2').feature('se1').feature.remove('ssDef');
 model.sol('sol2').feature('s2').feature('se1').create('ss1', 'SegregatedStep');
-model.sol('sol2').feature('s2').feature('se1').feature('ss1').set('segvar', {'comp1_u' 'comp1_p' 'comp1_u2' 'comp1_p2'});
+% model.sol('sol2').feature('s2').feature('se1').feature('ss1').set('segvar', {'comp1_u' 'comp1_p' 'comp1_u2' 'comp1_p2'});
+model.sol('sol2').feature('s2').feature('se1').feature('ss1').set('segvar', {'comp1_u2' 'comp1_p2'});
 model.sol('sol2').feature('s2').feature('se1').feature('ss1').set('subdamp', 0.5);
 model.sol('sol2').feature('s2').create('d1', 'Direct');
 model.sol('sol2').feature('s2').feature('d1').set('linsolver', 'pardiso');
 model.sol('sol2').feature('s2').feature('d1').set('pivotperturb', 1.0E-13);
-model.sol('sol2').feature('s2').feature('d1').label('Direct, fluid flow variables (spf) (merged)');
+% model.sol('sol2').feature('s2').feature('d1').label('Direct, fluid flow variables (spf) (merged)');
+model.sol('sol2').feature('s2').feature('d1').label('Direct, fluid flow variables (spf2)');
 model.sol('sol2').feature('s2').feature('se1').feature('ss1').set('linsolver', 'd1');
-model.sol('sol2').feature('s2').feature('se1').feature('ss1').label('Merged variables');
+% model.sol('sol2').feature('s2').feature('se1').feature('ss1').label('Merged variables');
+model.sol('sol2').feature('s2').feature('se1').feature('ss1').label('Velocity u2, Pressure p2');
 model.sol('sol2').feature('s2').feature('se1').create('ss2', 'SegregatedStep');
 model.sol('sol2').feature('s2').feature('se1').feature('ss2').set('segvar', {'comp1_k2' 'comp1_om2'});
 model.sol('sol2').feature('s2').feature('se1').feature('ss2').set('subdamp', 0.35);
@@ -991,6 +1013,8 @@ model.sol('sol2').feature('s2').feature('d2').set('pivotperturb', 1.0E-13);
 model.sol('sol2').feature('s2').feature('d2').label('Direct, turbulence variables (spf2)');
 model.sol('sol2').feature('s2').feature('se1').feature('ss2').set('linsolver', 'd2');
 model.sol('sol2').feature('s2').feature('se1').feature('ss2').label('Turbulence variables');
+
+if 0
 model.sol('sol2').feature('s2').feature('se1').create('ss3', 'SegregatedStep');
 model.sol('sol2').feature('s2').feature('se1').feature('ss3').set('segvar', {'comp1_k' 'comp1_ep'});
 model.sol('sol2').feature('s2').feature('se1').feature('ss3').set('subdamp', 0.35);
@@ -1003,6 +1027,8 @@ model.sol('sol2').feature('s2').feature('d3').set('pivotperturb', 1.0E-13);
 model.sol('sol2').feature('s2').feature('d3').label('Direct, turbulence variables (spf)');
 model.sol('sol2').feature('s2').feature('se1').feature('ss3').set('linsolver', 'd3');
 model.sol('sol2').feature('s2').feature('se1').feature('ss3').label('Turbulence variables (2)');
+end
+
 model.sol('sol2').feature('s2').feature('se1').set('segstabacc', 'segcflcmp');
 model.sol('sol2').feature('s2').feature('se1').set('subinitcfl', 2);
 model.sol('sol2').feature('s2').feature('se1').set('subkppid', 0.65);
@@ -1011,7 +1037,8 @@ model.sol('sol2').feature('s2').feature('se1').set('subkipid', 0.05);
 model.sol('sol2').feature('s2').feature('se1').set('subcfltol', 0.08);
 model.sol('sol2').feature('s2').feature('se1').set('maxsegiter', 300);
 model.sol('sol2').feature('s2').feature('se1').create('ll1', 'LowerLimit');
-model.sol('sol2').feature('s2').feature('se1').feature('ll1').set('lowerlimit', 'comp1.om2 0 comp1.k 0 comp1.k2 0 comp1.ep 0 ');
+% model.sol('sol2').feature('s2').feature('se1').feature('ll1').set('lowerlimit', 'comp1.om2 0 comp1.k 0 comp1.k2 0 comp1.ep 0 ');
+model.sol('sol2').feature('s2').feature('se1').feature('ll1').set('lowerlimit', 'comp1.k2 0 comp1.om2 0 ');
 model.sol('sol2').feature('s2').create('i1', 'Iterative');
 model.sol('sol2').feature('s2').feature('i1').set('linsolver', 'gmres');
 model.sol('sol2').feature('s2').feature('i1').set('prefuntype', 'left');
@@ -1080,6 +1107,8 @@ model.sol('sol2').feature('s2').feature('i2').feature('mg1').feature('po').featu
 model.sol('sol2').feature('s2').feature('i2').feature('mg1').feature('cs').create('d1', 'Direct');
 model.sol('sol2').feature('s2').feature('i2').feature('mg1').feature('cs').feature('d1').set('linsolver', 'pardiso');
 model.sol('sol2').feature('s2').feature('i2').feature('mg1').feature('cs').feature('d1').set('pivotperturb', 1.0E-13);
+
+if 0
 model.sol('sol2').feature('s2').create('i3', 'Iterative');
 model.sol('sol2').feature('s2').feature('i3').set('linsolver', 'gmres');
 model.sol('sol2').feature('s2').feature('i3').set('prefuntype', 'left');
@@ -1114,6 +1143,8 @@ model.sol('sol2').feature('s2').feature('i3').feature('mg1').feature('po').featu
 model.sol('sol2').feature('s2').feature('i3').feature('mg1').feature('cs').create('d1', 'Direct');
 model.sol('sol2').feature('s2').feature('i3').feature('mg1').feature('cs').feature('d1').set('linsolver', 'pardiso');
 model.sol('sol2').feature('s2').feature('i3').feature('mg1').feature('cs').feature('d1').set('pivotperturb', 1.0E-13);
+end
+
 model.sol('sol2').feature('s2').feature.remove('fcDef');
 model.sol('sol2').feature('s2').feature.remove('seDef');
 model.sol('sol2').feature('v2').set('notsolnum', 'auto');
@@ -1134,6 +1165,7 @@ model.sol('sol2').attach('std1');
 % %%
 if 0
 model.result.dataset('dset2').set('geom', 'geom1');
+
 model.result.create('pg1', 'PlotGroup2D');
 model.result('pg1').label('Velocity (spf)');
 model.result('pg1').set('frametype', 'spatial');
@@ -1227,9 +1259,6 @@ end
 % model.component('comp1').probe('bnd2').genResult('none');
 % model.component('comp1').probe('bnd3').genResult('none');
 
-
-sb.Re_n = length(sb.Re_pool);
-
 telap = toc(tcomp);
 id_pause = true;
 figure(1)
@@ -1257,7 +1286,6 @@ else
 % model.component('comp1').mesh('mesh1').feature('fq3').feature('size1').set('hauto', 9);
 % model.component('comp1').mesh('mesh1').feature('fq1').feature('size1').set('hauto', 9);
 
-% id_mesh =
 % model.component('comp1').mesh('mesh1').feature('size').set('hauto', 4-3);
 % model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 9-3);
 % model.component('comp1').mesh('mesh1').feature('fq2').feature('size1').set('hauto', 1);
@@ -1272,77 +1300,12 @@ else
     model.sol('sol2').runAll;
     telap = toc(tcomp) - telap;
     fprintf('Total elapsed time = %.3f s.\n',telap)
+
+    sb.res(ii+sb.Re_n).C = s_cfd_comsol_DLM2(model, sb, 'spf2', 'dset2', 1);
 end
 
-% [Sep 25, 2020 3:05 PM] Distance: 0.04868991123 [m], (0.03245740123, 0.03629358843) [m].  Point 8 to 19. Average coordinates: (-0.08260446711, 3.480226871E-11) [m].  Points: 8, 19.
-% [Sep 25, 2020 3:05 PM] Distance: 0.04868991124 [m], (0.02143350552, 0.04371855781) [m].  Point 26 to 29. Average coordinates: (0.08260446711, 3.510498836E-11) [m].  Points: 26, 29.
-
-
-
-sb.DLM(ii+sb.Re_n*0,1+3*0) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box5','dataset','dset1');
-sb.DLM(ii+sb.Re_n*0,2+3*0) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box5','dataset','dset1');
-sb.DLM(ii+sb.Re_n*0,3+3*0) = mphint2(model, ...
-    '(-spf.T_stressx*y + -spf.T_stressy*-x)/(1/2*spf.rho*(seo_U_in^2)*(seo_B^2))','line','selection','box5','dataset','dset1');
-
-sb.DLM(ii+sb.Re_n*0,1+3*1) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box6','dataset','dset1');
-sb.DLM(ii+sb.Re_n*0,2+3*1) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box6','dataset','dset1');
-sb.DLM(ii+sb.Re_n*0,3+3*1) = mphint2(model, ...
-    '(-spf.T_stressx*y + -spf.T_stressy*-(x+0.08260446711))/(1/2*spf.rho*(seo_U_in^2)*(seo_B^2))','line','selection','box6','dataset','dset1');
-
-sb.DLM(ii+sb.Re_n*0,1+3*2) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box7','dataset','dset1');
-sb.DLM(ii+sb.Re_n*0,2+3*2) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box7','dataset','dset1');
-sb.DLM(ii+sb.Re_n*0,3+3*2) = mphint2(model, ...
-    '(-spf.T_stressx*y + -spf.T_stressy*-(x-0.08260446711))/(1/2*spf.rho*(seo_U_in^2)*(seo_B^2))','line','selection','box7','dataset','dset1');
-
-
-sb.DLM(ii+sb.Re_n*1,1+3*0) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box5','dataset','dset2');
-sb.DLM(ii+sb.Re_n*1,2+3*0) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box5','dataset','dset2');
-sb.DLM(ii+sb.Re_n*1,3+3*0) = mphint2(model, ...
-    '(-spf.T_stressx*y + -spf.T_stressy*-x)/(1/2*spf.rho*(seo_U_in^2)*(seo_B^2))','line','selection','box5','dataset','dset2');
-
-sb.DLM(ii+sb.Re_n*1,1+3*1) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box6','dataset','dset2');
-sb.DLM(ii+sb.Re_n*1,2+3*1) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box6','dataset','dset2');
-sb.DLM(ii+sb.Re_n*1,3+3*1) = mphint2(model, ...
-    '(-spf.T_stressx*y + -spf.T_stressy*-(x+0.08260446711))/(1/2*spf.rho*(seo_U_in^2)*(seo_B^2))','line','selection','box6','dataset','dset2');
-
-sb.DLM(ii+sb.Re_n*1,1+3*2) = mphint2(model,'-spf.T_stressx / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box7','dataset','dset2');
-sb.DLM(ii+sb.Re_n*1,2+3*2) = mphint2(model,'-spf.T_stressy / (1/2*spf.rho*(seo_U_in^2)*seo_B)','line','selection','box7','dataset','dset2');
-sb.DLM(ii+sb.Re_n*1,3+3*2) = mphint2(model, ...
-    '(-spf.T_stressx*y + -spf.T_stressy*-(x-0.08260446711))/(1/2*spf.rho*(seo_U_in^2)*(seo_B^2))','line','selection','box7','dataset','dset2');
-
-
-sb.DLM(ii+sb.Re_n*2,1+3*0) = mphint2(model,'-spf2.T_stressx / (1/2*spf2.rho*(seo_U_in^2)*seo_B)','line','selection','box5','dataset','dset2');
-sb.DLM(ii+sb.Re_n*2,2+3*0) = mphint2(model,'-spf2.T_stressy / (1/2*spf2.rho*(seo_U_in^2)*seo_B)','line','selection','box5','dataset','dset2');
-sb.DLM(ii+sb.Re_n*2,3+3*0) = mphint2(model, ...
-    '(-spf2.T_stressx*y + -spf2.T_stressy*-x)/(1/2*spf2.rho*(seo_U_in^2)*(seo_B^2))','line','selection','box5','dataset','dset2');
-
-sb.DLM(ii+sb.Re_n*2,1+3*1) = mphint2(model,'-spf2.T_stressx / (1/2*spf2.rho*(seo_U_in^2)*seo_B)','line','selection','box6','dataset','dset2');
-sb.DLM(ii+sb.Re_n*2,2+3*1) = mphint2(model,'-spf2.T_stressy / (1/2*spf2.rho*(seo_U_in^2)*seo_B)','line','selection','box6','dataset','dset2');
-sb.DLM(ii+sb.Re_n*2,3+3*1) = mphint2(model, ...
-    '(-spf2.T_stressx*y + -spf2.T_stressy*-(x+0.08260446711))/(1/2*spf2.rho*(seo_U_in^2)*(seo_B^2))','line','selection','box6','dataset','dset2');
-
-sb.DLM(ii+sb.Re_n*2,1+3*2) = mphint2(model,'-spf2.T_stressx / (1/2*spf2.rho*(seo_U_in^2)*seo_B)','line','selection','box7','dataset','dset2');
-sb.DLM(ii+sb.Re_n*2,2+3*2) = mphint2(model,'-spf2.T_stressy / (1/2*spf2.rho*(seo_U_in^2)*seo_B)','line','selection','box7','dataset','dset2');
-sb.DLM(ii+sb.Re_n*2,3+3*2) = mphint2(model, ...
-    '(-spf2.T_stressx*y + -spf2.T_stressy*-(x-0.08260446711))/(1/2*spf2.rho*(seo_U_in^2)*(seo_B^2))','line','selection','box7','dataset','dset2');
-
-    figure(1)
-    for jj = 1:3
-        subplot(1,3,jj)
-        plot(sb.Re, sb.DLM(ii,jj),'o','Color',rgb('Navy'))
-    end
-    if id_pause
-        gcfG;gcfH;gcfLFont;gcfS;%gcfP
-        id_pause = false;
-    end
-    for jj = 1:3
-        subplot(1,3,jj)
-        plot(sb.Re, sb.DLM(ii+sb.Re_n*1,jj),'d','Color',rgb('Crimson'))
-        plot(sb.Re, sb.DLM(ii+sb.Re_n*2,jj),'s','Color',rgb('Orange'))
-    end
-
-    mphsave(model,sprintf('rib_lower_turbulentSST1_Re%d',sb.Re))
-    save(sprintf('rib_lower_turbulentSST1_Re%d',sb.Re),'sb')
+    mphsave(model,sprintf('rib_%s_turbulent_SST_Re%d', sb.s_geo, sb.Re))
+    save(sprintf('rib_%s_turbulent_SST_Re%d', sb.s_geo, sb.Re),'sb')
 
 end
 
