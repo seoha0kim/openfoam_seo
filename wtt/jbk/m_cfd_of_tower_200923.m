@@ -58,7 +58,8 @@ cd ~/Work/git/openfoam_seo/wtt/jbk/
 
 % %%
 % model = mphload('imsi.mph')
-model = mphload('tower_large.mph')
+% model = mphload('tower_large.mph')
+model = mphload('tower_longitudinal_turbulent_SST_Re200000.mph')
 
 % %%
 % mphmesh(model)
@@ -260,7 +261,7 @@ end
 % ### openFoam
 
 % %%
-fid = fopen(sprintf('blockMeshDict_rib_upper_%s.foam',datestr(now,'yymmdd')),'w+');
+fid = fopen(sprintf('blockMeshDict_tower_1_%s.foam',datestr(now,'yymmdd')),'w+');
 
 fprintf(fid,'/*--------------------------------*- C++ -*----------------------------------*\\\n');
 fprintf(fid,'| =========                 |                                                 |\n');
@@ -388,11 +389,11 @@ fprintf(fid,');\n');
 fprintf(fid,'\n');
 fprintf(fid,'boundary\n');
 fprintf(fid,'(\n');
-fprintf(fid,'    movingWall\n');
-% fprintf(fid,'    top\n');
+% fprintf(fid,'    movingWall\n');
+fprintf(fid,'    top\n');
 fprintf(fid,'    {\n');
-fprintf(fid,'        type wall;\n');
-% fprintf(fid,'        type symmetryPlane;\n');
+% fprintf(fid,'        type wall;\n');
+fprintf(fid,'        type symmetryPlane;\n');
 fprintf(fid,'        faces\n');
 fprintf(fid,'        (\n');
 % fprintf(fid,'            (3 7 6 2)\n');
@@ -412,7 +413,8 @@ fprintf(fid,'        (\n');
 %     end
 % end
     % id_bd = 7;
-    id_bd = 5;
+    % id_bd = 5;
+    id_bd = 4;
     for ii=1:sb.box(id_bd).n
         id = sb.box(id_bd).lc(:,ii);
         ids = [id+sb.v.n;id([2,1])];
@@ -422,7 +424,8 @@ fprintf(fid,'        (\n');
 fprintf(fid,'        );\n');
 fprintf(fid,'    }\n');
 
-if 1
+if 0
+% if 1
     fprintf(fid,'    fixedWalls\n');
     fprintf(fid,'    {\n');
     fprintf(fid,'        type wall;\n');
@@ -447,8 +450,8 @@ else
 
     fprintf(fid,'    bottom\n');
     fprintf(fid,'    {\n');
-    fprintf(fid,'        type wall;\n');
-    % fprintf(fid,'        type symmetryPlane;\n');
+    % fprintf(fid,'        type wall;\n');
+    fprintf(fid,'        type symmetryPlane;\n');
     fprintf(fid,'        faces\n');
     fprintf(fid,'        (\n');
     % fprintf(fid,'            (3 7 6 2)\n');
@@ -467,10 +470,11 @@ else
     %         end
     %     end
     % end
-        id_bd = 6;
+        id_bd = 3;
         for ii=1:sb.box(id_bd).n
             id = sb.box(id_bd).lc(:,ii);
-            ids = [id+sb.v.n;id([2,1])];
+            % ids = [id+sb.v.n;id([2,1])];
+            ids = [id;id([2,1])+sb.v.n];
             % x_id = sb.v.x(:,id);
             fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
         end
@@ -499,10 +503,11 @@ else
     %         end
     %     end
     % end
-        id_bd = 4;
+        id_bd = 1;
         for ii=1:sb.box(id_bd).n
             id = sb.box(id_bd).lc(:,ii);
-            ids = [id+sb.v.n;id([2,1])];
+            % ids = [id+sb.v.n;id([2,1])];
+            ids = [id;id([2,1])+sb.v.n];
             % x_id = sb.v.x(:,id);
             fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
         end
@@ -531,10 +536,11 @@ else
     %         end
     %     end
     % end
-        id_bd = 5;
+        id_bd = 2;
         for ii=1:sb.box(id_bd).n
             id = sb.box(id_bd).lc(:,ii);
-            ids = [id+sb.v.n;id([2,1])];
+            % ids = [id+sb.v.n;id([2,1])];
+            ids = [id;id([2,1])+sb.v.n];
             % x_id = sb.v.x(:,id);
             fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
         end
@@ -563,10 +569,11 @@ else
     %         end
     %     end
     % end
-        id_bd = 1;
+        id_bd = 5;
         for ii=1:sb.box(id_bd).n
             id = sb.box(id_bd).lc(:,ii);
-            ids = [id+sb.v.n;id([2,1])];
+            % ids = [id+sb.v.n;id([2,1])];
+            ids = [id;id([2,1])+sb.v.n];
             % x_id = sb.v.x(:,id);
             fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
         end
