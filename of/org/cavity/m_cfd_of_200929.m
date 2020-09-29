@@ -57,7 +57,8 @@ clear sb
 % cd ~/Work/git/openfoam_seo/wtt/jbk/
 
 % %%
-model = mphload('cavity_01.mph')
+% model = mphload('cavity_01.mph')
+model = mphload('cavity_02.mph')
 
 % %%
 % mphmesh(model)
@@ -119,12 +120,15 @@ end
 % %%
 % whos -file imsi_tower_200923
 % load imsi_tower_200923
+% eval(sprintf('whos -file res_cfd_%s', datestr(now(),'yymmdd')))
+% load(sprintf('res_cfd_%s', datestr(now(),'yymmdd')))
 
 % %%
 % meshdata
 
 % %%
-if id_pl
+% if id_pl
+if 1
 lc = meshdata.elem{find(cellfun(@(x) strcmpi(x,'vtx'), meshdata.types))}+1;
 id_pause = true;
 figure(1)
@@ -151,12 +155,15 @@ end
 % ### c_box
 
 % %%
-if id_pl
+% if id_pl
+if 1
 id_pause = true;
 figure(1)
-for ii=1:size(sb.box(2).t,2)
-    id = sb.box(2).t(:,ii)+1;
-    x_id = sb.box(2).p(:,id);
+clf
+for jj=1:sb.box_n
+for ii=1:size(sb.box(jj).t,2)
+    id = sb.box(jj).t(:,ii)+1;
+    x_id = sb.box(jj).p(:,id);
 % plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
 plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
     if id_pause
@@ -165,8 +172,23 @@ plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
     end
 end
 end
+end
 % figure(2)
 % plot(sb.box(2).ve)
+% if 0
+if 1
+jj = 2;
+for ii=1:size(sb.box(jj).t,2)
+    id = sb.box(jj).t(:,ii)+1;
+    x_id = sb.box(jj).p(:,id);
+% plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
+plot(x_id(1,:),x_id(2,:),'-s','MarkerSize',6-4,'Color',rgb('Orange'))
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+end
+end
 
 % %% [markdown]
 % ### triangular
@@ -432,7 +454,7 @@ if 1
         % for id_bd = 2:6
         % for id_bd = [1 4 5 6]
         % for id_bd = 1:4
-        for id_bd = [1 2 3 5 6]
+        for id_bd = [1 2 3 5 6 7 8]
             for ii=1:sb.box(id_bd).n
                 id = sb.box(id_bd).lc(:,ii);
                 % ids = [id+sb.v.n;id([2,1])];
@@ -618,6 +640,9 @@ fclose(fid);
 
 % %% [markdown]
 % # Post Process
+
+% %%
+save(sprintf('res_cfd_%s', datestr(now(),'yymmdd')),'sb','meshdata')
 
 % %% [markdown]
 % # FINE

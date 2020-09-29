@@ -1,4 +1,4 @@
 #!/bin/sh
 
-blockMesh > bm.log
-icoFoam > ic.log
+blockMesh > bm.log1
+icoFoam > ic.log1
