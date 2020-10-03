@@ -1,5 +1,5 @@
 #!/bin/sh
 
-blockMesh > bm.log1
+blockMesh > bm.log2
 # icoFoam > ic.log1
-simpleFoam > sp.log1
+simpleFoam > sp.log2
