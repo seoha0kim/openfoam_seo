@@ -22,7 +22,7 @@
 % 2020-07-01 17:50
 
 % %%
-function [model,sb] = rib_200915(varargin)
+function [model,sb] = cfd_200915(varargin)
 %
 % [model,sb] = rib_200915(varargin)
 %
@@ -54,7 +54,7 @@ id_pl = false;
 
     % %%
     id_narrow = true;
-    id_geo = 2;
+    id_geo = 1;
 
     % %%
     optargs = {id_geo, id_narrow};
