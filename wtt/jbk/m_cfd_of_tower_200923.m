@@ -82,12 +82,14 @@ sb.b3.id = meshdata.elem{3}+1;
 
 % %%
 sb.box_ids = model.selection.tags();
+
 sb.box_n = length(sb.box_ids);
 % for ii=1:7
 % for ii=[1 4:7]
+sb.id_box = [5 6 7 1 2 3 4];
 for ii=1:sb.box_n
     % sb.box(ii) = mpheval(model,'X','selection',sprintf('box%d',ii));
-    sb.box(ii) = mpheval(model,'X','selection',sb.box_ids(ii));
+    sb.box(ii) = mpheval(model,'X','selection',sb.box_ids(find(ii == sb.id_box)));
 end
 
 % %%
@@ -153,22 +155,56 @@ end
 % ### c_box
 
 % %%
-if id_pl
+% if id_pl
+if 1
 id_pause = true;
 figure(1)
-for ii=1:size(sb.box(2).t,2)
-    id = sb.box(2).t(:,ii)+1;
-    x_id = sb.box(2).p(:,id);
+clf
+for jj=1:sb.box_n
+for ii=1:size(sb.box(jj).t,2)
+%     id = sb.box(jj).t(:,ii)+1;
+%     x_id = sb.box(jj).p(:,id);
+
+x_id = sb.v.x(:,sb.box(jj).lc(:,ii));
+
 % plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
 plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
     if id_pause
         gcfG;gcfH;gcfLFont;gcfS;%gcfP
         id_pause = false;
     end
+
+map({mean(x_id')}, {@(x) text(x(1),x(2),sprintf('%d',ii))})
+
+x1 = x_id(:,1)';
+x2 = x_id(:,2)';
+xm = mean(x_id');
+x1m = (x1+xm)/2;
+x2m = (x2+xm)/2;
+text(x1m(1),x1m(2),sprintf('%d',1),'FontSize',9,'Color',rgb('Crimson'))
+text(x2m(1),x2m(2),sprintf('%d',2),'FontSize',9,'Color',rgb('Crimson'))
+
+end
 end
 end
 % figure(2)
 % plot(sb.box(2).ve)
+% if 0
+if 1
+jj = 3;
+for ii=1:size(sb.box(jj).t,2)
+    id = sb.box(jj).t(:,ii)+1;
+    x_id = sb.box(jj).p(:,id);
+% plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
+plot(x_id(1,:),x_id(2,:),'-s','MarkerSize',6-4,'Color',rgb('Orange'))
+    if id_pause
+        gcfG;gcfH;gcfLFont;gcfS;%gcfP
+        id_pause = false;
+    end
+x_id = sb.v.x(:,sb.box(jj).lc(:,ii));
+plot(x_id(1,:),x_id(2,:),'-d','MarkerSize',6-1,'Color',rgb('Crimson'))
+end
+end
 
 % %% [markdown]
 % ### triangular
@@ -438,8 +474,8 @@ if 0
         for id_bd = 1:4
             for ii=1:sb.box(id_bd).n
                 id = sb.box(id_bd).lc(:,ii);
-                % ids = [id+sb.v.n;id([2,1])];
-                ids = [id;id([2,1])+sb.v.n];
+                ids = [id+sb.v.n;id([2,1])];
+                % ids = [id;id([2,1])+sb.v.n];
                 % x_id = sb.v.x(:,id);
                 fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
             end
@@ -473,8 +509,8 @@ else
         id_bd = 3;
         for ii=1:sb.box(id_bd).n
             id = sb.box(id_bd).lc(:,ii);
-            % ids = [id+sb.v.n;id([2,1])];
-            ids = [id;id([2,1])+sb.v.n];
+            ids = [id+sb.v.n;id([2,1])];
+            % ids = [id;id([2,1])+sb.v.n];
             % x_id = sb.v.x(:,id);
             fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
         end
@@ -506,8 +542,8 @@ else
         id_bd = 1;
         for ii=1:sb.box(id_bd).n
             id = sb.box(id_bd).lc(:,ii);
-            % ids = [id+sb.v.n;id([2,1])];
-            ids = [id;id([2,1])+sb.v.n];
+            ids = [id+sb.v.n;id([2,1])];
+            % ids = [id;id([2,1])+sb.v.n];
             % x_id = sb.v.x(:,id);
             fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
         end
@@ -539,8 +575,8 @@ else
         id_bd = 2;
         for ii=1:sb.box(id_bd).n
             id = sb.box(id_bd).lc(:,ii);
-            % ids = [id+sb.v.n;id([2,1])];
-            ids = [id;id([2,1])+sb.v.n];
+            ids = [id+sb.v.n;id([2,1])];
+            % ids = [id;id([2,1])+sb.v.n];
             % x_id = sb.v.x(:,id);
             fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
         end
@@ -572,8 +608,8 @@ else
         id_bd = 5;
         for ii=1:sb.box(id_bd).n
             id = sb.box(id_bd).lc(:,ii);
-            % ids = [id+sb.v.n;id([2,1])];
-            ids = [id;id([2,1])+sb.v.n];
+            ids = [id+sb.v.n;id([2,1])];
+            % ids = [id;id([2,1])+sb.v.n];
             % x_id = sb.v.x(:,id);
             fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
         end
@@ -625,6 +661,8 @@ fclose(fid);
 
 % %% [markdown]
 % # Post Process
+% %%
+save(sprintf('res_cfd_%s', datestr(now(),'yymmdd')),'sb','meshdata')
 
 % %% [markdown]
 % # FINE

@@ -113,6 +113,7 @@ end
 
 % %%
 % save imsi_tower_200923 meshdata sb
+% save res_cfd_200930 meshdata sb
 
 % %% [markdown]
 % ### data load
@@ -122,6 +123,7 @@ end
 % load imsi_tower_200923
 % eval(sprintf('whos -file res_cfd_%s', datestr(now(),'yymmdd')))
 % load(sprintf('res_cfd_%s', datestr(now(),'yymmdd')))
+load res_cfd_200930 meshdata sb
 
 % %%
 % meshdata
@@ -162,14 +164,28 @@ figure(1)
 clf
 for jj=1:sb.box_n
 for ii=1:size(sb.box(jj).t,2)
-    id = sb.box(jj).t(:,ii)+1;
-    x_id = sb.box(jj).p(:,id);
+%     id = sb.box(jj).t(:,ii)+1;
+%     x_id = sb.box(jj).p(:,id);
+
+x_id = sb.v.x(:,sb.box(jj).lc(:,ii));    
+
 % plot(sb.box(1).p(1,ii),sb.box(1).p(2,ii),'o','MarkerSize',6-4)
 plot(x_id(1,:),x_id(2,:),'-o','MarkerSize',6-4,'Color',rgb('Navy'))
     if id_pause
         gcfG;gcfH;gcfLFont;gcfS;%gcfP
         id_pause = false;
     end
+
+map({mean(x_id')}, {@(x) text(x(1),x(2),sprintf('%d',ii))})
+
+x1 = x_id(:,1)';
+x2 = x_id(:,2)';
+xm = mean(x_id');
+x1m = (x1+xm)/2;
+x2m = (x2+xm)/2;
+text(x1m(1),x1m(2),sprintf('%d',1),'FontSize',9,'Color',rgb('Crimson'))
+text(x2m(1),x2m(2),sprintf('%d',2),'FontSize',9,'Color',rgb('Crimson'))
+
 end
 end
 end
@@ -177,7 +193,7 @@ end
 % plot(sb.box(2).ve)
 % if 0
 if 1
-jj = 2;
+jj = 3;
 for ii=1:size(sb.box(jj).t,2)
     id = sb.box(jj).t(:,ii)+1;
     x_id = sb.box(jj).p(:,id);
@@ -187,6 +203,8 @@ plot(x_id(1,:),x_id(2,:),'-s','MarkerSize',6-4,'Color',rgb('Orange'))
         gcfG;gcfH;gcfLFont;gcfS;%gcfP
         id_pause = false;
     end
+x_id = sb.v.x(:,sb.box(jj).lc(:,ii));    
+plot(x_id(1,:),x_id(2,:),'-d','MarkerSize',6-1,'Color',rgb('Crimson'))    
 end
 end
 
@@ -281,7 +299,7 @@ end
 % ### openFoam
 
 % %%
-fid = fopen(sprintf('blockMeshDict_cfd_%s.foam',datestr(now,'yymmdd')),'w+');
+fid = fopen(sprintf('blockMeshDict_cfd_s%s.foam',datestr(now,'yymmdd')),'w+');
 
 fprintf(fid,'/*--------------------------------*- C++ -*----------------------------------*\\\n');
 fprintf(fid,'| =========                 |                                                 |\n');
@@ -457,8 +475,8 @@ if 1
         for id_bd = [1 2 3 5 6 7 8]
             for ii=1:sb.box(id_bd).n
                 id = sb.box(id_bd).lc(:,ii);
-                % ids = [id+sb.v.n;id([2,1])];
-                ids = [id;id([2,1])+sb.v.n];
+                ids = [id+sb.v.n;id([2,1])];
+%                 ids = [id;id([2,1])+sb.v.n];
                 % x_id = sb.v.x(:,id);
                 fprintf(fid,'            (%d %d %d %d)\n', ids-1 );
             end
@@ -634,6 +652,8 @@ fclose(fid);
 
 % %% [markdown]
 % ### openFoam
+
+% %%
 
 % %% [markdown]
 % # Main Process
