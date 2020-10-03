@@ -38,7 +38,7 @@ function [model,sb] = m_cfd_comsol_turbulent_201003(varargin)
 tcomp = tic;
 telap = toc(tcomp);
 
-s_dir = 'git/openfoam_seo/wtt/yjn2/deck0/';
+s_dir = 'git/openfoam_seo/wtt/yjn2/deck/';
 
 p_comsol = 2036;
 seo_init
@@ -129,8 +129,9 @@ id_pl = false;
 % sb.geo.id = 1;
 
 % for id_geo = 1:2
-for id_geo = 2
-for id_al = 1:3
+% for id_al = 1:3
+for id_geo = 1
+for id_al = 3
 
 switch id_al
     case 1
@@ -256,7 +257,7 @@ import com.comsol.model.util.*
 
 model = ModelUtil.create('Model');
 
-model.modelPath('/home/sbkim/Work/git/openfoam_seo/wtt/yjn2/deck0/');
+model.modelPath('/home/sbkim/Work/git/openfoam_seo/wtt/yjn2/deck/');
 
 model.param.set('seo_U_in', sprintf('%f[m/s]',sb.U(150)));
 model.param.set('seo_B', sprintf('%f[m]',sb.B));
@@ -653,7 +654,7 @@ model.component('comp1').mesh('mesh1').feature('size').set('table', 'cfd');
 % model.component('comp1').mesh('mesh1').feature('size').set('hauto', 2);
 switch sb.geo.id
     case 1
-model.component('comp1').mesh('mesh1').feature('size').set('hauto', 4);
+model.component('comp1').mesh('mesh1').feature('size').set('hauto', 3);
     case 2
 model.component('comp1').mesh('mesh1').feature('size').set('hauto', 3);
 end
