@@ -1,0 +1,372 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  5.0                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 5.0-dbb428a3a855
+Exec   : blockMesh
+Date   : Aug 22 2017
+Time   : 17:29:00
+Host   : "neowind"
+PID    : 6049
+I/O    : uncollated
+Case   : /media/sbkim/011015fa-005e-40ac-b96a-ffbde3bf46c6/Krieg/Work/OpenFOAM/sbkim-5.0/run/bridgeDeck/cavity
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Deleting polyMesh directory
+    "/media/sbkim/011015fa-005e-40ac-b96a-ffbde3bf46c6/Krieg/Work/OpenFOAM/sbkim-5.0/run/bridgeDeck/cavity/constant/polyMesh"
+Creating block mesh from
+    "/media/sbkim/011015fa-005e-40ac-b96a-ffbde3bf46c6/Krieg/Work/OpenFOAM/sbkim-5.0/run/bridgeDeck/cavity/system/blockMeshDict"
+Creating block edges
+No non-planar block faces defined
+Creating topology blocks
+Creating topology patches
+
+Creating block mesh topology
+
+Check topology
+
+	Basic statistics
+		Number of internal faces : 93
+		Number of boundary faces : 174
+		Number of defined boundary faces : 174
+		Number of undefined boundary faces : 0
+	Checking patch -> block consistency
+
+Creating block offsets
+Creating merge list .
+
+Creating polyMesh from blockMesh
+Creating patches
+Creating cells
+Creating points with scale 1
+    Block 0 cell size :
+        i : 1.1975 .. 1.1975
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 1 cell size :
+        i : 0.15125 .. 0.15125
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 2 cell size :
+        i : 0.031205 .. 0.031205
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 3 cell size :
+        i : 0.01192 .. 0.01192
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 4 cell size :
+        i : 0.01875 .. 0.01875
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 5 cell size :
+        i : 0.011984 .. 0.011984
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 6 cell size :
+        i : 0.077391 .. 0.077391
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 7 cell size :
+        i : 0.077391 .. 0.077391
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 8 cell size :
+        i : 0.011984 .. 0.011984
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 9 cell size :
+        i : 0.01875 .. 0.01875
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 10 cell size :
+        i : 0.01192 .. 0.01192
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 11 cell size :
+        i : 0.031205 .. 0.031205
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 12 cell size :
+        i : 0.15125 .. 0.15125
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 13 cell size :
+        i : 0.209875 .. 0.209875
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 14 cell size :
+        i : 1.1975 .. 1.1975
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 15 cell size :
+        i : 0.15125 .. 0.15125
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 16 cell size :
+        i : 0.031205 .. 0.031205
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 17 cell size :
+        i : 0.01192 .. 0.01192
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 18 cell size :
+        i : 0.01875 .. 0.01875
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 19 cell size :
+        i : 0.011984 .. 0.011984
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 20 cell size :
+        i : 0.077391 .. 0.077391
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 21 cell size :
+        i : 0.077391 .. 0.077391
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 22 cell size :
+        i : 0.011984 .. 0.011984
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 23 cell size :
+        i : 0.01875 .. 0.01875
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 24 cell size :
+        i : 0.01192 .. 0.01192
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 25 cell size :
+        i : 0.031205 .. 0.031205
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 26 cell size :
+        i : 0.15125 .. 0.15125
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 27 cell size :
+        i : 0.209875 .. 0.209875
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 28 cell size :
+        i : 1.1975 .. 1.1975
+        j : 0.01885 .. 0.01885
+        k : 1 .. 1
+
+    Block 29 cell size :
+        i : 0.15125 .. 0.15125
+        j : 0.01885 .. 0.01885
+        k : 1 .. 1
+
+    Block 30 cell size :
+        i : 0.031205 .. 0.031205
+        j : 0.01885 .. 0.01885
+        k : 1 .. 1
+
+    Block 31 cell size :
+        i : 0.01192 .. 0.01192
+        j : 0.019474 .. 0.019474
+        k : 1 .. 1
+
+    Block 32 cell size :
+        i : 0.011984 .. 0.011984
+        j : 0.0184504 .. 0.0184504
+        k : 1 .. 1
+
+    Block 33 cell size :
+        i : 0.077391 .. 0.077391
+        j : 0.020327 .. 0.020327
+        k : 1 .. 1
+
+    Block 34 cell size :
+        i : 0.077391 .. 0.077391
+        j : 0.021875 .. 0.021875
+        k : 1 .. 1
+
+    Block 35 cell size :
+        i : 0.011984 .. 0.011984
+        j : 0.020327 .. 0.020327
+        k : 1 .. 1
+
+    Block 36 cell size :
+        i : 0.01192 .. 0.01192
+        j : 0.0179679 .. 0.0179679
+        k : 1 .. 1
+
+    Block 37 cell size :
+        i : 0.031205 .. 0.031205
+        j : 0.019474 .. 0.019474
+        k : 1 .. 1
+
+    Block 38 cell size :
+        i : 0.15125 .. 0.15125
+        j : 0.01885 .. 0.01885
+        k : 1 .. 1
+
+    Block 39 cell size :
+        i : 0.209875 .. 0.209875
+        j : 0.01885 .. 0.01885
+        k : 1 .. 1
+
+    Block 40 cell size :
+        i : 1.1975 .. 1.1975
+        j : 0.003175 .. 0.003175
+        k : 1 .. 1
+
+    Block 41 cell size :
+        i : 0.15125 .. 0.15125
+        j : 0.003175 .. 0.003175
+        k : 1 .. 1
+
+    Block 42 cell size :
+        i : 0.15125 .. 0.15125
+        j : 0.003175 .. 0.003175
+        k : 1 .. 1
+
+    Block 43 cell size :
+        i : 0.209875 .. 0.209875
+        j : 0.003175 .. 0.003175
+        k : 1 .. 1
+
+    Block 44 cell size :
+        i : 1.1975 .. 1.1975
+        j : 0.052975 .. 0.052975
+        k : 1 .. 1
+
+    Block 45 cell size :
+        i : 0.15125 .. 0.15125
+        j : 0.052975 .. 0.052975
+        k : 1 .. 1
+
+    Block 46 cell size :
+        i : 0.0025 .. 0.0025
+        j : 0.052975 .. 0.052975
+        k : 1 .. 1
+
+    Block 47 cell size :
+        i : 0.14878 .. 0.14878
+        j : 0.052975 .. 0.052975
+        k : 1 .. 1
+
+    Block 48 cell size :
+        i : 0.14878 .. 0.14878
+        j : 0.05 .. 0.05
+        k : 1 .. 1
+
+    Block 49 cell size :
+        i : 0.0025 .. 0.0025
+        j : 0.052975 .. 0.052975
+        k : 1 .. 1
+
+    Block 50 cell size :
+        i : 0.15125 .. 0.15125
+        j : 0.052975 .. 0.052975
+        k : 1 .. 1
+
+    Block 51 cell size :
+        i : 0.209875 .. 0.209875
+        j : 0.052975 .. 0.052975
+        k : 1 .. 1
+
+    Block 52 cell size :
+        i : 1.1975 .. 1.1975
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 53 cell size :
+        i : 0.15125 .. 0.15125
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 54 cell size :
+        i : 0.0025 .. 0.0025
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 55 cell size :
+        i : 0.14875 .. 0.14875
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 56 cell size :
+        i : 0.14875 .. 0.14875
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 57 cell size :
+        i : 0.0025 .. 0.0025
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 58 cell size :
+        i : 0.15125 .. 0.15125
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+    Block 59 cell size :
+        i : 0.209875 .. 0.209875
+        j : 1.4375 .. 1.4375
+        k : 1 .. 1
+
+
+Writing polyMesh
+----------------
+Mesh Information
+----------------
+  boundingBox: (-1.5 -1.5 0) (4.5 1.5 1)
+  nPoints: 440
+  nCells: 174
+  nFaces: 742
+  nInternalFaces: 302
+----------------
+Patches
+----------------
+  patch 0 (start: 302 size: 27) name: top
+  patch 1 (start: 329 size: 33) name: bottom
+  patch 2 (start: 362 size: 6) name: inlet
+  patch 3 (start: 368 size: 6) name: outlet
+  patch 4 (start: 374 size: 20) name: deck
+  patch 5 (start: 394 size: 348) name: frontAndBack
+
+End
+

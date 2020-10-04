@@ -71,6 +71,12 @@ cd ~/Work/git/openfoam_seo/wtt/yjn2/deck/
 for id_geo = 1:2
     for id_al = 1:3
 
+clear sb
+
+        if (id_geo == 1) & (id_al == 1)
+            continue
+        end
+
         switch id_geo
             case 1
                 s_geo = 'upper';
