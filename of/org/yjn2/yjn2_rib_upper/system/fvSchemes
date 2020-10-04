@@ -17,44 +17,45 @@ FoamFile
 
 ddtSchemes
 {
-    default         Euler;
+    default         steadyState;
 }
 
 gradSchemes
 {
     default         Gauss linear;
-    grad(p)         Gauss linear;
 }
 
 divSchemes
 {
     default         none;
-    div(phi,U)      Gauss linear;
+    div(phi,U)      bounded Gauss linearUpwind grad(U);
+    div(phi,k)      bounded Gauss limitedLinear 1;
+    div(phi,epsilon) bounded Gauss limitedLinear 1;
+    div(phi,omega)  bounded Gauss limitedLinear 1;
+    div(phi,v2)     bounded Gauss limitedLinear 1;
+    div((nuEff*dev2(T(grad(U))))) Gauss linear;
+    div(nonlinearStress) Gauss linear;
 }
 
 laplacianSchemes
 {
-    // default         none;
-    // laplacian (nu,U) Gauss linear orthogonal;
-    // laplacian ((l|A(U)),p) Gauss linear orthogonal;
-    default         Gauss linear orthogonal;
+    default         Gauss linear corrected;
 }
 
 interpolationSchemes
 {
     default         linear;
-    // interpolate (HbyA) linear;
 }
 
 snGradSchemes
 {
-    default         orthogonal;
+    default         corrected;
 }
 
-// fluxRequired
-// {
-//     default         no;
-//     p               ;
-// }
+wallDist
+{
+    method meshWave;
+}
+
 
 // ************************************************************************* //

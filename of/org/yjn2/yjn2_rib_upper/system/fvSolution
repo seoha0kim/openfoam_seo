@@ -19,36 +19,41 @@ solvers
 {
     p
     {
-        solver          PCG;
-        preconditioner  DIC;
+        solver          GAMG;
         tolerance       1e-06;
-        relTol          0.05;
-        // relTol          0;
+        relTol          0.1;
+        smoother        GaussSeidel;
     }
 
-    pFinal
+    "(U|k|epsilon|omega|f|v2)"
     {
-        $p;
-        relTol          0;
-    }
-
-    U
-    {
-        // solver          PBiCG;
         solver          smoothSolver;
-        // smoother        DILU;
         smoother        symGaussSeidel;
         tolerance       1e-05;
-        relTol          0;
+        relTol          0.1;
     }
 }
 
-PISO
+SIMPLE
 {
-    nCorrectors     2;
     nNonOrthogonalCorrectors 0;
-    pRefCell        0;
-    pRefValue       0;
+    consistent      yes;
+
+    residualControl
+    {
+        p               1e-2;
+        U               1e-3;
+        "(k|epsilon|omega|f|v2)" 1e-3;
+    }
+}
+
+relaxationFactors
+{
+    equations
+    {
+        U               0.9; // 0.9 is more stable but 0.95 more convergent
+        ".*"            0.9; // 0.9 is more stable but 0.95 more convergent
+    }
 }
 
 
