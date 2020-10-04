@@ -15,7 +15,7 @@
 % ---
 
 % %% [markdown]
-% # YJN2: rib
+% # YJN2
 
 % %% [markdown]
 % Saang Bum Kim <br>
@@ -77,6 +77,56 @@ id_pl = false;
 
     % Place optional args in memorable variable names
         [id_geo, id_narrow] = optargs{:};
+
+% %% [markdown]
+% # Deck
+
+% %% [markdown]
+% ## Upper
+
+% %% [markdown]
+% ### $\alpha$ = $-$ 0.25 $^\circ$
+
+% %% [markdown]
+% ### $\alpha$ = 0 $^\circ$
+
+% %% [markdown]
+% ### $\alpha$ = $+$ 0.25 $^\circ$
+
+    % %%
+    model = mphload(sprintf('deck_%s_a%s_turbulent_Re%d', sb.s_geo, sb.s_al, sb.Re));
+    sb0 = load(sprintf('deck_%s_a%s_turbulent_Re%d', sb.s_geo, sb.s_al, sb.Re));
+
+
+% %% [markdown]
+% ## Lower
+
+% %% [markdown]
+% ### $\alpha$ = $-$ 0.25 $^\circ$
+
+% %% [markdown]
+% ### $\alpha$ = 0 $^\circ$
+
+% %% [markdown]
+% ### $\alpha$ = $+$ 0.25 $^\circ$
+
+    % %%
+    model = mphload(sprintf('deck_%s_a%s_turbulent_Re%d', sb.s_geo, sb.s_al, sb.Re));
+    sb0 = load(sprintf('deck_%s_a%s_turbulent_Re%d', sb.s_geo, sb.s_al, sb.Re));
+
+
+% %% [markdown]
+% # Arch Rib
+
+% %% [markdown]
+% ## Upper
+
+% %%
+model = mphload(sprintf('deck_%s_a%s_turbulent_Re%d', sb.s_geo, sb.s_al, sb.Re));
+    sb0 = load(sprintf('deck_%s_a%s_turbulent_Re%d', sb.s_geo, sb.s_al, sb.Re));
+
+% %% [markdown]
+% ## Lower
 
 % %% [markdown]
 % # Geometry
