@@ -197,8 +197,11 @@ sb.geo.y_c = (17088.33991 + 1848)/1e3;
 sb.geo.D = 3650.7/1e3;
 
 % centering
-sb.geo.x_c_fence = 880.6135465;
-sb.geo.y_c_fence = 65.00383976;
+sb.geo.x_c_fence = 880.6135465 - 28257.55571/1e3;
+sb.geo.y_c_fence = 65.00383976 - (20713.53969 + 1848)/1e3;
+
+sb.geo.x_c_fence = 880.6135465 - 28257.55571/1e3;
+sb.geo.y_c_fence = 65.00383976 - (20713.53969 + 1848)/1e3;
 
     case 2
         fprintf('Error: geo.id == 2')
@@ -329,10 +332,8 @@ model.component('comp1').geom('geom1').feature('imp1').set('type', 'dxf');
 model.component('comp1').geom('geom1').feature('imp1').set('filename', ...
     '../dxf/deck_cfd.dxf');
 
-
-
-if 1
-% if 0
+% if 1
+if 0
 model.component('comp1').geom('geom1').feature('imp1').set('knit', 'solid');
 elseif 0
 model.component('comp1').geom('geom1').feature('imp1').set('knit', 'curve');
@@ -345,6 +346,33 @@ model.component('comp1').geom('geom1').create('csol1', 'ConvertToSolid');
     % 'imp1(2)' 'imp1(3)' 'imp1(4)' 'imp1(5)'});
 model.component('comp1').geom('geom1').feature('csol1').selection('input').set({'imp1'});
 % model.component('comp1').geom('geom1').feature('imp1').set('alllayers', {'DIM' '0'});
+
+% %%
+model.component('comp1').geom('geom1').create('sca1', 'Scale');
+model.component('comp1').geom('geom1').feature('sca1').set('factor', '1e-3');
+% model.component('comp1').geom('geom1').feature('sca1').selection('input').set({'del1(1)' 'del1(2)'});
+model.component('comp1').geom('geom1').feature('sca1').selection('input').set({'csol1'});
+
+model.component('comp1').geom('geom1').create('mov1', 'Move');
+model.component('comp1').geom('geom1').feature('mov1').setIndex('displx', ...
+    sprintf('-%f',sb.geo.x_c), 0);
+model.component('comp1').geom('geom1').feature('mov1').setIndex('disply', ...
+    sprintf('-%f',sb.geo.y_c), 0);
+model.component('comp1').geom('geom1').feature('mov1').selection('input').set({'sca1'});
+
+model.component('comp1').geom('geom1').create('imp2', 'Import');
+model.component('comp1').geom('geom1').feature('imp2').set('type', 'dxf');
+model.component('comp1').geom('geom1').feature('imp2').set('filename', ...
+    '../dxf/fence_cfd.dxf');
+    % '/home/sbkim/Work/git/openfoam_seo/wtt/jbk/dxf/fence_cfd.dxf');
+
+model.component('comp1').geom('geom1').create('mov2', 'Move');
+model.component('comp1').geom('geom1').feature('mov2').setIndex('displx', ...
+    sprintf('-%f',sb.geo.x_c_fence), 0);
+model.component('comp1').geom('geom1').feature('mov2').setIndex('disply', ...
+    sprintf('-%f',sb.geo.y_c_fence), 0);
+model.component('comp1').geom('geom1').feature('mov2').selection('input').set({'imp2'});
+
 
 % %%
 model.component('comp1').geom('geom1').create('del1', 'Delete');
@@ -368,18 +396,6 @@ end
 % model.component('comp1').geom('geom1').measure.selection.init(0);
 % model.component('comp1').geom('geom1').measure.selection.set('del1', [1 32]);
 
-% %%
-model.component('comp1').geom('geom1').create('sca1', 'Scale');
-model.component('comp1').geom('geom1').feature('sca1').set('factor', '1e-3');
-% model.component('comp1').geom('geom1').feature('sca1').selection('input').set({'del1(1)' 'del1(2)'});
-model.component('comp1').geom('geom1').feature('sca1').selection('input').set({'del1'});
-
-model.component('comp1').geom('geom1').create('mov1', 'Move');
-model.component('comp1').geom('geom1').feature('mov1').setIndex('displx', ...
-    sprintf('-%f',sb.geo.x_c), 0);
-model.component('comp1').geom('geom1').feature('mov1').setIndex('disply', ...
-    sprintf('-%f',sb.geo.y_c), 0);
-model.component('comp1').geom('geom1').feature('mov1').selection('input').set({'sca1'});
 
 % out = model;
 
