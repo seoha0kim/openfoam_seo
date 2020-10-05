@@ -213,9 +213,6 @@ sb.geo.y_c_fence = 65.00383976;
 sb.geo.x_c_fence2 = 6.799999711;
 sb.geo.y_c_fence2 = 1.577699914 + 0.04949992841;
 
-
-
-
     case 2
         fprintf('Error: geo.id == 2')
     % otherwise
@@ -386,20 +383,30 @@ model.component('comp1').geom('geom1').feature('mov2').setIndex('disply', ...
     sprintf('-%f',sb.geo.y_c_fence), 0);
 model.component('comp1').geom('geom1').feature('mov2').selection('input').set({'imp2'});
 
+model.component('comp1').geom('geom1').create('mir1', 'Mirror');
+model.component('comp1').geom('geom1').feature('mir1').selection('input').set({'mov2(1)'});
+
+model.component('comp1').geom('geom1').create('mov3', 'Move');
+model.component('comp1').geom('geom1').feature('mov3').selection('input').set({'mir1' 'mov2(2)'});
+model.component('comp1').geom('geom1').feature('mov3').set('displx', sb.geo.x_c_fence2);
+model.component('comp1').geom('geom1').feature('mov3').set('disply', sb.geo.y_c_fence2);
+
+model.component('comp1').geom('geom1').measure.selection.init;
+model.component('comp1').geom('geom1').measure.selection.set({'mov1(1)' 'mov3(1)' 'mov3(2)'});
 
 % %%
-model.component('comp1').geom('geom1').create('del1', 'Delete');
-% model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', [7 8 9 10 19 20]);
-model.component('comp1').geom('geom1').feature('del1').selection('input').init(2);
-switch id_geo
-    case 1
-        model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', ...
-            [1 3 4 5 6 7 8 12 13 14 18 19 20 21 22 23 25]);
-    case 2
-        model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', ...
-            [2 9 10 11 15 16 17 24 26 27 28 29 30 31]);
-    % otherwise
-end
+% model.component('comp1').geom('geom1').create('del1', 'Delete');
+% % model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', [7 8 9 10 19 20]);
+% model.component('comp1').geom('geom1').feature('del1').selection('input').init(2);
+% switch id_geo
+%     case 1
+%         model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', ...
+%             [1 3 4 5 6 7 8 12 13 14 18 19 20 21 22 23 25]);
+%     case 2
+%         model.component('comp1').geom('geom1').feature('del1').selection('input').set('csol1', ...
+%             [2 9 10 11 15 16 17 24 26 27 28 29 30 31]);
+%     % otherwise
+% end
 
 % model.component('comp1').geom('geom1').run('del1');
 
@@ -415,14 +422,15 @@ end
 % %%
 model.component('comp1').geom('geom1').create('sca2', 'Scale');
 model.component('comp1').geom('geom1').feature('sca2').set('factor', sprintf('1/%d',sb.scale));
-model.component('comp1').geom('geom1').feature('sca2').selection('input').set({'mov1'});
+% model.component('comp1').geom('geom1').feature('sca2').set('isotropic', '1/100');
+model.component('comp1').geom('geom1').feature('sca2').selection('input').set({'mov1' 'mov3'});
 
-model.component('comp1').geom('geom1').create('mir1', 'Mirror');
-model.component('comp1').geom('geom1').feature('mir1').selection('input').set({'sca2'});
+% model.component('comp1').geom('geom1').create('mir2', 'Mirror');
+% model.component('comp1').geom('geom1').feature('mir2').selection('input').set({'sca2'});
 
-model.component('comp1').geom('geom1').create('rot1', 'Rotate');
-model.component('comp1').geom('geom1').feature('rot1').selection('input').set({'mir1'});
-model.component('comp1').geom('geom1').feature('rot1').set('rot', sb.alpha);
+model.component('comp1').geom('geom1').create('rot2', 'Rotate');
+model.component('comp1').geom('geom1').feature('rot2').selection('input').set({'sca2'});
+model.component('comp1').geom('geom1').feature('rot2').set('rot', sb.alpha);
 
 model.component('comp1').geom('geom1').create('r1', 'Rectangle');
 if sb.narrow
@@ -452,8 +460,10 @@ model.component('comp1').geom('geom1').create('co1', 'Compose');
 % model.component('comp1').geom('geom1').feature('co1').selection('input').set({'r1' 'c1' 'r2' 'r3' 'mir1(1)' 'mir1(2)'});
 % model.component('comp1').geom('geom1').feature('co1').set('formula', '(r1+c1+r2+r3)-(mir1)');
 % model.component('comp1').geom('geom1').feature('co1').selection('input').set({'r1' 'c1' 'r2' 'r3' 'mir1'});
-model.component('comp1').geom('geom1').feature('co1').set('formula', '(r1+c1+r2+r3)-(rot1)');
-model.component('comp1').geom('geom1').feature('co1').selection('input').set({'r1' 'c1' 'r2' 'r3' 'rot1'});
+model.component('comp1').geom('geom1').feature('co1').set('formula', ...
+    '(r1+c1+r2+r3)-(rot2(1)+rot2(2)+rot2(3))');
+model.component('comp1').geom('geom1').feature('co1').selection('input').set( ...
+    {'r1' 'c1' 'r2' 'r3' 'rot2(1)' 'rot2(2)' 'rot2(3)'});
 
 model.component('comp1').geom('geom1').run;
 
