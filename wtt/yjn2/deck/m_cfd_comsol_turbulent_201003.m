@@ -131,7 +131,8 @@ id_pl = false;
 % for id_geo = 1:2
 % for id_al = 1:3
 for id_geo = 1
-for id_al = 3
+% for id_al = 3
+for id_al = 4:5
 
 switch id_al
     case 1
@@ -143,6 +144,12 @@ switch id_al
     case 3
         sb.alpha = 2.5;
         sb.s_al = 'p25';
+    case 4
+        sb.alpha = -5;
+        sb.s_al = 'm50';
+    case 5
+        sb.alpha = 5;
+        sb.s_al = 'p50';
 end
 
 sb.geo.id = id_geo;
