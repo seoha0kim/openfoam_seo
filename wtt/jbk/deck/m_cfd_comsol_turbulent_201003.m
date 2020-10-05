@@ -186,6 +186,13 @@ switch sb.geo.id
 % Point 23 (imp1(1)) to 25 (imp1(1)). Average coordinates: (28257.55571, 20713.53969) [m].
 % Points: 23, 25 (imp1(1)).
 
+% [Oct 6, 2020 12:43 AM] Distance: 0.3999999993 [m], (0.3999999993, -1.490363388E-11) [m].
+% Point 88 (mov1) to 90 (mov1). Average coordinates: (6.799999711, 1.577699914) [m].  Points: 88, 90 (mov1).
+
+% [Oct 6, 2020 12:46 AM] Distance: 0.04949992841 [m], (-2.197220716E-7, -0.04949992841) [m].
+% Point 91 (mov1) to 4 (mov2(2)). Average coordinates: (6.9999996, 1.752449723) [m].
+% Points: 91 (mov1); 4 (mov2(2)).
+
 % %%
 
 % maximize B
@@ -197,11 +204,17 @@ sb.geo.y_c = (17088.33991 + 1848)/1e3;
 sb.geo.D = 3650.7/1e3;
 
 % centering
-sb.geo.x_c_fence = 880.6135465 - 28257.55571/1e3;
-sb.geo.y_c_fence = 65.00383976 - (20713.53969 + 1848)/1e3;
+sb.geo.x_c_fence = 880.6135465;
+sb.geo.y_c_fence = 65.00383976;
 
-sb.geo.x_c_fence = 880.6135465 - 28257.55571/1e3;
-sb.geo.y_c_fence = 65.00383976 - (20713.53969 + 1848)/1e3;
+% sb.geo.x_c_fence = 880.6135465 - 6.799999711;
+% sb.geo.y_c_fence = 65.00383976 - 1.577699914;
+
+sb.geo.x_c_fence2 = 6.799999711;
+sb.geo.y_c_fence2 = 1.577699914 + 0.04949992841;
+
+
+
 
     case 2
         fprintf('Error: geo.id == 2')
