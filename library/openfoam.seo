@@ -1,0 +1,12 @@
+openfoam
+
+wget https://sourceforge.net/projects/openfoam/files/v1912/OpenFOAM-v1912.tgz
+wget https://sourceforge.net/projects/openfoam/files/v1912/ThirdParty-v1912.tgz
+tar xzf OpenFOAM-v1912.tgz
+tar xzf ThirdParty-v1912.tgz
+rm OpenFOAM-v1912.tgz ThirdParty-v1912.tgz
+module load buildenv-intel/2018a-eb; export MPI_ROOT=$I_MPI_ROOT; export FOAM_INST_DIR=/proj/hani/OF_inst/Tetralith/OpenFOAM; . $FOAM_INST_DIR/OpenFOAM-v1912/etc/bashrc WM_COMPILER=Icc WM_MPLIB=INTELMPI
+cp /proj/hani/OF_inst/addToBashrc /proj/hani/OF_inst/addToBashrc_old
+echo "alias OFv1912='export MPI_ROOT=/software/sse/easybuild/prefix/software/impi/2018.1.163-iccifort-2018.1.163-GCC-6.4.0-2.28; module load ParaView/5.4.1-nsc1-gcc-2018a-eb; export FOAM_INST_DIR=/proj/hani/OF_inst/Tetralith/OpenFOAM; . $FOAM_INST_DIR/OpenFOAM-v1912/etc/bashrc WM_COMPILER=Icc WM_MPLIB=INTELMPI'" >> /proj/hani/OF_inst/addToBashrc
+foam
+./Allwmake >& log.make&
