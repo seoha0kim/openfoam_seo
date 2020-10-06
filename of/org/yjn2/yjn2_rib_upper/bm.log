@@ -7,10 +7,10 @@
 \*---------------------------------------------------------------------------*/
 Build  : 8-9b73cf21a682
 Exec   : blockMesh
-Date   : Oct 05 2020
-Time   : 01:36:48
+Date   : Oct 06 2020
+Time   : 19:20:49
 Host   : "bnes"
-PID    : 22998
+PID    : 26935
 I/O    : uncollated
 Case   : /media/sbkim/2266B8F966B8CEB3/git/openfoam_seo/of/org/yjn2/yjn2_rib_upper
 nProcs : 1
