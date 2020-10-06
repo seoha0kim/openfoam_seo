@@ -340,7 +340,8 @@ model.component('comp1').geom('geom1').feature('imp1').set('type', 'dxf');
 % model.component('comp1').geom('geom1').feature('imp1').set('filename', ...
 %     'H:\git\openfoam_seo\wtt\jbk\dxf\pylon_cfd.dxf');
 model.component('comp1').geom('geom1').feature('imp1').set('filename', ...
-    '../dxf/deck_cfd.dxf');
+    '../dxf/deck_cfd_simplified.dxf');
+    % '../dxf/deck_cfd.dxf');
 
 % if 1
 if 0
