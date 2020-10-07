@@ -52,43 +52,60 @@ id_sv = false;
 % id_pl = true;
 id_pl = false;
 
-% %% [markdown]
-% # Longitudianl
-
-% %%
-sb.s_geo = 'longitudinal';
-sb.Re = 150;
-load(sprintf('tower/tower_%s_turbulent_Re%d', sb.s_geo, sb.Re));
-sb
-
-% %%
-sb.res.C
-
 % %%
 clear res
-res.sb(1).s_geo = 'longitudinal';
-res.sb(2).s_geo = 'transverse';
+res.geo(1).s_geo = 'longitudinal';
+res.geo(2).s_geo = 'transverse';
+res.geo(3).s_geo = 'deck';
 
-res.sb(1).s_mk{1} = 'o';
-res.sb(2).s_mk{1} = 's';
-res.sb(1).s_mk{2} = 4;
-res.sb(2).s_mk{2} = 5;
+res.s_mk{1,1} = 'o';
+res.s_mk{1,2} = 4;
+
+res.s_mk{2,1} = 's';
+res.s_mk{2,2} = 5;
+
+res.s_c{1} = rgb('Navy');
+res.s_c{2} = rgb('Teal');
+res.s_c{3} = rgb('Crimson');
+
 
 id_pause = true;
 figure(1)
 clf
 
-
-for kk = 1:2
+ll = 1;
+for id_geo = 1:3
 for ii = 1:sb.Re_n
-    res.sb(kk).Re(ii) = sb.Re_pool(ii);
-    load(sprintf('tower/tower_%s_turbulent_Re%d', res.sb(kk).s_geo, res.sb(kk).Re(ii)));
-    res.sb(kk).res(ii,1:6) = sb.res(ii).C.DLM(1:6);
-    
+    res.geo(id_geo).sb(ll).Re(ii) = sb.Re_pool(ii);
+    switch id_geo
+        case {1,2}
+            load(sprintf('tower/tower_%s_turbulent_SST_Re%d', ...
+                res.geo(id_geo).s_geo, res.geo(id_geo).sb(ll).Re(ii)));
+        case 3
+            load(sprintf('deck/deck_%s_a000_turbulent_SST_Re%d', ...
+                'upper', res.geo(id_geo).sb(ll).Re(ii)));
+        % otherwise
+    end
+
+% if ii == 1
+    res.geo(id_geo).sb(ll).BD = [sb.B,sb.D];
+% end
+
+    switch id_geo
+        case {1,3}
+            sc = [1 sb.D/sb.B (sb.D/sb.B)^2];
+        case 2
+            sc = [sb.D/sb.B 1 1];
+        % otherwise
+    end
+res.geo(id_geo).sb(ll).res(ii,1:6) = sb.res(ii).C.DLM(1:6)*diag([sc sc]);
+
     for jj=1:3
         subplot(1,3,jj)
-        semilogx(sb.U(res.sb(kk).Re(ii)), res.sb(kk).res(ii,jj), res.sb(kk).s_mk{1}, ...
-            'Color',rgb('Navy'), 'MarkerSize', res.sb(kk).s_mk{2})        
+        semilogx(sb.U(res.geo(id_geo).sb(ll).Re(ii)), ...
+            res.geo(id_geo).sb(ll).res(ii,jj), ...
+            'o', 'Color',res.s_c{id_geo}, 'MarkerSize', 6-3)
+            % 'Color',rgb('Navy'), 'MarkerSize', res.geo(id_geo).sb(.s_mk{2})
     end
     if id_pause
         gcfG;gcfH;gcfLFont;gcfS;%gcfP
@@ -96,86 +113,9 @@ for ii = 1:sb.Re_n
     end
     for jj=1:3
         subplot(1,3,jj)
-        h = semilogx(sb.U(res.sb(kk).Re(ii)), res.sb(kk).res(ii,jj+3), res.sb(kk).s_mk{1}, ...
-            'Color',rgb('Navy'), 'MarkerSize', res.sb(kk).s_mk{2});        
-        h.MarkerFaceColor = h.Color;
-    end
-end
-end
-
-% %%
-clear res
-res.sb(1).s_geo = 'longitudinal';
-res.sb(2).s_geo = 'transverse';
-
-res.sb(1).s_mk{1} = 'o';
-res.sb(2).s_mk{1} = 's';
-res.sb(1).s_mk{2} = 4;
-res.sb(2).s_mk{2} = 5;
-
-id_pause = true;
-figure(1)
-clf
-
-
-for kk = 1:2
-for ii = 1:sb.Re_n
-    res.sb(kk).Re(ii) = sb.Re_pool(ii);
-    load(sprintf('tower/tower_%s_turbulent_Re%d', res.sb(kk).s_geo, res.sb(kk).Re(ii)));
-    res.sb(kk).res(ii,1:6) = sb.res(ii).C.DLM(1:6);
-    
-    for jj=1:3
-        subplot(1,3,jj)
-        semilogx(sb.U(res.sb(kk).Re(ii)), res.sb(kk).res(ii,jj), res.sb(kk).s_mk{1}, ...
-            'Color',rgb('Navy'), 'MarkerSize', res.sb(kk).s_mk{2})        
-    end
-    if id_pause
-        gcfG;gcfH;gcfLFont;gcfS;%gcfP
-        id_pause = false;
-    end
-    for jj=1:3
-        subplot(1,3,jj)
-        h = semilogx(sb.U(res.sb(kk).Re(ii)), res.sb(kk).res(ii,jj+3), res.sb(kk).s_mk{1}, ...
-            'Color',rgb('Navy'), 'MarkerSize', res.sb(kk).s_mk{2});        
-        h.MarkerFaceColor = h.Color;
-    end
-end
-end
-
-% %%
-clear res
-res.sb(1).s_geo = 'longitudinal';
-res.sb(2).s_geo = 'transverse';
-
-res.sb(1).s_mk{1} = 'o';
-res.sb(2).s_mk{1} = 's';
-res.sb(1).s_mk{2} = 4;
-res.sb(2).s_mk{2} = 5;
-
-id_pause = true;
-figure(1)
-clf
-
-
-for kk = 1:2
-for ii = 1:sb.Re_n
-    res.sb(kk).Re(ii) = sb.Re_pool(ii);
-    load(sprintf('tower_%s_turbulent_Re%d', res.sb(kk).s_geo, res.sb(kk).Re(ii)));
-    res.sb(kk).res(ii,1:6) = sb.res(ii).C.DLM(1:6);
-    
-    for jj=1:3
-        subplot(1,3,jj)
-        semilogx(res.sb(kk).Re(ii), res.sb(kk).res(ii,jj), res.sb(kk).s_mk{1}, ...
-            'Color',rgb('Navy'), 'MarkerSize', res.sb(kk).s_mk{2})        
-    end
-    if id_pause
-        gcfG;gcfH;gcfLFont;gcfS;%gcfP
-        id_pause = false;
-    end
-    for jj=1:3
-        subplot(1,3,jj)
-        h = semilogx(res.sb(kk).Re(ii), res.sb(kk).res(ii,jj+3), res.sb(kk).s_mk{1}, ...
-            'Color',rgb('Navy'), 'MarkerSize', res.sb(kk).s_mk{2});        
+        h = semilogx(sb.U(res.geo(id_geo).sb(ll).Re(ii)), ...
+            res.geo(id_geo).sb(ll).res(ii,jj+3), ...
+            's', 'Color',res.s_c{id_geo}, 'MarkerSize', 6-2);
         h.MarkerFaceColor = h.Color;
     end
 end
