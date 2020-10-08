@@ -803,13 +803,30 @@ sb_ii.of
 Wind
 
 % %%
+% help fieldnames
+s_n = fieldnames(Wind.ii);
+s_pr = @(x) cellfun(@(y) x.(y)  , fieldnames(x), 'un',0)
+s_pr(Wind.ii)
+
+% %%
+s_pr = @(x) 
+
+% %%
 Wind.ii.U = 4;
 Wind.ii.Re = Wind.ii.U*sb_ii.sb.B/Wind.ii.nu;
 Wind.ii.I_u = [1 1 1]*5e-2;
 Wind.ii.L_u = sb_ii.sb.B*7e-2;
 Wind.ii.sig_U = Wind.ii.I_u*Wind.ii.U;
 Wind.ii.k = 1/2*sum(Wind.ii.sig_U.^2);
-Wind.ii.epsilon = Wind.tur.C_mu^0.75 * Wind.ii.k.^1.5 / L_u
+
+% %%
+Wind.ii.U = 4;
+Wind.ii.Re = Wind.ii.U*sb_ii.sb.B/Wind.ii.nu;
+Wind.ii.I_u = [1 1 1]*5e-2;
+Wind.ii.L_u = sb_ii.sb.B*7e-2;
+Wind.ii.sig_U = Wind.ii.I_u*Wind.ii.U;
+Wind.ii.k = 1/2*sum(Wind.ii.sig_U.^2);
+Wind.ii.epsilon = Wind.tur.C_mu^0.75 * Wind.ii.k.^1.5 / Wind.ii.L_u
 
 
 for x in L_u]
