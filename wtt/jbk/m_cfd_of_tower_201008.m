@@ -726,18 +726,26 @@ end
 
 % %% [markdown]
 % # FINE
-
-if 0
+%
+% if 0
 
 % %%
-s_geo = 'longitudinal';
+% s_geo = 'longitudinal';
 % s_geo = 'transverse';
-% s_geo = 'upper_a000';
+s_geo = 'upper_a000';
 load(sprintf('res_cfd_of_%s_%s', ...
     s_geo,datestr(now(),'yymmdd')),'sb_ii','meshdata')
     % s_geo,datestr(now(),'yymmdd')),'sb','meshdata')
 
 Wind = m_wind;
+
+Wind.ii.Tc = 15;
+Wind.ii.T = Wind.atm.T + Wind.ii.Tc;
+Wind.ii.pA = Wind.atm.pA;
+Wind.ii.rho = Wind.air.rho(Wind.ii.pA, Wind.ii.T);
+Wind.ii.mu = Wind.air.mu(Wind.ii.T);
+Wind.ii.Cp = Wind.air.Cp(Wind.ii.T);
+Wind.ii.nu = Wind.ii.mu / Wind.ii.rho;
 
 %
 %   B, D
@@ -747,15 +755,108 @@ fprintf('\nB = %f, D = %f',sb_ii.sb.B,sb_ii.sb.D)
 %
 %   Air
 %   T, p
-%   rho, mu, nu
+%   rho, mu, nu, Cp
 %
-fprintf('\nB = %f, D = %f',15,101.325)
-Wind.air.mu(273.15+15)/Wind.air.rho(1023.15*1e2,273.15+15)
+fprintf('\nT [degC] = %f, pA [kPa] = %f',Wind.ii.Tc,Wind.ii.pA/1e3)
+fprintf('\nrho [kg/m^3] = %f',Wind.ii.rho)
+fprintf('\nDynamic (shear) viscosity, mu [Pa-s, kg/m-s] = %f',Wind.ii.mu)
+fprintf('\nKinematic viscosity, nu [m^2/s] = %f',Wind.ii.nu)
+fprintf('\nSpecific heat, Cp [J/kg-K] = %f',Wind.ii.Cp)
 
-           Re: 200000
-            U: @(rey_n)(rey_n*Wind.air.mu(273.15+15)/Wind.air.rho(101325,273.15+15)/sb.B)
+% %% [markdown]
+% # Similarity
 
-
-end
+% %% [markdown]
+% - B, D : lam_L
+% - M : lam_L^2 : lam_L^3/lam_L
+% - I : lam_L^4 : lam_L^(3+2) /lam_L
+% - U : $\sqrt{\lambda_L}$ cf. $\frac{1}{\lambda_L}$
+% - f : $\frac{1}{\sqrt{\lambda_L}}$ cf. $\frac{1}{\lambda_L^2}$
 
 % %%
+for ii=1:sb_ii.sb.Re_n
+    fprintf('\n%d', ii)
+    fprintf('\nscale = %f', sb_ii.sb.scale)
+    fprintf('\nRe = %e', sb_ii.sb.Re_pool(ii))
+    fprintf('\nU [m/s] = %f', sb_ii.sb.U(sb_ii.sb.Re_pool(ii)) )
+    fprintf('\nU_F [m/s] = %f', sb_ii.sb.U(sb_ii.sb.Re_pool(ii)) * sqrt(sb_ii.sb.scale) )
+    fprintf('\nU_F_Re [m/s] = %f', sb_ii.sb.U(sb_ii.sb.Re_pool(ii)) / sb_ii.sb.scale )
+end
+
+
+% %% [markdown]
+% # Turbulence
+
+% %%
+fprintf('\nC_mu = %f', Wind.tur.C_mu)
+fprintf('\nC1 = %f', Wind.tur.C1)
+fprintf('\nC2 = %f', Wind.tur.C2)
+fprintf('\nalpha_K = %f', Wind.tur.alpha_K)
+fprintf('\nalpha_epsilon = %f', Wind.tur.alpha_epsilon)
+
+% %%
+sb_ii.sb
+sb_ii.of
+Wind
+
+% %%
+Wind.tur
+
+    % %%
+    I_u = np.array([5.,5.,5.])*1e-2
+    f_bl.write('\nTurbulence intensity: %s'%' '.join([ str(x) for x in I_u ]))
+
+    L_u = [x * 7e-2 for x in BD]
+    f_bl.write('\nTurbulence length scale [m]: %s'%' '.join([ '%f'%x for x in L_u ]))
+
+    for U_mu in [5,10,8000]:
+
+        f_bl.write('\n')
+        f_bl.write('\nU_mu: %f m/s'%U_mu)
+
+        sig_U = U_mu * I_u
+        f_bl.write('\nsig_U [m/s]: %s'%' '.join([ str(x) for x in sig_U ]))
+
+        k = 1/2*sum(sig_U**2)
+        f_bl.write('\nk: %f'%k)
+
+        epsilon = [C_mu**0.75 * k**1.5 / x for x in L_u]
+        f_bl.write('\nepsilon: ' + ' '.join('%f'%x for x in epsilon))
+
+        omega = [C_mu**-0.25 * k**0.5 / x for x in L_u]
+        f_bl.write('\nomega: ' + ' '.join('%f'%x for x in omega))
+
+        nu_t = [np.sqrt(3/2)*sig_U[0]*x for x in L_u]
+        f_bl.write('\nnu_t: ' + ' '.join('%f'%x for x in nu_t))
+
+        nu_t = [C_mu**0.25 * np.sqrt(3/2)*sig_U[0]*x for x in L_u]
+        f_bl.write('\nnu_t: ' + ' '.join('%f'%x for x in nu_t))
+
+        nu_tilda = [5*x for x in nu_t]
+        f_bl.write('\nnu_tilda: ' + ' '.join('%f'%x for x in nu_tilda))
+
+        d_t = dx_min/U_mu
+        f_bl.write('\nd_t [s]: %g'%d_t)
+
+        T_f = [x / U_mu for x in BD]
+        f_bl.write('\nT_f [s]: ' + ' '.join('%f'%x for x in T_f))
+
+        n_int = T_f/d_t / 10
+        f_bl.write('\nn_int: ' + ' '.join('%d'%x for x in n_int))
+
+        T_vor = [x / 0.2 / U_mu for x in BD]
+        f_bl.write('\nT_vor [s]: ' + ' '.join(['%.3e'%x for x in T_vor]))
+
+        n_vor = T_vor/d_t
+        f_bl.write('\nn_vor: ' + ' '.join('%d'%x for x in n_vor))
+
+
+    # import air
+
+    f_bl.write('\n')
+    f_bl.write('\n#')
+    f_bl.write('\n#   FINE')
+    f_bl.write('\n#')
+    f_bl.close()
+
+    #
