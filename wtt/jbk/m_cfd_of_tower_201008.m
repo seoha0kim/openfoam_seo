@@ -774,6 +774,9 @@ fprintf('\nSpecific heat, Cp [J/kg-K] = %f',Wind.ii.Cp)
 % - f : $\frac{1}{\sqrt{\lambda_L}}$ cf. $\frac{1}{\lambda_L^2}$
 
 % %%
+sb_ii.sb.geo
+
+% %%
 for ii=1:sb_ii.sb.Re_n
     fprintf('\n%d', ii)
     fprintf('\nscale = %f', sb_ii.sb.scale)
@@ -800,30 +803,16 @@ sb_ii.of
 Wind
 
 % %%
-Wind.ii.U = 5e-2;
-Wind.ii.I_u = 5e-2;
+Wind.ii.U = 4;
+Wind.ii.Re = Wind.ii.U*sb_ii.sb.B/Wind.ii.nu;
+Wind.ii.I_u = [1 1 1]*5e-2;
 Wind.ii.L_u = sb_ii.sb.B*7e-2;
 Wind.ii.sig_U = Wind.ii.I_u*Wind.ii.U;
+Wind.ii.k = 1/2*sum(Wind.ii.sig_U.^2);
+Wind.ii.epsilon = Wind.tur.C_mu^0.75 * Wind.ii.k.^1.5 / L_u
 
-    % %%
-    I_u = np.array([5.,5.,5.])*1e-2
-    f_bl.write('\nTurbulence intensity: %s'%' '.join([ str(x) for x in I_u ]))
 
-    L_u = [x * 7e-2 for x in BD]
-    f_bl.write('\nTurbulence length scale [m]: %s'%' '.join([ '%f'%x for x in L_u ]))
-
-    for U_mu in [5,10,8000]:
-
-        f_bl.write('\n')
-        f_bl.write('\nU_mu: %f m/s'%U_mu)
-
-        sig_U = U_mu * I_u
-        f_bl.write('\nsig_U [m/s]: %s'%' '.join([ str(x) for x in sig_U ]))
-
-        k = 1/2*sum(sig_U**2)
-        f_bl.write('\nk: %f'%k)
-
-        epsilon = [C_mu**0.75 * k**1.5 / x for x in L_u]
+for x in L_u]
         f_bl.write('\nepsilon: ' + ' '.join('%f'%x for x in epsilon))
 
         omega = [C_mu**-0.25 * k**0.5 / x for x in L_u]
@@ -854,6 +843,9 @@ Wind.ii.sig_U = Wind.ii.I_u*Wind.ii.U;
         f_bl.write('\nn_vor: ' + ' '.join('%d'%x for x in n_vor))
 
 
+
+
+    % %%
     # import air
 
     f_bl.write('\n')
