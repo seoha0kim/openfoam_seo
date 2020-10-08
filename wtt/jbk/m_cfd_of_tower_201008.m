@@ -800,7 +800,10 @@ sb_ii.of
 Wind
 
 % %%
-Wind.tur
+Wind.ii.U = 5e-2;
+Wind.ii.I_u = 5e-2;
+Wind.ii.L_u = sb_ii.sb.B*7e-2;
+Wind.ii.sig_U = Wind.ii.I_u*Wind.ii.U;
 
     % %%
     I_u = np.array([5.,5.,5.])*1e-2
