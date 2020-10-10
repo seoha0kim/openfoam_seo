@@ -730,7 +730,8 @@ end
 % if 0
 
 % %%
-id_geo = 1;
+% id_geo = 1;
+for id_geo = 1:3
 
 % %%
 switch id_geo
@@ -749,6 +750,8 @@ case 3
     load(sprintf('res_cfd_of_%s_%s', ...
         s_geo,'201008'),'sb_ii','meshdata')
 end
+sb_ij(id_geo).sb = sb_ii.sb;
+sb_ij(id_geo).of = sb_ii.of;
     % s_geo,datestr(now(),'yymmdd')),'sb','meshdata')
 
 Wind = m_wind;
@@ -789,7 +792,7 @@ fprintf('\nSpecific heat, Cp [J/kg-K] = %f',Wind.ii.Cp)
 % - f : $\frac{1}{\sqrt{\lambda_L}}$ cf. $\frac{1}{\lambda_L^2}$
 
 % %%
-sb_ii.sb.geo
+% sb_ii.sb.geo
 
 % %%
 for ii=1:sb_ii.sb.Re_n
@@ -813,86 +816,46 @@ fprintf('\nalpha_K = %f', Wind.tur.alpha_K)
 fprintf('\nalpha_epsilon = %f', Wind.tur.alpha_epsilon)
 
 % %%
-Wind.ii.U = 4;
-Wind.ii.Re = Wind.ii.U*sb_ii.sb.B/Wind.ii.nu;
+Wind.ii.U_mu = 4;
+Wind.ii.Re = Wind.ii.U_mu*sb_ii.sb.B/Wind.ii.nu;
 Wind.ii.I_u = [1 1 1]*5e-2;
 Wind.ii.L_u = sb_ii.sb.B*7e-2;
-Wind.ii.sig_U = Wind.ii.I_u*Wind.ii.U;
+Wind.ii.sig_U = Wind.ii.I_u*Wind.ii.U_mu;
 Wind.ii.k = 1/2*sum(Wind.ii.sig_U.^2);
 Wind.ii.epsilon = Wind.tur.C_mu^0.75 * Wind.ii.k.^1.5 / Wind.ii.L_u;
+Wind.ii.omega = Wind.tur.C_mu^-0.25 * Wind.ii.k^0.5 / Wind.ii.L_u;
+Wind.ii.nu_t = sqrt(3/2)*Wind.ii.sig_U(1)*Wind.ii.L_u;
+Wind.ii.nu_t1 = Wind.tur.C_mu^0.25 * sqrt(3/2)*Wind.ii.sig_U(1)*Wind.ii.L_u;
+Wind.ii.nu_tilda = 5*Wind.ii.nu_t;
 
-s_list = {'U','Re','I_u','L_u','sig_U','k', 'epsilon'};
-cellfun(@(x) void(@() {fprintf('\n%s = ', x), fprintf('%f ',Wind.ii.(x)) } ) , s_list);
+s_field = @(s) cellfun(@(x) void(@() {fprintf('\n%s = ', x), fprintf('%f ',s.(x)), } ) , fieldnames(s) );
+s_field(Wind.ii);
 
-        % %%
-        omega = [C_mu**-0.25 * k**0.5 / x for x in L_u]
-        f_bl.write('\nomega: ' + ' '.join('%f'%x for x in omega))
+% %%
+switch id_geo
+case 1
+    Wind.ii.dx_min = 1e-4;
+case 2
+    Wind.ii.dx_min = 1e-4;
+case 3
+    Wind.ii.dx_min = 1e-5;
+end
+Wind.ii.BD = [sb_ii.sb.B, sb_ii.sb.D];
+Wind.ii.d_t = Wind.ii.dx_min/Wind.ii.U_mu;
+Wind.ii.T_f = Wind.ii.BD / Wind.ii.U_mu;
 
-        nu_t = [np.sqrt(3/2)*sig_U[0]*x for x in L_u]
-        f_bl.write('\nnu_t: ' + ' '.join('%f'%x for x in nu_t))
+s_field(Wind.ii);
 
-        nu_t = [C_mu**0.25 * np.sqrt(3/2)*sig_U[0]*x for x in L_u]
-        f_bl.write('\nnu_t: ' + ' '.join('%f'%x for x in nu_t))
+% %%
+Wind.ii.n_int = Wind.ii.T_f/Wind.ii.d_t / 10;
+Wind.ii.St = 0.2;
+Wind.ii.T_vor = Wind.ii.BD / Wind.ii.St / Wind.ii.U_mu;
+Wind.ii.n_vor = Wind.ii.T_vor/Wind.ii.d_t;
 
-        nu_tilda = [5*x for x in nu_t]
-        f_bl.write('\nnu_tilda: ' + ' '.join('%f'%x for x in nu_tilda))
+s_field(Wind.ii);
 
-        d_t = dx_min/U_mu
-        f_bl.write('\nd_t [s]: %g'%d_t)
+sb_ij(id_geo).wind = Wind.ii;
 
-        T_f = [x / U_mu for x in BD]
-        f_bl.write('\nT_f [s]: ' + ' '.join('%f'%x for x in T_f))
-
-        n_int = T_f/d_t / 10
-        f_bl.write('\nn_int: ' + ' '.join('%d'%x for x in n_int))
-
-        T_vor = [x / 0.2 / U_mu for x in BD]
-        f_bl.write('\nT_vor [s]: ' + ' '.join(['%.3e'%x for x in T_vor]))
-
-        n_vor = T_vor/d_t
-        f_bl.write('\nn_vor: ' + ' '.join('%d'%x for x in n_vor))
-
-
-
-
-        % %%
-        omega = [C_mu**-0.25 * k**0.5 / x for x in L_u]
-        f_bl.write('\nomega: ' + ' '.join('%f'%x for x in omega))
-
-        nu_t = [np.sqrt(3/2)*sig_U[0]*x for x in L_u]
-        f_bl.write('\nnu_t: ' + ' '.join('%f'%x for x in nu_t))
-
-        nu_t = [C_mu**0.25 * np.sqrt(3/2)*sig_U[0]*x for x in L_u]
-        f_bl.write('\nnu_t: ' + ' '.join('%f'%x for x in nu_t))
-
-        nu_tilda = [5*x for x in nu_t]
-        f_bl.write('\nnu_tilda: ' + ' '.join('%f'%x for x in nu_tilda))
-
-        d_t = dx_min/U_mu
-        f_bl.write('\nd_t [s]: %g'%d_t)
-
-        T_f = [x / U_mu for x in BD]
-        f_bl.write('\nT_f [s]: ' + ' '.join('%f'%x for x in T_f))
-
-        n_int = T_f/d_t / 10
-        f_bl.write('\nn_int: ' + ' '.join('%d'%x for x in n_int))
-
-        T_vor = [x / 0.2 / U_mu for x in BD]
-        f_bl.write('\nT_vor [s]: ' + ' '.join(['%.3e'%x for x in T_vor]))
-
-        n_vor = T_vor/d_t
-        f_bl.write('\nn_vor: ' + ' '.join('%d'%x for x in n_vor))
-
-
-
-
-    % %%
-    # import air
-
-    f_bl.write('\n')
-    f_bl.write('\n#')
-    f_bl.write('\n#   FINE')
-    f_bl.write('\n#')
-    f_bl.close()
-
-    #
+% %% [markdown]
+% # FINE
+end
