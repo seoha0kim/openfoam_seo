@@ -69,7 +69,8 @@ cd ~/Work/git/openfoam_seo/wtt/jbk/
 % model = mphload('tower_large.mph')
 model = mphload('tower/tower_longitudinal_turbulent_SST_Re200000.mph')
 
-for id_geo = 1:3
+% for id_geo = 1:3
+for id_geo = 1
     for id_al = 1
 
 clear sb
@@ -81,7 +82,9 @@ clear sb
         switch id_geo
             case 1
                 s_geo = 'longitudinal';
-model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000.mph',s_geo))
+% model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000.mph',s_geo))
+% model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000_m1.mph',s_geo))
+model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000_m2.mph',s_geo))
 sb_ii = load(sprintf('tower/tower_%s_turbulent_SST_Re200000.mat',s_geo))
 sb.id_box = [5 6 7 1 2 3 4];
             case 2
@@ -136,7 +139,7 @@ sb.box_ids = model.selection.tags();
 sb.box_n = length(sb.box_ids);
 % for ii=1:7
 % for ii=[1 4:7]
-% sb.id_box = [5 6 7 1 2 3 4];
+sb.id_box = [5 6 7 1 2 3 4];
 % sb.id_box = [1 2 3 4 5 6 7 ];
 for ii=1:sb.box_n
     % sb.box(ii) = mpheval(model,'X','selection',sprintf('box%d',ii));
@@ -154,7 +157,13 @@ for ii=1:sb.box_n
         x_ii = sb.box(ii).p(:,jj);
         lc1 = find(sb.v.x(1,:) == x_ii(1));
         lc2 = find(sb.v.x(2,lc1) == x_ii(2));
-        lc = lc1(lc2);
+        if isempty(lc2)
+            lc1n = find(sb.v.x(2,:) == x_ii(2));
+            lc2n = find(sb.v.x(1,lc1) == x_ii(1));
+            error('empty point on box')
+        else
+            lc = lc1(lc2);
+        end
         sb.box(ii).id(jj) = lc;
         if any(size(lc) ~= [1,1])
             fprintf('Error: %d %d', ii, jj)
@@ -240,8 +249,8 @@ end
 end
 % figure(2)
 % plot(sb.box(2).ve)
-% if 0
-if 1
+if 0
+% if 1
 jj = 3;
 for ii=1:size(sb.box(jj).t,2)
     id = sb.box(jj).t(:,ii)+1;
@@ -726,8 +735,9 @@ end
 
 % %% [markdown]
 % # FINE
-%
-% if 0
+
+% %%
+if 0
 
 % %%
 % id_geo = 1;
@@ -858,4 +868,30 @@ sb_ij(id_geo).wind = Wind.ii;
 
 % %% [markdown]
 % # FINE
+
+% %%
+end
+
+% %%
+% save(sprintf('res_cfd_of_N_%s', ...
+%     datestr(now(),'yymmdd')),'sb_ij')
+load(sprintf('res_cfd_of_N_%s', ...
+    datestr(now(),'yymmdd')),'sb_ij')
+
+% %%
+sb_ij(1).wind
+
+% %% [markdown]
+% - blockMeshDict
+% - controlDict
+%
+
+% %% [markdown]
+% - blockMesh
+%     - paraFoam
+%     - comparison COMSOL
+% - simpleFoam
+
+% %% [markdown]
+% - Compare with COMSOL
 end
