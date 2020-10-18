@@ -39,7 +39,7 @@ tcomp = tic;
 telap = toc(tcomp);
 
 % s_dir = 'git/openfoam_seo/of/org/';
-s_dir = 'git/openfoam_seo//wtt/yjn2/deck/';
+s_dir = 'git/openfoam_seo//wtt/jbk/deck/';
 
 seo_init
 
@@ -62,20 +62,20 @@ clear sb
 % ## from CSL: rid
 
 % %%
-cd ~/Work/git/openfoam_seo/wtt/yjn2/deck/
+cd ~/Work/git/openfoam_seo/wtt/jbk/deck/
 
 % %%
 % model = mphload('imsi.mph')
 % model = mphload('tower_large.mph')
 
-for id_geo = 1:2
-    for id_al = 1:3
+for id_geo = 1
+    for id_al = 1
 
 clear sb
 
-        if (id_geo == 1) & (id_al == 1)
-            continue
-        end
+%        if (id_geo == 1) & (id_al == 1)
+%            continue
+%        end
 
         switch id_geo
             case 1
@@ -97,7 +97,9 @@ clear sb
         end
 
 % model = mphload('deck_upper_am25_turbulent_SST_Re200000.mph')
-model = mphload(sprintf('deck_%s_a%s_turbulent_SST_Re200000.mph',s_geo,s_al))
+% model = mphload(sprintf('deck_%s_a%s_turbulent_SST_Re100000.mph',s_geo,s_al))
+model = mphload(sprintf('deck_%s_a%s_turbulent_Re150.mph',s_geo,s_al))
+% deck_upper_a000_turbulent_SST_Re200000.mph
 
 % %%
 % mphmesh(model)
@@ -142,7 +144,13 @@ for ii=1:sb.box_n
         x_ii = sb.box(ii).p(:,jj);
         lc1 = find(sb.v.x(1,:) == x_ii(1));
         lc2 = find(sb.v.x(2,lc1) == x_ii(2));
-        lc = lc1(lc2);
+        if isempty(lc2)
+            lc1n = find(sb.v.x(2,:) == x_ii(2));
+            lc2n = find(sb.v.x(1,lc1) == x_ii(1));
+            error('empty point on box')
+        else
+            lc = lc1(lc2);
+        end
         sb.box(ii).id(jj) = lc;
         if any(size(lc) ~= [1,1])
             fprintf('Error: %d %d', ii, jj)
@@ -194,8 +202,8 @@ end
 % ### c_box
 
 % %%
-% if id_pl
-if 1
+if id_pl
+% if 1
 id_pause = true;
 figure(1)
 clf
@@ -228,8 +236,8 @@ end
 end
 % figure(2)
 % plot(sb.box(2).ve)
-% if 0
-if 1
+if 0
+% if 1
 jj = 3;
 for ii=1:size(sb.box(jj).t,2)
     id = sb.box(jj).t(:,ii)+1;
@@ -337,7 +345,7 @@ end
 
 % %%
 % fid = fopen(sprintf('blockMeshDict_tower_1_%s.foam',datestr(now,'yymmdd')),'w+');
-fid = fopen(sprintf('blockMeshDict_yjn2_deck_%s_a%s_%s.foam', ...
+fid = fopen(sprintf('blockMeshDict_jbk2_deck_%s_a%s_%s.foam', ...
     s_geo,s_al,datestr(now,'yymmdd')),'w+');
 
 fprintf(fid,'/*--------------------------------*- C++ -*----------------------------------*\\\n');
@@ -363,13 +371,13 @@ fprintf(fid,'(\n');
 
 for ii=1:size(meshdata.vertex,2)
 % for ii=1:2^4
-    fprintf(fid,'(%f %f 0)\n',meshdata.vertex(:,ii) );
+    fprintf(fid,'(%e %e 0)\n',meshdata.vertex(:,ii) );
     % fprintf(fid,'(%.56f %.56f)\n',meshdata.vertex(:,ii) );
 end
 
 for ii=1:size(meshdata.vertex,2)
 % for ii=1:2^4
-    fprintf(fid,'(%f %f 1)\n',meshdata.vertex(:,ii) );
+    fprintf(fid,'(%e %e 1)\n',meshdata.vertex(:,ii) );
     % fprintf(fid,'(%.56f %.56f)\n',meshdata.vertex(:,ii) );
 end
 
