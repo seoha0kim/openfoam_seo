@@ -69,8 +69,8 @@ cd ~/Work/git/openfoam_seo/wtt/jbk/
 % model = mphload('tower_large.mph')
 model = mphload('tower/tower_longitudinal_turbulent_SST_Re200000.mph')
 
-% for id_geo = 1:3
-for id_geo = 1
+for id_geo = 1:3
+% for id_geo = 1
     for id_al = 1
 
 clear sb
@@ -84,17 +84,18 @@ clear sb
                 s_geo = 'longitudinal';
 % model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000.mph',s_geo))
 % model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000_m1.mph',s_geo))
-model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000_m2.mph',s_geo))
+% model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000_m2.mph',s_geo))
+model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000m.mph',s_geo))
 sb_ii = load(sprintf('tower/tower_%s_turbulent_SST_Re200000.mat',s_geo))
 sb.id_box = [5 6 7 1 2 3 4];
             case 2
                 s_geo = 'transverse';
-model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000.mph',s_geo))
+model = mphload(sprintf('tower/tower_%s_turbulent_SST_Re200000m.mph',s_geo))
 sb_ii = load(sprintf('tower/tower_%s_turbulent_SST_Re200000.mat',s_geo))
 sb.id_box = [5 6 7 1 2 3 4];
             case 3
                 s_geo = 'upper_a000';
-model = mphload(sprintf('deck/deck_%s_turbulent_SST_Re200000.mph',s_geo))
+model = mphload(sprintf('deck/deck_%s_turbulent_SST_Re200000m.mph',s_geo))
 sb_ii = load(sprintf('deck/deck_%s_turbulent_SST_Re200000.mat',s_geo))
 sb.id_box = [1 2 3 4 5 6 7 ];
             % otherwise
@@ -139,11 +140,11 @@ sb.box_ids = model.selection.tags();
 sb.box_n = length(sb.box_ids);
 % for ii=1:7
 % for ii=[1 4:7]
-sb.id_box = [5 6 7 1 2 3 4];
+% sb.id_box = [5 6 7 1 2 3 4];
 % sb.id_box = [1 2 3 4 5 6 7 ];
 for ii=1:sb.box_n
     % sb.box(ii) = mpheval(model,'X','selection',sprintf('box%d',ii));
-    sb.box(ii) = mpheval(model,'X','selection',sb.box_ids(find(ii == sb.id_box)));
+    sb.box(ii) = mpheval(model,'X','selection',sb.box_ids(find(ii == sb.id_box)), 'dataset','dset2');
 end
 
 % %%
@@ -384,13 +385,13 @@ fprintf(fid,'(\n');
 
 for ii=1:size(meshdata.vertex,2)
 % for ii=1:2^4
-    fprintf(fid,'(%f %f 0)\n',meshdata.vertex(:,ii) );
+    fprintf(fid,'(%e %e 0)\n',meshdata.vertex(:,ii) );
     % fprintf(fid,'(%.56f %.56f)\n',meshdata.vertex(:,ii) );
 end
 
 for ii=1:size(meshdata.vertex,2)
 % for ii=1:2^4
-    fprintf(fid,'(%f %f 1)\n',meshdata.vertex(:,ii) );
+    fprintf(fid,'(%e %e 1)\n',meshdata.vertex(:,ii) );
     % fprintf(fid,'(%.56f %.56f)\n',meshdata.vertex(:,ii) );
 end
 
@@ -406,7 +407,7 @@ end
 % fprintf(fid,'        pointField points(%d);\n'%int(np.shape(of_xyz)[1]/2));
 % % for ii in range(len(of_xyz[0])):
 % for ii in range(int(np.shape(of_xyz)[1]/2)):
-%     fprintf(fid,'        points[%d] = point(%f, %f, %f);\n'%(ii,of_xyz[0][ii],of_xyz[1][ii],of_xyz[2][ii]));
+%     fprintf(fid,'        points[%d] = point(%e, %f, %f);\n'%(ii,of_xyz[0][ii],of_xyz[1][ii],of_xyz[2][ii]));
 % fprintf(fid,'\n');
 % fprintf(fid,'        // Duplicate z points\n');
 % fprintf(fid,'        label sz = points.size();\n');
