@@ -8,9 +8,9 @@
 Build  : 8-9b73cf21a682
 Exec   : blockMesh
 Date   : Oct 19 2020
-Time   : 10:40:53
+Time   : 11:20:36
 Host   : "windneo"
-PID    : 11771
+PID    : 13438
 I/O    : uncollated
 Case   : /home/sbkim/Work/git/openfoam_seo/of/org/jbk2/deck
 nProcs : 1
@@ -26,19 +26,3 @@ Creating block mesh from
 Creating block edges
 No non-planar block faces defined
 Creating topology blocks
-Creating topology patches
-
-Creating block mesh topology
---> FOAM Warning : 
-    From function Foam::polyMesh::polyMesh(const Foam::IOobject&, Foam::pointField&&, const cellShapeList&, const faceListList&, const wordList&, const Foam::PtrList<Foam::dictionary>&, const Foam::word&, const Foam::word&, bool)
-    in file meshes/polyMesh/polyMeshFromShapeMesh.C at line 873
-    Found 33000 undefined faces in mesh; adding to default patch.
-
-Check topology
-
-	Basic statistics
-		Number of internal faces : 417638
-		Number of boundary faces : 470936
-		Number of defined boundary faces : 470936
-		Number of undefined boundary faces : 0
-	Checking patch -> block consistency
