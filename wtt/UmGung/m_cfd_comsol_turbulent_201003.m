@@ -1,3 +1,7 @@
+% %%
+% Model exported on Sep 16 2020, 18:03 by COMSOL 5.5.0.359.
+function [model,sb] = m_cfd_comsol_turbulent_201003(varargin)
+
 % ---
 % jupyter:
 %   jupytext:
@@ -19,11 +23,6 @@
 % %% [markdown]
 % Saang Bum Kim <br>
 % 2020-07-01 17:50
-
-% %%
-function [model,sb] = m_cfd_comsol_turbulent_201003(varargin)
-%
-% Model exported on Sep 16 2020, 18:03 by COMSOL 5.5.0.359.
 
 % %%
 % !comsol mphserver -silent &
@@ -135,6 +134,7 @@ for id_geo = 1
 % for id_al = 3
 % for id_al = 4:5
 for id_al = 1
+% for id_al = 1:3
 
 switch id_al
     case 1
@@ -405,6 +405,7 @@ model.component('comp1').geom('geom1').feature('sca2').selection('input').set({'
 
 model.component('comp1').geom('geom1').create('mir2', 'Mirror');
 model.component('comp1').geom('geom1').feature('mir2').selection('input').set({'sca2'});
+model.component('comp1').geom('geom1').feature('mir2').set('pos', [0 0.1]);
 
 model.component('comp1').geom('geom1').create('rot2', 'Rotate');
 % model.component('comp1').geom('geom1').feature('rot2').selection('input').set({'sca2'});
