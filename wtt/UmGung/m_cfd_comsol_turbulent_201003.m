@@ -890,7 +890,11 @@ figure(1)
 clf
 
 telap = toc(tcomp);
-for ii=1:length(sb.Re_pool)
+% for ii=1:length(sb.Re_pool)
+    ii = 4;
+    model = mphload(sprintf('deck0_%s_a%s_turbulent_Re%d', sb.s_geo, sb.s_al, sb.Re))
+    load(sprintf('deck0_%s_a%s_turbulent_Re%d', sb.s_geo, sb.s_al, sb.Re),'sb')
+for ii=length(sb.Re_pool)
 
     sb.Re = sb.Re_pool(ii);
 
